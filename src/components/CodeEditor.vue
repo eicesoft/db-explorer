@@ -125,25 +125,6 @@
           },
         });
       }
-      //   !editor
-      //     ? (editor = monaco.editor.create(document.getElementById('codeEditBox') as HTMLElement, {
-      //         value: text.value, // 编辑器初始显示文字
-      //         language: 'sql', // 语言支持自行查阅demo
-      //         automaticLayout: true, // 自适应布局
-      //         theme: 'vs', // 官方自带三种主题vs, hc-black, or vs-dark
-      //         foldingStrategy: 'indentation',
-      //         renderLineHighlight: 'gutter', // 行亮
-      //         selectOnLineNumbers: true, // 显示行号
-      //         minimap: {
-      //           enabled: false,
-      //         },
-      //         glyphMargin: true,
-      //         readOnly: false, // 只读
-      //         fontSize: 14, // 字体大小
-      //         scrollBeyondLastLine: true, // 取消代码后面一大段空白
-      //         overviewRulerBorder: false, // 不要滚动条的边框
-      //       }))
-      //     : editor.setValue('');
 
       var decorations = editor.deltaDecorations(
         [],
