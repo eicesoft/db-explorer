@@ -6,11 +6,14 @@
   import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
   import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
   import * as monaco from 'monaco-editor';
+  import { editor } from 'monaco-editor/esm/vs/editor/editor.api.js';
+
+  import 'monaco-editor/esm/vs/basic-languages/sql/sql.contribution';
   import { language as sqlLanguage } from 'monaco-editor/esm/vs/basic-languages/sql/sql.js';
 
   // @ts-ignore
-  let editor: monaco.editor.IStandaloneCodeEditor;
-  const text = ref('SELECT count(0) as C FROM account;');
+  let editor: editor.IStandaloneCodeEditor;
+  const text = ref('SELECT count(0) as C FROM account;\n\nSELECT count(0) as C FROM account;');
   const language = ref('sql');
 
   onBeforeUnmount(() => {
@@ -56,9 +59,18 @@
           overviewRulerBorder: false, // 不要滚动条的边框
         });
 
-        monaco.languages.registerCompletionItemProvider('sql', {});
-
-        monaco.languages.registerCompletionItemProvider('sql', {
+        // monaco.languages.registerCompletionItemProvider('sql', {});
+        monaco.editor.setModelMarkers(editor.getModel(), null, [
+          {
+            startLineNumber: 1,
+            startColumn: 1,
+            endLineNumber: 1,
+            endColumn: 8,
+            message: 'message',
+            severity: 1,
+          },
+        ]);
+        monaco.languages.registerCompletionItemProvider(language.value, {
           provideCompletionItems(model: any, position: any) {
             var textUntilPosition = model.getValueInRange({
               startLineNumber: position.lineNumber,
@@ -126,22 +138,61 @@
         });
       }
 
-      var decorations = editor.deltaDecorations(
-        [],
-        [
-          {
-            range: new monaco.Range(1, 1, 1, 1),
-            options: {
-              isWholeLine: true,
-              className: 'myContentClass',
-              glyphMarginClassName: 'myGlyphMarginClass',
-            },
+      var decorations = editor.createDecorationsCollection([
+        {
+          range: new monaco.Range(1, 1, 1, 1),
+          options: {
+            isWholeLine: true,
+            className: 'myContentClass',
+            glyphMarginClassName: 'myGlyphMarginClass',
           },
-        ]
+        },
+        // {
+        //   range: new monaco.Range(3, 1, 3, 24),
+        //   options: { inlineClassName: 'myInlineDecoration' },
+        // },
+      ]);
+      var commandId = editor.addCommand(
+        0,
+        function () {
+          // services available in `ctx`
+          console.log(arguments);
+          alert('my command is executing!');
+        },
+        ''
       );
-
       editor.onDidChangeModelContent((val: any) => {
         text.value = editor.getValue();
+
+        console.log(commandId);
+
+        monaco.languages.registerCodeLensProvider(language.value, {
+          provideCodeLenses: function (model: any, token: any) {
+            return {
+              lenses: [
+                {
+                  range: {
+                    startLineNumber: 1,
+                    startColumn: 1,
+                    endLineNumber: 2,
+                    endColumn: 1,
+                  },
+                  id: 'Run1',
+                  command: {
+                    id: commandId,
+                    title: 'Run Query',
+                    arguments: [model, token],
+                  },
+                },
+              ],
+              dispose: () => {},
+            };
+          },
+          resolveCodeLens: function (model, codeLens, token) {
+            console.log(codeLens);
+            return codeLens;
+          },
+        });
       });
     });
   };
@@ -154,7 +205,8 @@
 
 <style>
   .myGlyphMarginClass {
-    background: red;
+    /* background: red; */
+    background: url('../assets/play_fill.png') no-repeat;
   }
   .myContentClass {
     background: lightblue;
