@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-  import CodeEditor from './CodeEditor.vue';
+  import CodeEditor from './CodeEditor/CodeEditor.vue';
   import MySQL from '../utils/connect/MySQL';
   import pp from '../../package.json';
   import { ref } from 'vue';
@@ -41,11 +41,14 @@
 <style scoped>
   .main {
     overflow: hidden;
+    height: 100%;
+    width: 100%;
   }
   .header {
     position: fixed;
     left: 0;
     top: 0;
+    z-index: 1000;
     border-bottom: 1px solid #ececec;
     background-color: #fefefe;
     height: 28px;
@@ -56,17 +59,24 @@
   }
   .container {
     display: flex;
+    position: absolute;
+    height: calc(100%-28 * 2);
+    top: 28px;
   }
   .side {
-    width: 30%;
+    width: 15%;
+    height: 100%;
   }
   .body {
-    width: 70%;
+    width: 85%;
+    height: 100%;
+    overflow: hidden;
   }
   .statusbar {
     position: fixed;
     left: 0;
     bottom: 0;
+    z-index: 1000;
     border-top: 1px solid #ececec;
     background-color: #fefefe;
     height: 28px;
