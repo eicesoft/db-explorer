@@ -17,7 +17,7 @@ export interface NodeRuntime {
 export interface Meta {
   NodeId?: Id;
   DatabaseName?: String;
-  Param: Record<string, any>;
+  Param: any;
 }
 
 export interface SimpleNode {

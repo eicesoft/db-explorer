@@ -7,6 +7,7 @@
   const emits = defineEmits<{
     (e: 'contextselect', value: any): void;
     (e: 'select', value: any): void;
+    (e: 'connect', value: any): void;
   }>();
 
   const props = defineProps({
@@ -61,8 +62,13 @@
     console.log('ddd');
   };
 
-  const connect = () => {
-    console.log(props.item);
+  const connect = (item: any = null) => {
+    // console.log(props.item);
+    if (item) {
+      emits('connect', item);
+    } else {
+      emits('connect', props.item);
+    }
   };
 </script>
 
@@ -94,12 +100,30 @@
         <img class="icon" :src="getIconRes('add.png')" />
       </template>
       <template v-else-if="item?.type == NodeType.Server">
-        <img @click.stop="connect" style="width: 18px; height: 18px" class="icon" :src="getIconRes('play.png')" />
+        <img
+          v-if="!item.runtime?.load"
+          @click.stop="connect"
+          style="width: 18px; height: 18px"
+          class="icon"
+          :src="getIconRes('play.png')"
+        />
+        <img
+          v-else
+          @click.stop="connect"
+          style="width: 18px; height: 18px"
+          class="icon"
+          :src="getIconRes('stop.png')"
+        />
       </template>
     </div>
   </div>
   <div v-show="item?.children && is_fold" class="tree-children">
     <TreeNode
+      @connect="
+        () => {
+          connect(child);
+        }
+      "
       @select="selectNode"
       @contextselect="contextmenuShow"
       v-for="(child, index) in item?.children"

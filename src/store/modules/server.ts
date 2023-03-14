@@ -13,12 +13,16 @@ export interface IConnectsState {
   links: Record<string, IConnectState>;
 }
 
-export const useConnectStore = defineStore({
-  id: 'app-connects',
+export const useServerStore = defineStore({
+  id: 'app-server',
   state: (): IConnectsState => ({
     links: {},
   }),
-  getters: {},
+  getters: {
+    connects: (state) => {
+      return state.links;
+    },
+  },
   actions: {
     addConnect(
       name: string,
@@ -38,8 +42,8 @@ export const useConnectStore = defineStore({
         options,
       };
     },
-    getConnect(name: string): IConnectState | null {
-      return this.links[name] ?? null;
+    getConnect(name: string): IConnectState {
+      return this.links[name];
     },
   },
   persist: {
