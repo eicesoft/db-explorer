@@ -16,6 +16,7 @@ export default class Editor {
   editor: editor.IStandaloneCodeEditor;
   lang: string;
   value: string;
+  provideCodeLenses: editor.IDisposable;
   /**
    *
    * @param text
@@ -61,9 +62,11 @@ export default class Editor {
     });
 
     this.editor.onDidChangeModelContent((val: any) => {
-      //   text.value = this.editor.getValue();
       this.value = this.editor.getValue();
+      this.registerCodeLensProvider();
     });
+
+    this.registerCodeLensProvider();
 
     // var decorations = editor.createDecorationsCollection([
     //   {
@@ -79,52 +82,100 @@ export default class Editor {
     //   //   options: { inlineClassName: 'myInlineDecoration' },
     //   // },
     // ]);
-    // var commandId = editor.addCommand(
-    //   0,
-    //   function () {
-    //     // services available in `ctx`
-    //     console.log(arguments);
-    //     alert('my command is executing!');
-    //   },
-    //   ''
-    // );
+
     // editor.onDidChangeModelContent((val: any) => {
     //   text.value = editor.getValue();
 
     //   console.log(commandId);
 
-    //   monaco.languages.registerCodeLensProvider(language.value, {
-    //     provideCodeLenses: function (model: any, token: any) {
-    //       return {
-    //         lenses: [
-    //           {
-    //             range: {
-    //               startLineNumber: 1,
-    //               startColumn: 1,
-    //               endLineNumber: 2,
-    //               endColumn: 1,
-    //             },
-    //             id: 'Run1',
-    //             command: {
-    //               id: commandId,
-    //               title: 'Run Query',
-    //               arguments: [model, token],
-    //             },
-    //           },
-    //         ],
-    //         dispose: () => {},
-    //       };
-    //     },
-    //     resolveCodeLens: function (model, codeLens, token) {
-    //       console.log(codeLens);
-    //       return codeLens;
-    //     },
-    //   });
     // });
   }
 
   dispose() {
     this.editor.dispose();
+  }
+
+  registerCodeLensProvider() {
+    if (this.provideCodeLenses) {
+      this.provideCodeLenses.dispose();
+    }
+
+    var queryCommandId = this.editor.addCommand(
+      0,
+      (...args: any[]) => {
+        // services available in `ctx`
+        let model = args[1],
+          range = args[2],
+          tp = args[3];
+        console.log(range);
+        let val = model.getValueInRange(
+          {
+            startLineNumber: range.startLineNumber,
+            startColumn: 1,
+            endLineNumber: range.endLineNumber + 1,
+            endColumn: 1,
+          },
+          0
+        );
+        if (tp == 1) {
+          alert(`my sql [${val}] is executing!`);
+        } else {
+          alert(`my sql [${val}] is profile!`);
+        }
+      },
+      '123'
+    );
+    let ranges = [
+      {
+        startLineNumber: 1,
+        startColumn: 1,
+        endLineNumber: 1,
+        endColumn: 1,
+      },
+      {
+        startLineNumber: 3,
+        startColumn: 1,
+        endLineNumber: 3,
+        endColumn: 1,
+      },
+    ];
+
+    this.provideCodeLenses = monaco.languages.registerCodeLensProvider(this.lang, {
+      provideCodeLenses: (model: any, token: any) => {
+        let lenses = [];
+
+        ranges.forEach((range: any, key: any) => {
+          lenses.push({
+            range: range,
+            id: 'Run' + key,
+            command: {
+              id: queryCommandId,
+              title: '▶️执行',
+              arguments: [model, range, 1],
+            },
+          });
+
+          lenses.push({
+            range: range,
+            id: 'Profile' + key,
+            command: {
+              id: queryCommandId,
+              title: '🪄分析',
+              arguments: [model, range, 2],
+            },
+          });
+        });
+        return {
+          lenses: lenses,
+          dispose: () => {},
+        };
+      },
+      // resolveCodeLens: function (model, codeLens, token) {
+      //   console.log(codeLens);
+      //   return codeLens;
+      // },
+    });
+    console.log(this.provideCodeLenses);
   }
 
   createWidget() {
@@ -166,10 +217,10 @@ export default class Editor {
     monaco.editor.setModelMarkers(this.editor.getModel(), null, [
       {
         startLineNumber: 1,
-        startColumn: 1,
+        startColumn: 27,
         endLineNumber: 1,
-        endColumn: 7,
-        message: 'message',
+        endColumn: 34,
+        message: '这个是一个数据表格',
         severity: 2,
       },
     ]);
@@ -180,33 +231,32 @@ export default class Editor {
       provideCompletionItems(model: any, position: any) {
         const suggestions: any = [];
 
-        // var textUntilPosition = model.getValueInRange({
-        //   startLineNumber: position.lineNumber,
-        //   startColumn: 1,
-        //   endLineNumber: position.lineNumber,
-        //   endColumn: position.column,
-        // });
+        var textUntilPosition = model.getValueInRange({
+          startLineNumber: position.lineNumber,
+          startColumn: 1,
+          endLineNumber: position.lineNumber,
+          endColumn: position.column,
+        });
 
-        // let tokens = textUntilPosition.split(' ');
-        // if (tokens.length >= 2) {
-        //   let token = tokens[tokens.length - 2];
+        let tokens = textUntilPosition.split(' ');
+        if (tokens.length >= 2) {
+          let token = tokens[tokens.length - 2];
 
-        //   if (token) {
-        //     console.log(token.toLocaleLowerCase());
-        //     // 这个keywords就是sql.js文件中有的
-        //     if (token.toLocaleLowerCase() == 'from' || token.toLocaleLowerCase() == 'update') {
-        //       console.log(model, position);
+          if (token) {
+            console.log(token.toLocaleLowerCase());
+            if (token.toLocaleLowerCase() == 'from' || token.toLocaleLowerCase() == 'update') {
+              console.log(model, position);
 
-        //       ['account', 'hb_user'].forEach((item: any) => {
-        //         suggestions.push({
-        //           label: item,
-        //           kind: monaco.languages.CompletionItemKind.Module,
-        //           insertText: item,
-        //         });
-        //       });
-        //     }
-        //   }
-        // }
+              ['account', 'hb_user'].forEach((item: any) => {
+                suggestions.push({
+                  label: item,
+                  kind: monaco.languages.CompletionItemKind.Module,
+                  insertText: item,
+                });
+              });
+            }
+          }
+        }
 
         sqlLanguage.keywords.forEach((item: any) => {
           suggestions.push({

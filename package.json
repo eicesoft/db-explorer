@@ -21,13 +21,17 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build && electron-builder",
+    "only-build": "vite build && electron-builder",
     "preview": "vite preview"
   },
   "devDependencies": {
     "@types/mysql": "^2.15.21",
     "@vitejs/plugin-vue": "^4.0.0",
+    "@vue/devtools": "beta",
     "electron": "^23.1.1",
     "electron-builder": "^23.6.0",
+    "sass": "^1.59.2",
+    "sass-loader": "^13.2.0",
     "typescript": "^4.9.5",
     "vite": "^4.1.4",
     "vite-plugin-electron": "^0.11.1",
@@ -37,6 +41,9 @@
   },
   "dependencies": {
     "monaco-editor": "^0.36.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "pinia": "^2.0.33",
+    "pinia-plugin-persist": "^1.0.0",
+    "v-contextmenu": "next"
   }
 }

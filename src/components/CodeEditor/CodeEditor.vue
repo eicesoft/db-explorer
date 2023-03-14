@@ -3,7 +3,7 @@
   import Editor from './editor';
 
   let editor: Editor;
-  const text = ref('SELECT count(0) as C FROM account;\n\nSELECT count(0) as C FROM account;');
+  const text = ref('SELECT count(0) as C FROM account;\n\nSELECT count(0) as C FROM hb_user;');
   const language = ref('sql');
   onBeforeUnmount(() => {
     editor.dispose();
