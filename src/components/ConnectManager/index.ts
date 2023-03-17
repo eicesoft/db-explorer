@@ -12,6 +12,7 @@ type Id = string | number;
 
 export interface NodeRuntime {
   load: boolean;
+  isOpen?: boolean;
 }
 
 export interface Meta {
@@ -25,6 +26,8 @@ export interface SimpleNode {
   title: string;
   icon: string;
   type: NodeType;
+  selectable: boolean;
+  isLeaf: boolean;
   children?: Array<SimpleNode>;
   runtime?: NodeRuntime;
   meta?: Meta;

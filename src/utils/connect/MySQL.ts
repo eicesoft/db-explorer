@@ -26,6 +26,28 @@ export default class MySQL {
       port: this.port,
       multipleStatements: true,
       connectTimeout: 5000,
+      typeCast: function (field, next) {
+        if (field.type === 'DATETIME') {
+          let val = field.string();
+          // console.log(new Date(val));
+
+          return new Date(val);
+        } else if (field.type === 'TINY') {
+          let val = field.string();
+          if (val === '1') {
+            return true;
+          } else if (val === '0') {
+            return false;
+          } else {
+            return val;
+          }
+        } /*else if (field.type === 'BIT') {
+          // let val = field.string();
+          console.error(field);
+          next();
+        }*/
+        return next();
+      },
     });
   }
 

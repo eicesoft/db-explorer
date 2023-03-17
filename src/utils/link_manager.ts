@@ -3,6 +3,16 @@ import { useServerStore } from '~/store/modules/server';
 
 export default class Manager {
   links: Record<string, MySQL>;
+  static _manager: Manager;
+
+  public static getInstance(): Manager {
+    if (!this._manager) {
+      this._manager = new Manager();
+    }
+
+    return this._manager;
+  }
+
   constructor() {
     this.links = {};
   }

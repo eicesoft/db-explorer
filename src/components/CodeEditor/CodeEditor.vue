@@ -1,9 +1,35 @@
 <script setup lang="ts">
-  import { nextTick, ref, onBeforeUnmount } from 'vue';
+  import { nextTick, watch, ref, onBeforeUnmount, PropType } from 'vue';
+  import { Tab } from '~/components/Tabber/index';
   import Editor from './editor';
 
+  const props = defineProps({
+    node: {
+      type: Object as PropType<Tab>,
+    },
+  });
+
+  watch(
+    () => props.node,
+    (newVal, oldVal) => {
+      console.error(newVal, oldVal);
+
+      // if (oldVal) {
+      //   let { newModel, old } = editor.createModel(newVal?.meta.editor.context);
+      //   newVal.meta.editor.model = newModel;
+
+      //   oldVal.meta.editor.state = old.state;
+      //   oldVal.meta.editor.model = old.model;
+      // }
+      // const newModel = monaco.editor.createModel(fileItem.content, fileItem.language);
+    },
+    {
+      deep: true,
+    }
+  );
+
   let editor: Editor;
-  const text = ref('SELECT count(0) as C FROM account;\n\nSELECT count(0) as C FROM hb_user;');
+  const text = ref('');
   const language = ref('sql');
   onBeforeUnmount(() => {
     editor.dispose();
@@ -12,9 +38,9 @@
   const editorInit = () => {
     nextTick(() => {
       if (!editor) {
-        editor = new Editor(text.value, language.value);
+        editor = new Editor(document.getElementById('codeEditBox'), text.value, language.value);
         editor.registerCompletionItemProvider();
-        editor.createMarker();
+        // editor.createMarker();
         // editor.createWidget();
       }
     });
@@ -23,21 +49,11 @@
 </script>
 
 <template>
-  <div id="codeEditBox"></div>
+  <div class="codeEditBox" id="codeEditBox"></div>
 </template>
 
-<style>
-  .myGlyphMarginClass {
-    /* background: red; */
-    background: url('../assets/play_fill.png') no-repeat;
-  }
-  .myContentClass {
-    background: lightblue;
-  }
-</style>
-
 <style scoped>
-  #codeEditBox {
+  .codeEditBox {
     height: 500px;
     border: 1px solid #ececec;
 

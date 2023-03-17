@@ -2,12 +2,13 @@ export enum TabType {
   Query = 1,
   Table,
   TableDesign,
-  TableiInformation,
   Database,
 }
 
+export type Id = string | number | null;
+
 export interface Tab {
-  id: string;
+  id: Id;
   title: string;
   type: TabType;
   meta?: Record<string, any>;

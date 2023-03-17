@@ -78,6 +78,9 @@ export default defineConfig(({ command }) => {
         };
       })(),
     clearScreen: false,
+    build: {
+      minify: false,
+    },
     optimizeDeps: {
       include: [
         `monaco-editor/esm/vs/language/json/json.worker`,

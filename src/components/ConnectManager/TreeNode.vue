@@ -13,11 +13,9 @@
   const props = defineProps({
     item: { type: Object as PropType<SimpleNode> },
     active: { type: Object as PropType<SimpleNode> },
-    isFold: {
-      type: Boolean,
-      default: false,
-    },
   });
+
+  const presentItem = ref(props.item);
 
   const iconImg = computed(() => {
     if (props.item?.icon) {
@@ -36,15 +34,12 @@
     );
   });
 
-  let is_fold = ref(props.isFold);
-  let is_load = ref<Boolean>(false);
-
   const imgs = reactive({
     right: getImageRes('to_right.png'),
     fold: getImageRes('to_fold.png'),
   });
-  const doFold = () => {
-    is_fold.value = !is_fold.value;
+  const expand = () => {
+    presentItem.value.is_fold = !presentItem.value.is_fold;
   };
 
   const contextmenuShow = (item: SimpleNode) => {
@@ -53,13 +48,13 @@
   };
 
   const selectNode = (item: SimpleNode) => {
-    console.log(item);
+    // console.log(item);
     emits('select', item);
   };
 
   const clickNode = (item: SimpleNode) => {
     emits('select', item);
-    console.log('ddd');
+    // console.log('ddd');
   };
 
   const connect = (item: any = null) => {
@@ -67,7 +62,7 @@
     if (item) {
       emits('connect', item);
     } else {
-      emits('connect', props.item);
+      emits('connect', presentItem);
     }
   };
 </script>
@@ -76,7 +71,7 @@
   <div
     @click="
       (e) => {
-        clickNode(item);
+        clickNode(presentItem);
         e.stopPropagation();
       }
     "
@@ -84,24 +79,28 @@
       active: isSelect,
     }"
     class="tree-node"
-    @contextmenu.prevent="contextmenuShow(item)"
+    @contextmenu.prevent="contextmenuShow(presentItem)"
   >
     <div class="main">
-      <div class="fold" @click="doFold"
-        ><img v-show="item?.children && item?.children.length > 0" :src="is_fold ? imgs.fold : imgs.right"
+      <div class="fold" @click.stop="expand"
+        ><img
+          v-show="presentItem?.children && presentItem?.children.length > 0"
+          :src="presentItem?.is_fold ? imgs.fold : imgs.right"
       /></div>
       <div class="icon" v-if="iconImg">
         <img :src="iconImg" />
       </div>
-      <div class="title">{{ item?.title }}</div>
+      <div :title="presentItem?.title" class="title" :style="{ fontWeight: item?.runtime?.isOpen ? 800 : null }">{{
+        presentItem?.title
+      }}</div>
     </div>
     <div class="toolbar">
-      <template v-if="item?.type == NodeType.Root">
+      <template v-if="presentItem?.type == NodeType.Root">
         <img class="icon" :src="getIconRes('add.png')" />
       </template>
-      <template v-else-if="item?.type == NodeType.Server">
+      <template v-else-if="presentItem?.type == NodeType.Server">
         <img
-          v-if="!item.runtime?.load"
+          v-if="!presentItem.runtime?.load"
           @click.stop="connect"
           style="width: 18px; height: 18px"
           class="icon"
@@ -117,7 +116,7 @@
       </template>
     </div>
   </div>
-  <div v-show="item?.children && is_fold" class="tree-children">
+  <div v-show="presentItem?.children && presentItem.is_fold" class="tree-children">
     <TreeNode
       @connect="
         () => {
@@ -126,27 +125,29 @@
       "
       @select="selectNode"
       @contextselect="contextmenuShow"
-      v-for="(child, index) in item?.children"
+      v-for="(child, index) in presentItem?.children"
       :active="active"
       :item="child"
+      :key="'child' + index"
     ></TreeNode
   ></div>
 </template>
 
 <style scoped>
   .active {
-    background-color: rgb(210, 230, 255);
+    /* background-color: rgb(210, 230, 255); */
+    font-weight: 800;
   }
   .tree-node {
-    font-size: 13px;
+    font-size: 12px;
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     align-items: center;
     user-select: none;
   }
   .tree-children {
     margin: 0 0 0 20px;
-    /* border-left: 1px dashed #ececec; */
+    border-left: 1px dashed #ececec;
   }
   .main {
     display: flex;
@@ -168,6 +169,7 @@
   .icon {
     width: 16px;
     height: 16px;
+    margin: 0;
   }
 
   .icon img {
@@ -176,5 +178,6 @@
   }
   .title {
     margin: 0 4px;
+    /* color: rgb(86, 17, 143); */
   }
 </style>

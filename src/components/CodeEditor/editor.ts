@@ -22,7 +22,7 @@ export default class Editor {
    * @param text
    * @param lang
    */
-  constructor(text: string, lang: string) {
+  constructor(ele: any, text: string, lang: string) {
     this.lang = lang;
     this.value = text;
     self.MonacoEnvironment = {
@@ -43,7 +43,7 @@ export default class Editor {
       },
     };
 
-    this.editor = monaco.editor.create(document.getElementById('codeEditBox') as HTMLElement, {
+    this.editor = monaco.editor.create(ele, {
       value: text, // 编辑器初始显示文字
       language: lang, // 语言支持自行查阅demo
       automaticLayout: true, // 自适应布局
@@ -224,6 +224,22 @@ export default class Editor {
         severity: 2,
       },
     ]);
+  }
+
+  createModel(txt: string) {
+    var currentState = this.editor.saveViewState();
+    var currentModel = this.editor.getModel();
+
+    const newModel = monaco.editor.createModel(txt, this.lang);
+    this.editor.setModel(newModel);
+
+    return {
+      newModel: newModel,
+      old: {
+        model: currentModel,
+        state: currentState,
+      },
+    };
   }
 
   registerCompletionItemProvider() {
