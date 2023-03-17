@@ -264,14 +264,8 @@
 
           <div class="code">
             <highlightjs language="sql" :autodetect="false" :code="createSQL" />
-            <div class="copy"><IconCopy size="20" @click="copySQL" /></div>
+            <div class="copy"><IconCopy size="22" @click="copySQL" /></div>
           </div>
-          <!-- <a-card size="mini" style="margin: 15px" title="Create SQL" hoverable>
-            <template #extra>
-              <a-link @click="copySQL"><IconCopy /></a-link>
-            </template>
-
-          </a-card> -->
         </div>
       </a-tab-pane>
     </a-tabs>
@@ -314,7 +308,7 @@
       height: calc(var(--bodyHeight) - 36px - 32px);
       overflow-y: auto;
       .code {
-        margin: 0 15px 0 15px;
+        margin: 0 15px 15px 15px;
         user-select: text;
 
         font-size: 13px;
@@ -322,7 +316,10 @@
         &:hover {
           .copy {
             display: block;
-            color: #5975f5;
+            color: #424242;
+            &:hover {
+              color: #5975f5;
+            }
           }
         }
         .copy {
