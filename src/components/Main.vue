@@ -1,6 +1,6 @@
 <template>
   <div class="main" :style="cssVars">
-    <div class="header"></div>
+    <Toolbar />
     <div ref="box" class="container">
       <a-split
         @move-end="resize"
@@ -16,12 +16,18 @@
           <ConnectTree :height="height - 28 * 2" @menu-select="menuSelect" @select-table="selectTable" />
         </template>
         <template #second>
-          <Tabber @close="closeTab" @change="changeTab" :active.sync="activeTab" :tabs="tabs" />
-          <PanelManager :active="activeTab" :tabs="tabs"></PanelManager>
-          <!-- <CodeEditor></CodeEditor> -->
+          <div style="overflow: hidden" v-if="tabs.length > 0">
+            <Tabber @close="closeTab" @change="changeTab" :active.sync="activeTab" :tabs="tabs" />
+            <PanelManager :active="activeTab" :tabs="tabs"></PanelManager>
+          </div>
+
+          <div v-else style="padding-top: calc(var(--bodyHeight) / 3)">
+            <a-empty />
+          </div>
         </template>
       </a-split>
     </div>
+
     <div class="statusbar">
       <div class="info"> MySQL Explorer {{ packageInfo.version }}</div>
       <div class="info" v-if="node"> Server: {{ node.meta?.Param.serverKey }}</div>
@@ -36,16 +42,19 @@
   import { ref, computed, reactive, onMounted, nextTick } from 'vue';
   import ConnectTree from './ConnectManager/ConnectTree.vue';
   import PanelManager from './Panel/PanelManager.vue';
+  import Toolbar from '~/components/layout/Toolbar.vue';
 
   import TablePanel from './Panel/TablePanel.vue';
   import { useServerStore } from '~/store/modules/server';
+  import { useSetupStore } from '~/store/modules/setup';
+
   import Tabber from './Tabber/Tabber.vue';
   import { Tab, TabType } from './Tabber';
   import { NodeType, SimpleNode } from './ConnectManager';
   import { uuid } from '~/utils';
 
   export default {
-    components: { ConnectTree, Tabber, TablePanel, PanelManager },
+    components: { ConnectTree, Tabber, TablePanel, PanelManager, Toolbar },
     async setup() {
       const side = ref(null);
       // const split = ref(null);
@@ -55,7 +64,11 @@
       let width = ref(0);
       let height = ref(0);
       const serverStore = useServerStore();
-      serverStore.addConnect('Dev', '192.168.1.25', 'root', 'HundyG63gF%42sdf', 'charge');
+      const setupStore = useSetupStore();
+      setupStore.init();
+      // serverStore.addConnect('Dev', '192.168.1.25', 'root', 'HundyG63gF%42sdf', 'charge');
+      serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
+
       // serverStore.addConnect('Hr', '192.168.1.21', 'root', 'as$s3%hYb3fgv&r2', '');
 
       const cssVars = computed(() => {
@@ -213,19 +226,6 @@
     overflow: hidden;
     height: calc(var(--windowHeight) - 28px);
     width: 100%;
-  }
-  .header {
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 1000;
-    border-bottom: 1px solid #ececec;
-    background-color: #fefefe;
-    height: 28px;
-    line-height: 28px;
-    color: #707070;
-    width: 100%;
-    user-select: none;
   }
   .container {
     display: flex;

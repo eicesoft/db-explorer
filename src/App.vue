@@ -11,13 +11,17 @@
       <Main></Main>
     </template>
     <template #fallback>
-      <span>Loading...</span>
+      <a-spin tip="加载中">
+        <div class="loading"></div>
+      </a-spin>
     </template>
   </Suspense>
 </template>
 
 <style>
-  .ss {
-    color: #efefef;
+  .loading {
+    background-color: #efefef;
+    width: 100%;
+    height: 100vh;
   }
 </style>

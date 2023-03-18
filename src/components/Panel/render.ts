@@ -43,7 +43,7 @@ export default class DefaultRenderer implements Renderer {
     return this.eGui;
   }
 
-  refresh(params) {
+  refresh(params: any) {
     return false;
   }
 }

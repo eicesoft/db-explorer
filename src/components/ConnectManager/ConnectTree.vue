@@ -8,8 +8,10 @@
   import { useServerStore } from '~/store/modules/server';
   import { uuid } from '~/utils/index';
   import Manager from '~/utils/link_manager';
+  import { useI18n } from 'vue-i18n';
+  const { t } = useI18n();
 
-  defineProps({
+  const props = defineProps({
     height: Number,
   });
 
@@ -19,12 +21,10 @@
   }>();
 
   const manager: Manager = Manager.getInstance();
-
-  // console.error(serverStore.getConnect('Dev'));
   let root: SimpleNode[] = reactive<SimpleNode[]>([
     {
       id: '_root',
-      title: '连接',
+      title: t('message.tree.connect'),
       icon: 'home',
       type: NodeType.Root,
       selectable: false,

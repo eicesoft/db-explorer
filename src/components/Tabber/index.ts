@@ -3,6 +3,7 @@ export enum TabType {
   Table,
   TableDesign,
   Database,
+  ViewDesign,
 }
 
 export type Id = string | number | null;

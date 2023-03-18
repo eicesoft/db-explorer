@@ -13,6 +13,7 @@
   import { Notification } from '@arco-design/web-vue';
   import { getIconRes } from '~/utils/res';
   import { TableFields } from './table';
+  import { useI18n } from 'vue-i18n';
 
   const manager: Manager = Manager.getInstance();
   let gridApi = reactive({});
@@ -34,6 +35,7 @@
   const tableInfos = ref(null);
   const createSQL = ref('');
   const { text, copy, copied, isSupported } = useClipboard({ createSQL });
+  const { t } = useI18n();
 
   const loadTableInfo = async () => {
     const conn = manager.get(props.node?.meta?.Param.serverKey);
@@ -46,7 +48,10 @@
     console.log(resp);
     tableInfos.value = resp.data;
 
-    const tableResp = await conn.query('SHOW CREATE TABLE `shop_dev`.`companys`', []);
+    const tableResp = await conn.query(
+      'SHOW CREATE TABLE `' + props.node.meta?.DatabaseName + '`.`' + props.node.title + '`',
+      []
+    );
     createSQL.value = format(tableResp.data[0]['Create Table']);
   };
 
@@ -208,7 +213,6 @@
     copy(createSQL.value);
     Notification.info({
       title: '复制成功',
-      size: 'mini',
       // content: 'This is a notification!',
     });
   };
@@ -218,8 +222,12 @@
 <template>
   <div class="panel">
     <a-tabs size="mini" :position="'top'">
-      <a-tab-pane key="data" title="数据">
-        <template #title> <img style="width: 8px; height: 8px" :src="getIconRes('table.png')" />&nbsp;数据</template>
+      <a-tab-pane key="data">
+        <template #title>
+          <img style="width: 8px; height: 8px" :src="getIconRes('table.png')" />{{
+            t('message.tablepanel.data')
+          }}</template
+        >
         <div class="toolbar">
           <div></div>
           <div class="toolbar-right">
@@ -241,8 +249,8 @@
         >
         </ag-grid-vue>
       </a-tab-pane>
-      <a-tab-pane key="info" title="信息">
-        <template #title> <IconInfoCircleFill />&nbsp;信息</template>
+      <a-tab-pane key="info">
+        <template #title> <IconInfoCircleFill />{{ t('message.tablepanel.info') }}</template>
 
         <div class="container-info">
           <div style="margin: 5px 15px; user-select: auto">字段信息:</div>

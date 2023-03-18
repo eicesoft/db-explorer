@@ -18,21 +18,22 @@
   import { getIconRes } from '~/utils/res';
 
   import { onMounted, defineProps, ref, defineEmits, computed, watch, PropType } from 'vue';
-  import { Tab, Id, TabType } from './index'
+  import { Tab, Id, TabType } from './index';
   const props = defineProps({
     tabs: {
-      type: Array<Tab>
+      type: Array<Tab>,
     },
     active: {
-      type: Object as PropType<Tab>
-    }
+      type: Object as PropType<Tab>,
+    },
   });
 
   watch(
     () => props.active,
     () => {
       activeNode.value = props.active;
-    });
+    }
+  );
 
   const emit = defineEmits<{
     (e: 'change', index: number, tab: Tab): void;
@@ -50,11 +51,11 @@
     // emit('update:active', tab);
   };
 
-  const close = (item:Tab) => {
+  const close = (item: Tab) => {
     emit('close', item);
-  }
+  };
 
-  const closeImg = ref(getIconRes('close.png'))
+  const closeImg = ref(getIconRes('close.png'));
 </script>
 
 <style lang="scss" scoped>
