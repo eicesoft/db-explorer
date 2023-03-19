@@ -1,17 +1,24 @@
 import { defineStore } from 'pinia';
-import { Tab, Id } from '~/components/Tabber/index';
+import { Tab } from '~/components/Tabber/index';
 
 export interface ITabState {
   tabs: Array<Tab>;
-  active_id: Id;
+  activeTab: Tab | null;
 }
 export const useTabStore = defineStore({
   id: 'app-tab',
   state: (): ITabState => ({
     tabs: [],
-    active_id: null,
+    activeTab: null,
   }),
-
+  getters: {
+    // tabs(state: ITabState) {
+    //   return state.tabs;
+    // },
+    isEmpty(): boolean {
+      return this.tabs.length === 0;
+    },
+  },
   actions: {
     add(tab: Tab) {
       let ids = this.tabs.map((i) => i.id);
@@ -20,7 +27,23 @@ export const useTabStore = defineStore({
       }
     },
     active(tab: Tab) {
-      this.active_id = tab.id;
+      this.activeTab = tab;
+    },
+    remove(tab: Tab) {
+      for (let i in this.tabs) {
+        let t = this.tabs[i];
+        if (t.id == tab.id) {
+          console.error('remove', i, tab.id, t.id);
+          this.tabs.splice(i, 1);
+          if (this.tabs.length != 0) {
+            if (i != 0) {
+              this.activeTab = this.tabs[i - 1];
+            } else {
+              this.activeTab = this.tabs[0];
+            }
+          }
+        }
+      }
     },
   },
 });

@@ -93,3 +93,14 @@ pre {
 .cell-value-boolean {
   color: #651086;
 }
+.icon-font {
+  display: flex;
+  align-items: center;
+}
+.icon-font :hover {
+  color: #224daa;
+}
+
+.pointer {
+  cursor: pointer;
+}

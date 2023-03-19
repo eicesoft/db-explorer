@@ -1,0 +1,23 @@
+{
+  "id": "3961440",
+  "name": "22",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "5111465",
+      "name": "语言-空",
+      "font_class": "yuyan-kong",
+      "unicode": "e692",
+      "unicode_decimal": 59026
+    },
+    {
+      "icon_id": "12550621",
+      "name": "表格",
+      "font_class": "biaoge",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    }
+  ]
+}

@@ -60,15 +60,15 @@
           },
           children: [],
         };
-        const param = data.meta.Param;
+        const param = data.meta?.Param;
         for (let row of resp.data) {
           tabGroup.children?.push({
             id: 'table_' + data.title + '_' + row.TABLE_NAME,
             title: row.TABLE_NAME,
-            switcherIcon: '',
+            // switcherIcon: '',
             type: NodeType.Table,
             icon: 'table',
-            isLeaf: 2,
+            isLeaf: true,
             selectable: true,
             meta: {
               NodeId: data.id,
@@ -80,11 +80,7 @@
             },
           });
         }
-        // nodeMaps[data.id].runtime.load = true;
-        // nodeMaps[data.id].children = [tabGroup];
         data.children = [tabGroup];
-        // nodeMaps = reBuildNodes(root);
-        // console.log(nodeMaps);
       } catch (err: any) {
         console.log(err.message);
       }
@@ -275,7 +271,7 @@
       :item="item"
     ></TreeNode> -->
 
-    <v-contextmenu ref="contextmenu">
+    <!-- <v-contextmenu ref="contextmenu">
       <template v-if="context_item && context_item?.type == NodeType.Root">
         <v-contextmenu-item>添加连接</v-contextmenu-item>
         <v-contextmenu-divider />
@@ -325,7 +321,7 @@
         <v-contextmenu-item>导出</v-contextmenu-item>
         <v-contextmenu-item>导入</v-contextmenu-item>
       </template>
-    </v-contextmenu>
+    </v-contextmenu> -->
   </div>
 </template>
 

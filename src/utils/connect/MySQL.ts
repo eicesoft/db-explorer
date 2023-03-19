@@ -70,10 +70,10 @@ export default class MySQL {
 
   query(sql: string, params: any): Promise<any> {
     let that = this;
+    let start = new Date();
     return new Promise(function (resolve, reject) {
-      let start = new Date();
       that.conn.query(sql, params, (err: any, data: any, fields: any) => {
-        let gap = new Date().getMilliseconds() - start.getMilliseconds();
+        let gap = start.getMilliseconds() - new Date().getMilliseconds();
         console.log(gap);
         if (err) {
           reject(err);

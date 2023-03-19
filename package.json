@@ -55,7 +55,6 @@
     "pinia": "^2.0.33",
     "pinia-plugin-persist": "^1.0.0",
     "sql-formatter": "^12.1.3",
-    "v-contextmenu": "next",
     "vue-i18n": "next"
   }
 }

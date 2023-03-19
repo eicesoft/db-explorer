@@ -17,7 +17,7 @@ export interface NodeRuntime {
 
 export interface Meta {
   NodeId?: Id;
-  DatabaseName?: String;
+  DatabaseName?: string;
   Param: any;
 }
 

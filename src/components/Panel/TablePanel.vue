@@ -213,7 +213,7 @@
     copy(createSQL.value);
     Notification.info({
       title: '复制成功',
-      // content: 'This is a notification!',
+      content: '',
     });
   };
   loadTableInfo();
@@ -278,7 +278,7 @@
       </a-tab-pane>
     </a-tabs>
 
-    <v-contextmenu ref="contextmenu">
+    <!-- <v-contextmenu ref="contextmenu">
       <v-contextmenu-item>删除选择行</v-contextmenu-item>
       <v-contextmenu-divider />
       <v-contextmenu-item @click="copyData">复制数据</v-contextmenu-item>
@@ -286,7 +286,7 @@
       <v-contextmenu-item>复制全部</v-contextmenu-item>
       <v-contextmenu-divider />
       <v-contextmenu-item @click="exportData">导出数据</v-contextmenu-item>
-    </v-contextmenu>
+    </v-contextmenu> -->
   </div>
 </template>
 

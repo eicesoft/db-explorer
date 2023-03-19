@@ -3,36 +3,43 @@
     <div class="icon-list">
       <a-button-group>
         <a-tooltip :content="t('message.toolbar.addTip')">
-          <a-button status="warning" size="mini">
-            <template #icon><icon-plus /></template>
+          <a-button @click="clickBtn(ToolCommand.Add)" size="mini">
+            <template #icon><icon-plus :size="iconSize" /></template>
           </a-button>
         </a-tooltip>
       </a-button-group>
 
-      <a-dropdown @select="selectLang" :popup-max-height="false">
-        <a-button> {{ lang }} <icon-down /></a-button>
-        <template #content>
-          <a-doption value="zh">中文</a-doption>
-          <a-doption value="en">英文</a-doption>
-        </template>
-      </a-dropdown>
+      <a-button-group style="margin-left: 10px">
+        <a-tooltip :content="t('message.toolbar.userManager')">
+          <a-button @click="clickBtn(ToolCommand.UserManager)" size="mini">
+            <template #icon><icon-user-group :size="iconSize" /></template>
+          </a-button>
+        </a-tooltip>
+        <a-tooltip :content="t('message.toolbar.serverInfo')">
+          <a-button @click="clickBtn(ToolCommand.ServerInfomation)" size="mini">
+            <template #icon><icon-info-circle :size="iconSize" /></template>
+          </a-button>
+        </a-tooltip>
+      </a-button-group>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { IconPlus } from '@arco-design/web-vue/es/icon';
+  import { IconPlus, IconUserGroup, IconInfoCircle } from '@arco-design/web-vue/es/icon';
   import { ref } from 'vue';
+  import { ToolCommand } from './tool';
   import { useI18n } from 'vue-i18n';
-  const { t, locale: i18nLanguage } = useI18n();
+  const { t } = useI18n();
 
-  const lang = ref('zh');
+  const iconSize = ref(18);
 
-  const selectLang = (val: any) => {
-    lang.value = val;
-    console.log(val);
-    i18nLanguage.value = val; // zh en
-    localStorage.setItem('sql-locale', val);
+  const emit = defineEmits<{
+    (e: 'trigger', key: ToolCommand): void;
+  }>();
+
+  const clickBtn = (key: ToolCommand) => {
+    emit('trigger', key);
   };
 </script>
 

@@ -30,7 +30,6 @@ export default defineConfig(({ command }) => {
           }),
         ],
       }),
-      ,
       electron([
         {
           // Main-Process entry file of the Electron App.
