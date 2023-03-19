@@ -1,18 +1,19 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, watch } from 'vue';
-  import { getIconRes } from '~/utils/res';
+  import { ref } from 'vue';
+  import { getImageRes } from '~/utils/res';
   import { IconDown, IconPlus, IconMoreVertical } from '@arco-design/web-vue/es/icon';
+  import { Icon } from '@arco-design/web-vue';
 
   import { SimpleNode } from './index';
   import { NodeType } from './index';
-  import { useServerStore } from '~/store/modules/server';
-  import { uuid } from '~/utils/index';
+  import { useTreeStore } from '~/store/modules/tree';
+
   import Manager from '~/utils/link_manager';
   import { useI18n } from 'vue-i18n';
   const { t } = useI18n();
 
   const props = defineProps({
-    height: Number,
+    height: { type: Number, default: 24 },
   });
 
   const emits = defineEmits<{
@@ -20,18 +21,12 @@
     (e: 'menu-select', menu_key: string, value: any): void;
   }>();
 
+  const IconFont = Icon.addFromIconFontCn({
+    src: getImageRes('iconfont/iconfont.js'),
+  });
   const manager: Manager = Manager.getInstance();
-  let root: SimpleNode[] = reactive<SimpleNode[]>([
-    {
-      id: '_root',
-      title: t('message.tree.connect'),
-      icon: 'home',
-      type: NodeType.Root,
-      selectable: false,
-      isLeaf: false,
-      children: [],
-    },
-  ]);
+  const treeStore = useTreeStore();
+  treeStore.init();
 
   const loadMore = async (data: SimpleNode) => {
     if (data.type == NodeType.Database) {
@@ -119,47 +114,34 @@
       }
     }
   };
-  const reBuildNodes = (nodes: SimpleNode[] | undefined) => {
-    let maps: Record<string, any> = {};
-    for (let key in nodes) {
-      const node: SimpleNode = nodes[key];
-      maps[node.id] = node;
-      Object.assign(maps, reBuildNodes(node.children));
+  // const reBuildNodes = (nodes: SimpleNode[] | undefined) => {
+  //   let maps: Record<string, any> = {};
+  //   for (let key in nodes) {
+  //     const node: SimpleNode = nodes[key];
+  //     maps[node.id] = node;
+  //     Object.assign(maps, reBuildNodes(node.children));
+  //   }
+
+  //   return maps;
+  // };
+
+  const selectNode = async (key: any, data: any) => {
+    // console.error(data);
+    if (data.node.type == NodeType.Table) {
+      emits('select-table', data.node);
     }
-
-    return maps;
   };
 
-  const serverStore = useServerStore();
-  for (let key of Object.keys(serverStore.links)) {
-    // console.log(key);
-    const connect = serverStore.getConnect(key);
-    let id = 'server_' + uuid();
-    root[0].children?.push({
-      id: id,
-      icon: 'server',
-      title: key,
-      type: NodeType.Server,
-      selectable: true,
-      isLeaf: false,
-      runtime: {
-        load: false,
-      },
-      meta: {
-        NodeId: id,
-        Param: connect,
-      },
-      children: [],
-    });
+  const searchKey = ref('');
+  function getMatchIndex(title: string): number {
+    if (!searchKey.value) return -1;
+    return title.toLowerCase().indexOf(searchKey.value.toLowerCase());
   }
-  // console.log(nodeMaps);
-  const context_item = ref<SimpleNode | null>(null);
-  const activeItem = ref<SimpleNode | null>();
-  const contextSelectItem = (data: SimpleNode) => {
-    context_item.value = data;
-    console.error(context_item.value);
-  };
 
+  const menuSelect = (key: any, node: any) => {
+    console.log(key, node);
+    emits('menu-select', key, node);
+  };
   //高亮当前数据库连接
   // watch(
   //   () => activeItem.value,
@@ -174,31 +156,14 @@
   //     }
   //   }
   // );
-
-  const selectNode = async (key: any, data: any) => {
-    // console.error(data);
-    if (data.node.type == NodeType.Table) {
-      emits('select-table', data.node);
-    }
-  };
-
-  const searchKey = ref('');
-  function getMatchIndex(title: string) {
-    if (!searchKey.value) return -1;
-    return title.toLowerCase().indexOf(searchKey.value.toLowerCase());
-  }
-
-  const menuSelect = (key: any, node: any) => {
-    console.log(key, node);
-    emits('menu-select', key, node);
-  };
 </script>
 
 <template>
-  <div class="tree" v-contextmenu:contextmenu>
+  <div class="tree">
     <div class="search-div">
       <a-input-search class="search-text" placeholder="输入进行过滤" size="mini" v-model="searchKey" />
     </div>
+
     <a-tree
       @select="selectNode"
       blockNode
@@ -217,7 +182,7 @@
       }"
       :show-line="true"
       :load-more="loadMore"
-      :data="root"
+      :data="treeStore.root"
     >
       <template #extra="nodeData">
         <!-- <IconPlus
@@ -253,7 +218,8 @@
       </template>
 
       <template #icon="data">
-        <img :src="getIconRes(data.node.icon + '.png')" />
+        <!-- <img :src="getIconRes(data.node.icon + '.png')" /> -->
+        <icon-font :type="'icon-' + data.node.icon" :size="20" />
       </template>
 
       <template #switcher-icon="node, { isLeaf }">
@@ -261,15 +227,6 @@
         <!-- <IconStar v-if="isLeaf" /> -->
       </template>
     </a-tree>
-
-    <!-- <TreeNode
-      @connect="connect"
-      @select="selectNode"
-      @contextselect="contextSelectItem"
-      v-for="(item, index) in root"
-      :active="activeItem"
-      :item="item"
-    ></TreeNode> -->
 
     <!-- <v-contextmenu ref="contextmenu">
       <template v-if="context_item && context_item?.type == NodeType.Root">

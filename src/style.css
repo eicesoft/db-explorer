@@ -104,3 +104,7 @@ pre {
 .pointer {
   cursor: pointer;
 }
+
+.arco-tabs-tab-active .iconfont {
+  color: #2d90e7;
+}

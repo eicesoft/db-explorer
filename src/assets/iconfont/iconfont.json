@@ -6,6 +6,55 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "29925",
+      "name": "close",
+      "font_class": "close",
+      "unicode": "e646",
+      "unicode_decimal": 58950
+    },
+    {
+      "icon_id": "1727525",
+      "name": "305信息-线性圆框",
+      "font_class": "infomation",
+      "unicode": "e8e8",
+      "unicode_decimal": 59624
+    },
+    {
+      "icon_id": "18477120",
+      "name": "server",
+      "font_class": "server",
+      "unicode": "e65c",
+      "unicode_decimal": 58972
+    },
+    {
+      "icon_id": "18169761",
+      "name": "数据库,数据",
+      "font_class": "database",
+      "unicode": "e940",
+      "unicode_decimal": 59712
+    },
+    {
+      "icon_id": "33516",
+      "name": "home",
+      "font_class": "home",
+      "unicode": "e6b8",
+      "unicode_decimal": 59064
+    },
+    {
+      "icon_id": "16067500",
+      "name": "表格",
+      "font_class": "table",
+      "unicode": "e675",
+      "unicode_decimal": 58997
+    },
+    {
+      "icon_id": "34453076",
+      "name": "view",
+      "font_class": "view",
+      "unicode": "e847",
+      "unicode_decimal": 59463
+    },
+    {
       "icon_id": "5111465",
       "name": "语言-空",
       "font_class": "yuyan-kong",

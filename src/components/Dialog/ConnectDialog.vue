@@ -37,6 +37,7 @@
   const rules = ref({
     name: [{ required: true, message: 'name is required' }],
   });
+
   const form = reactive({
     name: '',
     host: '127.0.0.1',

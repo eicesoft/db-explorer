@@ -63,11 +63,7 @@
   import { uuid } from '~/utils';
   import { ToolCommand } from './layout/tool';
 
-  const side = ref(null);
-  // const split = ref(null);
-  // const body = ref(null);
   let bodyWidth = ref(0);
-  // let sideWidth = ref(248);
   let width = ref(0);
   let height = ref(0);
   const serverStore = useServerStore();
@@ -182,10 +178,6 @@
         break;
     }
   };
-
-  // defineExpose({
-  //   tabs: tabStore.tabs,
-  // });
 </script>
 
 <style lang="scss" scoped>

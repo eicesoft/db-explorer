@@ -7,7 +7,8 @@
         :class="{ 'm-tab-item-active': tabStore.activeTab?.id == item.id }"
         :key="i"
         @click="toggleTab(item)"
-        >{{ item.title }} <div @click.stop="close(item)" class="x-icon"><img :src="closeImg" /> </div>
+        >{{ item.title }}
+        <div @click.stop="close(item)" class="x-icon"><icon-font type="icon-close" :size="18" /> </div>
       </div>
     </div>
     <slot name="options"></slot>
@@ -18,7 +19,8 @@
   import { useTabStore } from '~/store/modules/tab';
   import { onMounted, defineProps, ref, defineEmits, computed, watch, PropType } from 'vue';
   import { Tab, Id, TabType } from './index';
-  import { getIconRes } from '~/utils/res';
+  import { getImageRes } from '~/utils/res';
+  import { Icon } from '@arco-design/web-vue';
 
   // const props = defineProps({
   //   tabs: {
@@ -45,7 +47,11 @@
     emit('close', item);
   };
 
-  const closeImg = ref(getIconRes('close.png'));
+  // const closeImg = ref(getIconRes('close.png'));
+
+  const IconFont = Icon.addFromIconFontCn({
+    src: getImageRes('iconfont/iconfont.js'),
+  });
 </script>
 
 <style lang="scss" scoped>
@@ -53,17 +59,17 @@
     display: flex;
     align-items: center;
     margin: 0 4px;
-
-    img {
-      width: 14px;
-      height: 14px;
+    &:hover {
+      background-color: #dddddd;
+      color: #fff;
       border-radius: 4px;
-      padding: 2px;
-
-      &:hover {
-        background-color: #accff1;
-      }
     }
+    // img {
+    //   width: 14px;
+    //   height: 14px;
+    //   border-radius: 4px;
+    //   padding: 2px;
+    // }
   }
 
   .m-tab {

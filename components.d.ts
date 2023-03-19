@@ -33,10 +33,12 @@ declare module '@vue/runtime-core' {
     ConnectDialog: typeof import('./src/components/Dialog/ConnectDialog.vue')['default']
     ConnectTree: typeof import('./src/components/ConnectManager/ConnectTree.vue')['default']
     EditorPanel: typeof import('./src/components/Panel/EditorPanel.vue')['default']
+    GridTable: typeof import('./src/components/Base/GridTable.vue')['default']
     Main: typeof import('./src/components/Main.vue')['default']
     PanelManager: typeof import('./src/components/Panel/PanelManager.vue')['default']
     Statusbar: typeof import('./src/components/layout/Statusbar.vue')['default']
     Tabber: typeof import('./src/components/Tabber/Tabber.vue')['default']
+    TableInformation: typeof import('./src/components/Panel/TableInformation.vue')['default']
     TablePanel: typeof import('./src/components/Panel/TablePanel.vue')['default']
     Toolbar: typeof import('./src/components/layout/Toolbar.vue')['default']
   }
