@@ -16,23 +16,24 @@
   import { reactive, computed } from 'vue';
   import DefaultRenderer from './render.js';
   import { FIELD_TYPE_MAP } from '~/utils/constants';
+  import { GridOptions, GridApi, ColumnApi } from 'ag-grid-community';
 
   const props = defineProps({
     fields: Array,
     rows: Array,
   });
 
-  let gridApi = reactive({});
-  let gridColumnApi = reactive({});
+  let gridApi = reactive<GridApi>({});
+  let gridColumnApi = reactive<ColumnApi>({});
 
-  const gridOptions = reactive({
+  const gridOptions = reactive<GridOptions>({
     components: {
       DefaultRenderer: DefaultRenderer,
     },
     tooltipShowDelay: 500,
     defaultColDef: { flex: 1, sortable: false, resizable: true },
     // debounceVerticalScrollbar: true,
-    suppressRowClickSelection: 'always',
+    suppressRowClickSelection: true,
     rowSelection: 'multiple',
   });
 
@@ -73,10 +74,12 @@
 
   const autoResize = () => {
     const allColumnIds: any[] = [];
-    gridColumnApi.getColumns().forEach((column: any) => {
-      allColumnIds.push(column.getId());
-    });
-    gridColumnApi.autoSizeColumns(allColumnIds, false);
+    if (gridColumnApi != null) {
+      gridColumnApi.getColumns().forEach((column: any) => {
+        allColumnIds.push(column.getId());
+      });
+      gridColumnApi.autoSizeColumns(allColumnIds, false);
+    }
   };
 
   const copyData = () => {
@@ -102,7 +105,7 @@
   const onGridReady = (params: any) => {
     gridApi = params.api;
     gridColumnApi = params.columnApi;
-    // autoResize();
+    autoResize();
   };
 </script>
 
