@@ -46,7 +46,12 @@ async function createWindow() {
     width: 1024,
     minWidth: 800,
     minHeight: 700,
-
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#2f3241',
+      symbolColor: '#ccdbfd',
+      height: 36,
+    },
     webPreferences: {
       preload,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production

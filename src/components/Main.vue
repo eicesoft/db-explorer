@@ -1,4 +1,5 @@
 <template>
+  <Menu :title="title"></Menu>
   <div class="main" :style="cssVars">
     <Toolbar :status="statusInfo" @trigger="toolbarTrigger" />
 
@@ -15,7 +16,7 @@
       >
         <template #first>
           <ConnectTree
-            :height="height - 28 * 2"
+            :height="height - 40 - 28 * 2"
             @menu-select="menuSelect"
             @select-database="selectDatabase"
             @select-table="selectTable"
@@ -66,8 +67,8 @@
   const tabStore = useTabStore();
   setupStore.init();
   // serverStore.addConnect('Dev', '192.168.1.25', 'root', 'HundyG63gF%42sdf', 'charge');
-  // serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
-  serverStore.addConnect('Hr', '192.168.1.21', 'root', 'as$s3%hYb3fgv&r2', '');
+  serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
+  // serverStore.addConnect('Hr', '192.168.1.21', 'root', 'as$s3%hYb3fgv&r2', '');
 
   const cssVars = computed(() => {
     return {
@@ -79,13 +80,14 @@
     };
   });
   const node = ref<SimpleNode | null>(null);
+  const BASE_TITLE = 'MySQL Explorer';
+  const title = ref(BASE_TITLE);
   const selectTable = (n: SimpleNode) => {
     node.value = n;
-    let title = 'MySQL Explorer';
     if (n.type == NodeType.Database) {
-      document.title = `${title} - Server: ${n.meta?.Param.serverKey}, Db: ${n.title}`;
+      title.value = `${BASE_TITLE} - Server: ${n.meta?.Param.serverKey}, Db: ${n.title}`;
     } else if (n.type == NodeType.Table) {
-      document.title = `${title} - Server: ${n.meta?.Param.serverKey}, Db: ${n.meta?.DatabaseName}`;
+      title.value = ` ${BASE_TITLE} - Server: ${n.meta?.Param.serverKey}, Db: ${n.meta?.DatabaseName}`;
     }
     let newTab: Tab = {
       id: n.id,
@@ -102,10 +104,9 @@
   };
 
   const selectDatabase = (n: SimpleNode) => {
-    let title = 'MySQL Explorer';
     node.value = n;
 
-    document.title = `${title} - Server: ${n.meta?.Param.serverKey}, Db: ${n.title}`;
+    title.value = `${BASE_TITLE} - Server: ${n.meta?.Param.serverKey}, Db: ${n.title}`;
     let newTab: Tab = {
       id: n.id,
       title: n.title,
@@ -211,18 +212,20 @@
 </script>
 
 <style lang="scss" scoped>
-  $resize-width: 2px;
   .main {
     overflow: hidden;
     height: calc(var(--windowHeight) - 28px);
     width: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
   }
   .container {
     display: flex;
     position: absolute;
-    /* height: 100%; */
     width: var(--windowWidth);
-    top: 28px;
+    top: calc(36px + 28px);
   }
   //split resize
   // const mousedown = (e) => {

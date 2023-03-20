@@ -52,12 +52,11 @@
 <style lang="scss" scoped>
   .header {
     position: fixed;
-
     left: 0;
-    top: 0;
+    top: 36px;
     z-index: 1000;
     border-bottom: 1px solid #ececec;
-    background-color: #fefefe;
+    background-color: #e0e0e0;
     height: 28px;
     line-height: 28px;
     color: #707070;

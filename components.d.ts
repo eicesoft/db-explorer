@@ -36,6 +36,7 @@ declare module '@vue/runtime-core' {
     EditorPanel: typeof import('./src/components/Panel/EditorPanel.vue')['default']
     GridTable: typeof import('./src/components/Base/GridTable.vue')['default']
     Main: typeof import('./src/components/Main.vue')['default']
+    Menu: typeof import('./src/components/layout/Menu.vue')['default']
     PanelManager: typeof import('./src/components/Panel/PanelManager.vue')['default']
     ServerStatus: typeof import('./src/components/Dialog/ServerStatus.vue')['default']
     Statusbar: typeof import('./src/components/layout/Statusbar.vue')['default']

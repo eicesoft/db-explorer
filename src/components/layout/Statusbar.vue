@@ -61,14 +61,14 @@
   .statusbar {
     position: fixed;
     left: 0;
-    bottom: 0;
+    bottom: 2px;
     z-index: 1000;
-    border-top: 1px solid #ececec;
-    background-color: #fefefe;
+    border-top: 1px solid #b3b6c9;
+    background-color: #efefef;
     height: 28px;
     line-height: 28px;
     font-size: 11px;
-    color: #707070;
+    color: #2f3241;
     width: 100%;
     // padding: 0 10px;
     user-select: none;
@@ -77,7 +77,7 @@
     .info {
       // margin: 0 10px 0 0;
       padding: 0 10px 0 10px;
-      border-right: 1px solid #ececec;
+      border-right: 1px solid #ccdbfd;
       display: flex;
       align-items: center;
     }
