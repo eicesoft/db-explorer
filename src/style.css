@@ -108,3 +108,7 @@ pre {
 .arco-tabs-tab-active .iconfont {
   color: #2d90e7;
 }
+
+.arco-modal-title {
+  user-select: none;
+}

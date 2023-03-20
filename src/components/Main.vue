@@ -1,6 +1,6 @@
 <template>
   <div class="main" :style="cssVars">
-    <Toolbar @trigger="toolbarTrigger" />
+    <Toolbar :status="statusInfo" @trigger="toolbarTrigger" />
 
     <div ref="box" class="container">
       <a-split
@@ -14,11 +14,17 @@
         min="80px"
       >
         <template #first>
-          <ConnectTree :height="height - 28 * 2" @menu-select="menuSelect" @select-table="selectTable" />
+          <ConnectTree
+            :height="height - 28 * 2"
+            @menu-select="menuSelect"
+            @select-database="selectDatabase"
+            @select-table="selectTable"
+          />
         </template>
+
         <template #second>
           <div style="overflow: hidden" v-if="!tabStore.isEmpty">
-            <Tabber @close="closeTab" @change="changeTab" />
+            <Tabber @closeOther="closeOther" @closeAll="closeAll" @close="closeTab" @change="changeTab" />
             <PanelManager></PanelManager>
           </div>
 
@@ -28,36 +34,25 @@
         </template>
       </a-split>
     </div>
-    <!-- 
-    <div class="statusbar">
-      <div class="info"> MySQL Explorer {{ packageInfo.version }}</div>
-      <div class="info" v-if="node"> Server: {{ node.meta?.Param.serverKey }}</div>
-      <div class="info" v-if="node"> Database: {{ node.meta?.DatabaseName }}</div>
-      <div class="info">History: {{ 20 }}</div>
-    </div> -->
 
-    <Statusbar :status="statusInfo" />
-    <ConnectDialog v-model:visible="connectVisible" />
+    <Statusbar @trigger="toolbarTrigger" :status="statusInfo" />
   </div>
+
+  <!-- Dialogs start -->
+  <ConnectDialog v-model:visible="visibles.connectVisible" />
+  <ServerStatus :serverKey="statusInfo?.serverName" v-model:visible="visibles.statusVisible" />
+  <!-- Dialogs end-->
 </template>
 
 <script lang="ts" setup>
   import packageInfo from '../../package.json';
   import { ref, computed, reactive, onMounted, nextTick } from 'vue';
-  import ConnectTree from './ConnectManager/ConnectTree.vue';
-  import PanelManager from './Panel/PanelManager.vue';
-  import Toolbar from '~/components/layout/Toolbar.vue';
-  import ConnectDialog from '~/components/Dialog/ConnectDialog.vue';
-
-  import Statusbar from '~/components/layout/Statusbar.vue';
   import { StatusInfo } from '~/components/layout/status';
 
-  import TablePanel from './Panel/TablePanel.vue';
   import { useServerStore } from '~/store/modules/server';
   import { useSetupStore } from '~/store/modules/setup';
   import { useTabStore } from '~/store/modules/tab';
 
-  import Tabber from './Tabber/Tabber.vue';
   import { Tab, TabType } from './Tabber';
   import { NodeType, SimpleNode } from './ConnectManager';
   import { uuid } from '~/utils';
@@ -71,8 +66,8 @@
   const tabStore = useTabStore();
   setupStore.init();
   // serverStore.addConnect('Dev', '192.168.1.25', 'root', 'HundyG63gF%42sdf', 'charge');
-  serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
-  // serverStore.addConnect('Hr', '192.168.1.21', 'root', 'as$s3%hYb3fgv&r2', '');
+  // serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
+  serverStore.addConnect('Hr', '192.168.1.21', 'root', 'as$s3%hYb3fgv&r2', '');
 
   const cssVars = computed(() => {
     return {
@@ -96,6 +91,26 @@
       id: n.id,
       title: n.title,
       type: TabType.Table,
+      lock: false,
+      meta: {
+        node: n,
+      },
+    };
+
+    tabStore.active(newTab);
+    tabStore.add(newTab);
+  };
+
+  const selectDatabase = (n: SimpleNode) => {
+    let title = 'MySQL Explorer';
+    node.value = n;
+
+    document.title = `${title} - Server: ${n.meta?.Param.serverKey}, Db: ${n.title}`;
+    let newTab: Tab = {
+      id: n.id,
+      title: n.title,
+      type: TabType.Database,
+      lock: false,
       meta: {
         node: n,
       },
@@ -116,6 +131,14 @@
 
   const closeTab = (tab: Tab) => {
     tabStore.remove(tab);
+  };
+
+  const closeOther = (item: Tab) => {
+    tabStore.removeOther(item);
+  };
+
+  const closeAll = () => {
+    tabStore.removeAll();
   };
   const size = ref('248px');
   const sideWidth = computed(() => {
@@ -169,12 +192,19 @@
     };
     resize();
   });
-  const connectVisible = ref(false);
+  // const connectVisible = ref(false);
+  const visibles = reactive({
+    statusVisible: false,
+    connectVisible: false,
+  });
 
   const toolbarTrigger = (key: ToolCommand) => {
     switch (key) {
       case ToolCommand.Add:
-        connectVisible.value = true;
+        visibles.connectVisible = true;
+        break;
+      case ToolCommand.ServerInfomation:
+        visibles.statusVisible = true;
         break;
     }
   };

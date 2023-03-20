@@ -1,11 +1,10 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { ref, watch } from 'vue';
   import { getImageRes } from '~/utils/res';
   import { IconDown, IconPlus, IconMoreVertical } from '@arco-design/web-vue/es/icon';
   import { Icon } from '@arco-design/web-vue';
 
-  import { SimpleNode } from './index';
-  import { NodeType } from './index';
+  import { SimpleNode, NodeType } from './index';
   import { useTreeStore } from '~/store/modules/tree';
 
   import Manager from '~/utils/link_manager';
@@ -18,6 +17,7 @@
 
   const emits = defineEmits<{
     (e: 'select-table', value: any): void;
+    (e: 'select-database', value: any): void;
     (e: 'menu-select', menu_key: string, value: any): void;
   }>();
 
@@ -34,13 +34,11 @@
 
       try {
         const conn = manager.get(data.meta?.Param.serverKey);
-        const resp = await conn.query('SELECT * FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = ?', [
-          data.title,
-        ]);
-
+        const resp = await conn.getTables(data.title);
+        console.error(resp);
         let tabGroup: SimpleNode = {
           id: 'tables_' + data.title + '_groups',
-          title: '表格',
+          title: t('message.tree.table'),
           icon: 'table',
           type: NodeType.TableGroup,
           isLeaf: false,
@@ -57,9 +55,10 @@
         };
         const param = data.meta?.Param;
         for (let row of resp.data) {
+          const tableName = row['Tables_in_' + data.title];
           tabGroup.children?.push({
-            id: 'table_' + data.title + '_' + row.TABLE_NAME,
-            title: row.TABLE_NAME,
+            id: 'table_' + data.title + '_' + tableName,
+            title: tableName,
             // switcherIcon: '',
             type: NodeType.Table,
             icon: 'table',
@@ -83,12 +82,9 @@
       const conn = manager.get(data.title);
 
       try {
-        const resp = await conn.query('SELECT * FROM `information_schema`.`SCHEMATA`', []);
+        const resp = await conn.getDatabases();
         console.log(resp);
-        // console.log(root[0]?.children[0]);
         data.children = [];
-        // data.isLeaf = true;
-        // data.runtime.load = true;
         for (let row of resp.data) {
           data.children.push({
             id: 'db_' + row.SCHEMA_NAME,
@@ -129,10 +125,18 @@
     // console.error(data);
     if (data.node.type == NodeType.Table) {
       emits('select-table', data.node);
+    } else if (data.node.type == NodeType.Database) {
+      emits('select-database', data.node);
     }
   };
 
   const searchKey = ref('');
+  watch(searchKey, () => {
+    console.log(searchKey.value);
+
+    treeStore.setKeyword(searchKey.value);
+  });
+
   function getMatchIndex(title: string): number {
     if (!searchKey.value) return -1;
     return title.toLowerCase().indexOf(searchKey.value.toLowerCase());
@@ -163,7 +167,6 @@
     <div class="search-div">
       <a-input-search class="search-text" placeholder="输入进行过滤" size="mini" v-model="searchKey" />
     </div>
-
     <a-tree
       @select="selectNode"
       blockNode
@@ -182,7 +185,7 @@
       }"
       :show-line="true"
       :load-more="loadMore"
-      :data="treeStore.root"
+      :data="treeStore.filters"
     >
       <template #extra="nodeData">
         <!-- <IconPlus

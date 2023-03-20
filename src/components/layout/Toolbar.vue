@@ -11,12 +11,12 @@
 
       <a-button-group style="margin-left: 10px">
         <a-tooltip :content="t('message.toolbar.userManager')">
-          <a-button @click="clickBtn(ToolCommand.UserManager)" size="mini">
+          <a-button :disabled="status?.database == null" @click="clickBtn(ToolCommand.UserManager)" size="mini">
             <template #icon><icon-user-group :size="iconSize" /></template>
           </a-button>
         </a-tooltip>
         <a-tooltip :content="t('message.toolbar.serverInfo')">
-          <a-button @click="clickBtn(ToolCommand.ServerInfomation)" size="mini">
+          <a-button :disabled="status?.database == null" @click="clickBtn(ToolCommand.ServerInfomation)" size="mini">
             <template #icon><icon-info-circle :size="iconSize" /></template>
           </a-button>
         </a-tooltip>
@@ -27,9 +27,15 @@
 
 <script lang="ts" setup>
   import { IconPlus, IconUserGroup, IconInfoCircle } from '@arco-design/web-vue/es/icon';
-  import { ref } from 'vue';
+  import { ref, PropType } from 'vue';
   import { ToolCommand } from './tool';
   import { useI18n } from 'vue-i18n';
+  import { StatusInfo } from './status';
+
+  const props = defineProps({
+    status: Object as PropType<StatusInfo>,
+  });
+
   const { t } = useI18n();
 
   const iconSize = ref(18);

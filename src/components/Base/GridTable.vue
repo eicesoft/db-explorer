@@ -12,21 +12,21 @@
 <script lang="ts" setup>
   import 'ag-grid-community/styles/ag-grid.css';
   import 'ag-grid-community/styles/ag-theme-balham.css';
+  import { GridOptions, GridApi, ColumnApi } from 'ag-grid-community';
   import { AgGridVue } from 'ag-grid-vue3';
-  import { reactive, computed } from 'vue';
+  import { ref, computed } from 'vue';
   import DefaultRenderer from './render.js';
   import { FIELD_TYPE_MAP } from '~/utils/constants';
-  import { GridOptions, GridApi, ColumnApi } from 'ag-grid-community';
 
   const props = defineProps({
     fields: Array,
     rows: Array,
   });
 
-  let gridApi = reactive<GridApi>({});
-  let gridColumnApi = reactive<ColumnApi>({});
+  let gridApi = ref<GridApi | null>(null);
+  let gridColumnApi = ref<ColumnApi | null>(null);
 
-  const gridOptions = reactive<GridOptions>({
+  const gridOptions = ref<GridOptions>({
     components: {
       DefaultRenderer: DefaultRenderer,
     },
@@ -53,8 +53,8 @@
         headerTooltip: tip,
         field: item.name,
         width: 90,
-        minWidth: 40,
-        maxWidth: 200,
+        minWidth: 60,
+        maxWidth: 240,
         editable: item.name == 'id' ? false : true,
         suppressMenu: true,
         sort: null,
@@ -74,21 +74,19 @@
 
   const autoResize = () => {
     const allColumnIds: any[] = [];
-    if (gridColumnApi != null) {
-      gridColumnApi.getColumns().forEach((column: any) => {
+    if (gridColumnApi.value != null) {
+      gridColumnApi.value?.getColumns()?.forEach((column: any) => {
         allColumnIds.push(column.getId());
       });
-      gridColumnApi.autoSizeColumns(allColumnIds, false);
+      gridColumnApi.value.autoSizeColumns(allColumnIds, false);
     }
   };
 
   const copyData = () => {
-    // const selectedNodes = gridApi.getSelectedNodes();
-    // console.log(selectedNodes);
-    const selectedRows = gridApi.getSelectedRows();
+    const selectedRows = gridApi.value?.getSelectedRows();
 
     let rows: string[] = [];
-    selectedRows.forEach((element: any) => {
+    selectedRows?.forEach((element: any) => {
       let tab = [];
       for (let k in element) {
         tab.push(`"${element[k]}"`);
@@ -99,7 +97,7 @@
   };
 
   const exportData = () => {
-    gridApi.exportDataAsCsv();
+    gridApi.value?.exportDataAsCsv();
   };
 
   const onGridReady = (params: any) => {

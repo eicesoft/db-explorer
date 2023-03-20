@@ -88,6 +88,25 @@ export default class MySQL {
     });
   }
 
+  async getDatabases() {
+    return await this.query('SELECT * FROM `information_schema`.`SCHEMATA`', []);
+  }
+
+  async getTables(database: string) {
+    this.conn.changeUser({ database: database });
+    return await this.query('SHOW TABLES;', [database]);
+  }
+
+  async getTableInfomations(database: string) {
+    return await this.query('SELECT * FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = ?', [database]);
+  }
+
+  async status() {
+    let resp = await this.query('SHOW STATUS', []);
+
+    return resp;
+  }
+
   close() {
     this.conn.end();
   }

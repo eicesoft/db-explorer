@@ -1,8 +1,5 @@
 <script setup lang="ts">
   import { SimpleNode } from '~/components/ConnectManager/index';
-  import GridTable from '~/components/Base/GridTable.vue';
-  import TableInformation from '~/components/Panel/TableInformation.vue';
-
   import { ref, computed, reactive, PropType, watch, nextTick } from 'vue';
   import Manager from '~/utils/link_manager';
   import { getImageRes } from '~/utils/res';

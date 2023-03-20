@@ -9,6 +9,9 @@
 
     <div class="right-bar">
       <div class="info">
+        <icon-font @click="showStatus" class="icon-font pointer" type="icon-infomation" :size="20"
+      /></div>
+      <div class="info">
         <a-dropdown @select="selectLang" :popup-max-height="false">
           <div class="icon-font pointer"> <icon-font type="icon-yuyan-kong" :size="20" /> {{ lang }} </div>
           <template #content>
@@ -27,13 +30,17 @@
   import { getImageRes } from '~/utils/res';
   import { StatusInfo } from './status';
   import { useI18n } from 'vue-i18n';
-
-  const IconFont = Icon.addFromIconFontCn({
-    src: getImageRes('iconfont/iconfont.js'),
-  });
+  import { ToolCommand } from '~/components/layout/tool';
 
   const props = defineProps({
     status: Object as PropType<StatusInfo>,
+  });
+  const emit = defineEmits<{
+    (e: 'trigger', key: ToolCommand): void;
+  }>();
+
+  const IconFont = Icon.addFromIconFontCn({
+    src: getImageRes('iconfont/iconfont.js'),
   });
   const { t, locale: i18nLanguage } = useI18n();
 
@@ -43,6 +50,10 @@
     lang.value = val;
     i18nLanguage.value = val; // zh en
     localStorage.setItem('sql-locale', val);
+  };
+
+  const showStatus = async () => {
+    emit('trigger', ToolCommand.ServerInfomation);
   };
 </script>
 

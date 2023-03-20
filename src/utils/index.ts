@@ -11,3 +11,19 @@ export const uuid = () => {
   var uuid = s.join('');
   return uuid;
 };
+
+export const formatLength = (val: number) => {
+  if (val) {
+    if (val < 1024) {
+      return val + ' b';
+    } else if (val < 1024 * 1024) {
+      return (val / 1024).toFixed(2) + ' Kb';
+    } else if (val < 1024 * 1024 * 1024) {
+      return (val / 1024 / 1024).toFixed(2) + ' Mb';
+    } else {
+      return (val / 1024 / 1024 / 1024).toFixed(2) + ' Gb';
+    }
+  } else {
+    return 0;
+  }
+};

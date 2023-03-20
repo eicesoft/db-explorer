@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { Tab } from '~/components/Tabber/index';
 
 export interface ITabState {
-  tabs: Array<Tab>;
+  tabs: Tab[];
   activeTab: Tab | null;
 }
 export const useTabStore = defineStore({
@@ -43,6 +43,35 @@ export const useTabStore = defineStore({
             }
           }
         }
+      }
+    },
+    removeOther(tab: Tab) {
+      let newTabs: Tab[] = [];
+      for (let i in this.tabs) {
+        let t = this.tabs[i];
+        if (t.id == tab.id || t.lock) {
+          newTabs.push(t);
+        }
+      }
+      this.tabs = newTabs;
+
+      if (this.tabs.length != 0) {
+        this.activeTab = this.tabs[this.tabs.length - 1];
+      }
+    },
+    removeAll() {
+      let newTabs: Tab[] = [];
+      for (let i in this.tabs) {
+        let t = this.tabs[i];
+        // console.log(t);
+        if (t.lock) {
+          newTabs.push(t);
+        }
+      }
+      this.tabs = newTabs;
+
+      if (this.tabs.length != 0) {
+        this.activeTab = this.tabs[this.tabs.length - 1];
       }
     },
   },

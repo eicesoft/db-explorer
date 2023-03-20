@@ -12,5 +12,6 @@ export interface Tab {
   id: Id;
   title: string;
   type: TabType;
+  lock?: boolean;
   meta?: Record<string, any>;
 }

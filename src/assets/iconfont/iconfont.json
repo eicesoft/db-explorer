@@ -1,10 +1,45 @@
 {
   "id": "3961440",
-  "name": "22",
+  "name": "MySQLExplorer",
   "font_family": "iconfont",
   "css_prefix_text": "icon-",
   "description": "",
   "glyphs": [
+    {
+      "icon_id": "493531",
+      "name": "锁定",
+      "font_class": "suoding",
+      "unicode": "e7af",
+      "unicode_decimal": 59311
+    },
+    {
+      "icon_id": "5203307",
+      "name": "文本",
+      "font_class": "text",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "2079091",
+      "name": "服务器",
+      "font_class": "server2",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "6119269",
+      "name": "解锁",
+      "font_class": "ulock",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "6119271",
+      "name": "锁定",
+      "font_class": "lock",
+      "unicode": "e637",
+      "unicode_decimal": 58935
+    },
     {
       "icon_id": "29925",
       "name": "close",
