@@ -15,8 +15,8 @@
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 /* 滚动槽 */
@@ -28,7 +28,7 @@
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: rgba(231, 231, 231, 0.5);
+  background-color: rgb(226, 232, 241);
 }
 
 body {

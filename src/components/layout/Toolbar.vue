@@ -56,7 +56,7 @@
     top: 36px;
     z-index: 1000;
     border-bottom: 1px solid #ececec;
-    background-color: #e0e0e0;
+    background-color: #fafafa;
     height: 28px;
     line-height: 28px;
     color: #707070;

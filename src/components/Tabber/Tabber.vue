@@ -116,9 +116,13 @@
   .arco-dropdown-option {
     line-height: 24px !important;
     font-size: 12px !important;
-    &:hover {
-      background-color: black;
-    }
+    min-width: 96px !important;
+  }
+  .arco-dropdown-option-active,
+  .arco-dropdown-option:not(.arco-dropdown-option-disabled):hover {
+    color: var(--color-text-1) !important;
+    background-color: #e8f1fc !important;
+    transition: all 0.1s cubic-bezier(0, 0, 1, 1);
   }
 </style>
 

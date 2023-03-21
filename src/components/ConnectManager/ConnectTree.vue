@@ -1,7 +1,8 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
+  import { ref, watch, h } from 'vue';
   import { getImageRes } from '~/utils/res';
-  import { IconDown, IconPlus, IconMoreVertical } from '@arco-design/web-vue/es/icon';
+  import { IconMoreVertical } from '@arco-design/web-vue/es/icon';
+
   import { Icon } from '@arco-design/web-vue';
 
   import { SimpleNode, NodeType } from './index';
@@ -9,6 +10,8 @@
 
   import Manager from '~/utils/link_manager';
   import { useI18n } from 'vue-i18n';
+  import { type } from 'os';
+
   const { t } = useI18n();
 
   const props = defineProps({
@@ -24,6 +27,7 @@
   const IconFont = Icon.addFromIconFontCn({
     src: getImageRes('iconfont/iconfont.js'),
   });
+  console.log(IconFont);
   const manager: Manager = Manager.getInstance();
   const treeStore = useTreeStore();
   treeStore.init();
@@ -59,7 +63,7 @@
           tabGroup.children?.push({
             id: 'table_' + data.title + '_' + tableName,
             title: tableName,
-            // switcherIcon: '',
+            switcherIcon: () => h('span', {}),
             type: NodeType.Table,
             icon: 'table',
             isLeaf: true,
@@ -80,10 +84,12 @@
       }
     } else if (data.type == NodeType.Server) {
       const conn = manager.get(data.title);
+      console.log(data);
 
       try {
         const resp = await conn.getDatabases();
         console.log(resp);
+        // data.title += '(' + resp.data.length + ')';
         data.children = [];
         for (let row of resp.data) {
           data.children.push({
@@ -211,23 +217,20 @@
       </template>
 
       <template #title="nodeData">
-        <template v-if="((index = getMatchIndex(nodeData?.title)), index < 0)">{{ nodeData?.title }}</template>
-        <span v-else>
-          {{ nodeData?.title?.substr(0, index) }}
-          <span style="color: var(--color-primary-light-4)">
-            {{ nodeData?.title?.substr(index, searchKey.length) }} </span
-          >{{ nodeData?.title?.substr(index + searchKey.length) }}
-        </span>
+        <template
+          v-if="
+            (nodeData.type == NodeType.Server || nodeData.type == NodeType.TableGroup) && nodeData.children.length != 0
+          "
+        >
+          {{ nodeData?.title }}({{ nodeData.children.length }})
+        </template>
+
+        <template v-else>{{ nodeData?.title }}</template>
       </template>
 
       <template #icon="data">
         <!-- <img :src="getIconRes(data.node.icon + '.png')" /> -->
-        <icon-font :type="'icon-' + data.node.icon" :size="20" />
-      </template>
-
-      <template #switcher-icon="node, { isLeaf }">
-        <IconDown v-if="!isLeaf" />
-        <!-- <IconStar v-if="isLeaf" /> -->
+        <icon-font v-if="data.node.icon" :type="'icon-' + data.node.icon" :size="20" />
       </template>
     </a-tree>
 

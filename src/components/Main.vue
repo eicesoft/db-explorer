@@ -1,5 +1,5 @@
 <template>
-  <Menu :title="title"></Menu>
+  <Captionbar :title="title"></Captionbar>
   <div class="main" :style="cssVars">
     <Toolbar :status="statusInfo" @trigger="toolbarTrigger" />
 
@@ -66,8 +66,8 @@
   const setupStore = useSetupStore();
   const tabStore = useTabStore();
   setupStore.init();
-  // serverStore.addConnect('Dev', '192.168.1.25', 'root', 'HundyG63gF%42sdf', 'charge');
-  serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
+  serverStore.addConnect('Dev', '192.168.1.25', 'root', 'HundyG63gF%42sdf', 'charge');
+  // serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
   // serverStore.addConnect('Hr', '192.168.1.21', 'root', 'as$s3%hYb3fgv&r2', '');
 
   const cssVars = computed(() => {
@@ -218,14 +218,14 @@
     width: 100%;
     position: fixed;
     left: 0;
-    top: 0;
+    top: 36px;
     z-index: 1000;
   }
   .container {
     display: flex;
     position: absolute;
     width: var(--windowWidth);
-    top: calc(36px + 28px);
+    top: calc(28px);
   }
   //split resize
   // const mousedown = (e) => {

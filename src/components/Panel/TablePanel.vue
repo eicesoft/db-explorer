@@ -1,10 +1,12 @@
 <script setup lang="ts">
   import { SimpleNode } from '~/components/ConnectManager/index';
-  import { ref, computed, reactive, PropType, watch, nextTick } from 'vue';
+  import { ref, computed, reactive, PropType, watch, onMounted } from 'vue';
   import Manager from '~/utils/link_manager';
   import { getImageRes } from '~/utils/res';
   import { useI18n } from 'vue-i18n';
   import { Icon } from '@arco-design/web-vue';
+  import { IconExpand } from '@arco-design/web-vue/es/icon';
+  import { Message } from '@arco-design/web-vue';
 
   const props = defineProps({
     node: {
@@ -16,8 +18,10 @@
     src: getImageRes('iconfont/iconfont.js'),
   });
   const manager: Manager = Manager.getInstance();
-
+  const condition = ref('');
   // console.error('First show', props.node);
+
+  const gridTable = ref(null);
 
   const pageInfo = reactive({
     page: 1,
@@ -32,25 +36,35 @@
     const conn = manager.get(props.node?.meta?.Param.serverKey);
     console.log('Load Page ' + pageInfo.page);
 
-    const resp = await conn.query(
-      'SELECT * FROM ' +
-        props.node?.meta?.DatabaseName +
-        '.' +
-        props.node?.title +
-        ' LIMIT ' +
-        start +
-        ',' +
-        pageInfo.page_size,
-      []
-    );
-    console.log(resp);
+    let where = '';
+    if (condition.value) {
+      where = ' WHERE ' + condition.value;
+    }
 
-    fields.value = resp.fields;
-    rows.value = resp.data;
-    // gridApi.setRowData(resp.data);
-    // nextTick(() => {
-    //   autoResize();
-    // });
+    try {
+      const resp = await conn.query(
+        'SELECT * FROM ' +
+          props.node?.meta?.DatabaseName +
+          '.' +
+          props.node?.title +
+          where +
+          ' LIMIT ' +
+          start +
+          ',' +
+          pageInfo.page_size,
+        []
+      );
+      console.log(resp);
+
+      fields.value = resp.fields;
+      rows.value = resp.data;
+      // gridApi.setRowData(resp.data);
+      // nextTick(() => {
+      //   autoResize();
+      // });
+    } catch (e: any) {
+      Message.error(e.toString());
+    }
   };
 
   loadPage();
@@ -76,22 +90,18 @@
   };
 
   const next = async () => {
-    if (isNext) {
+    if (isNext.value) {
       pageInfo.page++;
       await loadPage();
     }
   };
-
-  // watch(
-  //   () => props.node,
-  //   async () => {
-  //     pageInfo.page = 1;
-  //     await loadPage();
-  //   },
-  //   {
-  //     immediate: true,
-  //   }
-  // );
+  const resize = () => {
+    console.log(gridTable.value);
+    gridTable.value.autoResize();
+  };
+  const doSearch = () => {
+    loadPage();
+  };
 </script>
 
 <template>
@@ -104,16 +114,34 @@
           }}</span></template
         >
         <div class="toolbar">
-          <div></div>
+          <div class="toolbar-left">
+            <!-- -->
+
+            <a-input
+              v-model="condition"
+              @press-enter="doSearch"
+              size="mini"
+              :style="{ width: '340px' }"
+              placeholder="请输入过滤条件 id=?"
+              allow-clear
+            />
+          </div>
           <div class="toolbar-right">
+            <a-tooltip :content="t('message.tablepanel.toolbar.resize')">
+              <a-button @click="resize" size="mini">
+                <template #icon><IconExpand :size="16" /></template>
+              </a-button>
+            </a-tooltip>
+
             <div :class="{ disable: pageInfo.page == 1 }" class="icon" @click="previous">◀</div>
             <input size="2" v-model="pageInfo.page" class="text-number" type="number" />
             <div :class="{ disable: !isNext }" class="icon" @click="next">▶</div>
           </div>
         </div>
 
-        <GridTable :rows="rowData" :fields="fields" />
+        <GridTable ref="gridTable" :rows="rowData" :fields="fields" />
       </a-tab-pane>
+
       <a-tab-pane key="info">
         <template #title>
           <icon-font class="iconfont" type="icon-infomation" size="14" /><span style="margin-left: 6px">{{
@@ -154,7 +182,7 @@
     border: 1px solid #ececec;
   }
   .panel {
-    height: calc(var(--bodyHeight) - 36px);
+    height: calc(var(--bodyHeight) - 36px - 36px);
     width: var(--bodyWidth);
 
     .toolbar {
@@ -163,6 +191,13 @@
       display: flex;
       justify-content: space-between;
       background-color: rgb(245, 245, 245);
+      .toolbar-left {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        height: 28px;
+        margin: 0 4px;
+      }
       .toolbar-right {
         display: flex;
         .disable {

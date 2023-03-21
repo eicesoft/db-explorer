@@ -9,7 +9,7 @@
 
     <div class="right-bar">
       <div class="info">
-        <icon-font @click="showStatus" class="icon-font pointer" type="icon-infomation" :size="20"
+        <icon-font @click="showStatus" class="icon-font pointer" type="icon-infomation" :size="18"
       /></div>
       <div class="info">
         <a-dropdown @select="selectLang" :popup-max-height="false">
@@ -80,6 +80,7 @@
       border-right: 1px solid #ccdbfd;
       display: flex;
       align-items: center;
+      height: 30px;
     }
 
     .left-bar {

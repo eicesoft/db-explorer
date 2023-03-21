@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { release } from 'node:os';
 import { join } from 'node:path';
 
@@ -35,6 +35,7 @@ if (!app.requestSingleInstanceLock()) {
 let win: BrowserWindow | null = null;
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js');
+// console.log(ipcMessage);
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, 'index.html');
 
@@ -127,4 +128,12 @@ ipcMain.handle('open-win', (_, arg) => {
   } else {
     childWindow.loadFile(indexHtml, { hash: arg });
   }
+});
+
+const packageInfo = require('../../package.json');
+ipcMain.handle('about', (event) => {
+  dialog.showMessageBox(win, {
+    title: packageInfo.productName,
+    message: `Name: \t\t${packageInfo.productName}\nVersion: \t\t${packageInfo.version}\nAuthor: ${packageInfo.author}`,
+  });
 });

@@ -28,6 +28,7 @@ export interface SimpleNode {
   type: NodeType;
   selectable: boolean;
   isLeaf: boolean;
+  switcherIcon?: Function;
   children?: Array<SimpleNode>;
   runtime?: NodeRuntime;
   meta?: Meta;

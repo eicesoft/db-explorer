@@ -1,6 +1,7 @@
 <template>
   <ag-grid-vue
     @grid-ready="onGridReady"
+    @model-updated="onModelUpdated"
     class="ag-theme-balham container"
     :gridOptions="gridOptions"
     :columnDefs="columnDefs"
@@ -14,7 +15,7 @@
   import 'ag-grid-community/styles/ag-theme-balham.css';
   import { GridOptions, GridApi, ColumnApi } from 'ag-grid-community';
   import { AgGridVue } from 'ag-grid-vue3';
-  import { ref, computed } from 'vue';
+  import { ref, computed, defineExpose } from 'vue';
   import DefaultRenderer from './render.js';
   import { FIELD_TYPE_MAP } from '~/utils/constants';
 
@@ -74,7 +75,7 @@
 
   const autoResize = () => {
     const allColumnIds: any[] = [];
-    if (gridColumnApi.value != null) {
+    if (gridColumnApi.value) {
       gridColumnApi.value?.getColumns()?.forEach((column: any) => {
         allColumnIds.push(column.getId());
       });
@@ -101,10 +102,20 @@
   };
 
   const onGridReady = (params: any) => {
-    gridApi = params.api;
-    gridColumnApi = params.columnApi;
+    gridApi.value = params.api;
+    gridColumnApi.value = params.columnApi;
     autoResize();
   };
+
+  const onModelUpdated = (evevt: any) => {
+    autoResize();
+  };
+
+  defineExpose({
+    exportData,
+    copyData,
+    autoResize,
+  });
 </script>
 
 <style lang="scss" scoped>

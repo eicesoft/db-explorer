@@ -81,7 +81,7 @@
   .container-info {
     background-color: #fafafa;
     width: 100%;
-    height: calc(var(--bodyHeight) - 36px - 32px);
+    height: calc(var(--bodyHeight) - 36px - 36px - 32px);
     overflow-y: auto;
     .code {
       margin: 0 15px 15px 15px;

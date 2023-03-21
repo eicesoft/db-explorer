@@ -1,5 +1,17 @@
 export default {
   message: {
+    menus: {
+      system: 'System',
+      addConnect: 'Add Connection',
+      edit: 'Edit',
+      refresh: 'Refresh',
+      database: 'Database',
+      createDatabase: 'Create Database',
+      tool: 'Tools',
+      option: 'Options',
+      help: 'Help',
+      about: 'About',
+    },
     toolbar: {
       addTip: 'Add connect',
       userManager: 'User Manager',
@@ -18,6 +30,9 @@ export default {
     tablepanel: {
       data: 'Data',
       info: 'Infomation',
+      toolbar: {
+        resize: 'Auto resize field width',
+      },
     },
     databasepanel: {
       fields: {

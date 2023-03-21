@@ -1,5 +1,17 @@
 export default {
   message: {
+    menus: {
+      system: '系统',
+      addConnect: '新建连接',
+      edit: '编辑',
+      refresh: '刷新',
+      database: '数据库',
+      createDatabase: '创建数据库',
+      tool: '工具',
+      option: '设置',
+      help: '帮助',
+      about: '关于',
+    },
     toolbar: {
       addTip: '添加连接',
       userManager: '用户管理',
@@ -25,6 +37,9 @@ export default {
     tablepanel: {
       data: '数据',
       info: '信息',
+      toolbar: {
+        resize: '重设字段宽度',
+      },
     },
     databasepanel: {
       fields: {
