@@ -66,8 +66,8 @@
   const setupStore = useSetupStore();
   const tabStore = useTabStore();
   setupStore.init();
-  serverStore.addConnect('Dev', '192.168.1.25', 'root', 'HundyG63gF%42sdf', 'charge');
-  // serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
+  // serverStore.addConnect('Dev', '192.168.1.25', 'root', 'HundyG63gF%42sdf', 'charge');
+  serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
   // serverStore.addConnect('Hr', '192.168.1.21', 'root', 'as$s3%hYb3fgv&r2', '');
 
   const cssVars = computed(() => {

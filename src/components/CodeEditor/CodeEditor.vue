@@ -9,11 +9,17 @@
     },
   });
 
+  let editor: Editor;
+  const text = ref('');
+  const language = ref('sql');
   watch(
     () => props.node,
     (newVal, oldVal) => {
       console.error(newVal, oldVal);
-
+      if (newVal) {
+        text.value = newVal?.meta.editor.context;
+        editor.setValue(newVal?.meta.editor.context);
+      } // editor.setValue(newVal?.meta.editor.context);
       // if (oldVal) {
       //   let { newModel, old } = editor.createModel(newVal?.meta.editor.context);
       //   newVal.meta.editor.model = newModel;
@@ -25,12 +31,10 @@
     },
     {
       deep: true,
+      immediate: true,
     }
   );
 
-  let editor: Editor;
-  const text = ref('');
-  const language = ref('sql');
   onBeforeUnmount(() => {
     editor.dispose();
   });
@@ -39,7 +43,7 @@
     nextTick(() => {
       if (!editor) {
         editor = new Editor(document.getElementById('codeEditBox'), text.value, language.value);
-        editor.registerCompletionItemProvider();
+        // editor.registerCompletionItemProvider();
         // editor.createMarker();
         // editor.createWidget();
       }

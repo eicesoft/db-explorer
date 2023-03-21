@@ -1,6 +1,7 @@
 import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { release } from 'node:os';
 import { join } from 'node:path';
+import fs from 'node:fs';
 
 // The built directory structure
 //
@@ -136,4 +137,18 @@ ipcMain.handle('about', (event) => {
     title: packageInfo.productName,
     message: `Name: \t\t${packageInfo.productName}\nVersion: \t\t${packageInfo.version}\nAuthor: ${packageInfo.author}`,
   });
+});
+
+ipcMain.handle('open_file', (event) => {
+  let resp = dialog.showOpenDialogSync(win, {
+    properties: ['openFile'],
+    filters: [{ extensions: ['txt', 'sql'], name: '文本文件' }],
+  });
+  console.log(resp);
+  if (resp.length > 0) {
+    const data = fs.readFileSync(resp[0], 'utf-8');
+    console.log(data);
+
+    win?.webContents.send('load-file', data);
+  }
 });

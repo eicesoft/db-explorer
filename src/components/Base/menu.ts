@@ -1,6 +1,7 @@
 export enum MenuKeys {
   /** 系统 */
   NewConnection = 1,
+  LoadFile,
 
   /** 编辑 */
   Refresh,

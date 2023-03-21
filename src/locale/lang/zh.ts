@@ -3,6 +3,7 @@ export default {
     menus: {
       system: '系统',
       addConnect: '新建连接',
+      loadFile: '打开文件',
       edit: '编辑',
       refresh: '刷新',
       database: '数据库',

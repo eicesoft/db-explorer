@@ -95,6 +95,10 @@ export default class Editor {
     this.editor.dispose();
   }
 
+  setValue(val: any) {
+    this.editor.setValue(val);
+  }
+
   registerCodeLensProvider() {
     if (this.provideCodeLenses) {
       this.provideCodeLenses.dispose();

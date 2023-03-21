@@ -3,6 +3,8 @@ export default {
     menus: {
       system: 'System',
       addConnect: 'Add Connection',
+      loadFile: 'Open File',
+
       edit: 'Edit',
       refresh: 'Refresh',
       database: 'Database',

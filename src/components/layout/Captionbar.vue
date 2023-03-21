@@ -29,6 +29,11 @@
             key: MenuKeys.NewConnection,
             children: [],
           },
+          {
+            title: t('message.menus.loadFile'),
+            key: MenuKeys.LoadFile,
+            children: [],
+          },
         ],
       },
       {
@@ -55,6 +60,9 @@
     switch (key) {
       case MenuKeys.About:
         ipcRenderer.invoke('about');
+        break;
+      case MenuKeys.LoadFile:
+        ipcRenderer.invoke('open_file');
         break;
     }
   };
