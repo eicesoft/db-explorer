@@ -1,71 +1,46 @@
-# electron-vite-vue
+# DB Explorer
 
-🥳 Really simple `Electron` + `Vue` + `Vite` boilerplate.
+这个是一个使用 Electron + Vue3 + Vite + Arco-design 实现的一个 DB 管理工具. 尽可能的实现简单高效, 加上的都是我之前工作中需要用到的功能. 还是在不断改进中. 希望有更多的朋友可以加入开发.
 
-<!-- [![awesome-vite](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite) -->
-<!-- [![Netlify Status](https://api.netlify.com/api/v1/badges/ae3863e3-1aec-4eb1-8f9f-1890af56929d/deploy-status)](https://app.netlify.com/sites/electron-vite/deploys) -->
-<!-- [![GitHub license](https://img.shields.io/github/license/caoxiemeihao/electron-vite-vue)](https://github.com/electron-vite/electron-vite-vue/blob/main/LICENSE) -->
-<!-- [![GitHub stars](https://img.shields.io/github/stars/caoxiemeihao/electron-vite-vue?color=fa6470)](https://github.com/electron-vite/electron-vite-vue) -->
-<!-- [![GitHub forks](https://img.shields.io/github/forks/caoxiemeihao/electron-vite-vue)](https://github.com/electron-vite/electron-vite-vue) -->
-[![GitHub Build](https://github.com/electron-vite/electron-vite-vue/actions/workflows/build.yml/badge.svg)](https://github.com/electron-vite/electron-vite-vue/actions/workflows/build.yml)
-[![GitHub Discord](https://img.shields.io/badge/chat-discord-blue?logo=discord)](https://discord.gg/sRqjYpEAUK)
+![软件界面](public/screen1.png)
 
 ## Features
 
-📦 Out of the box  
-🎯 Based on the official [template-vue-ts](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-vue-ts), less invasive  
-🌱 Extensible, really simple directory structure  
-💪 Support using Node.js API in Electron-Renderer  
-🔩 Support C/C++ native addons  
-🖥 It's easy to implement multiple windows  
+- SQL 编辑, 查询, 支持自动提示. 支持历史记录
+- 数据查看, 编辑, 过滤等基本操作, 支持大量数据查看
+- 数据库管理, 表格设计, 数据备份, 数据恢复
+- 用户管理, 进程管理, 表结构同步
+- 更多还需要再发掘
 
 ## Quick Start
 
 ```sh
-npm create electron-vite
+npm i
+npm run dev
 ```
-
-<!-- [![quick-start](https://asciinema.org/a/483731.svg)](https://asciinema.org/a/483731) -->
-
-![electron-vite-vue.gif](/public/electron-vite-vue.gif)
 
 ## Debug
 
-![electron-vite-react-debug.gif](https://github.com/electron-vite/electron-vite-react/blob/main/public/electron-vite-react-debug.gif?raw=true)
+Visual Studio Code suppert Run & Debug
 
 ## Directory
 
-```diff
-+ ├─┬ electron
-+ │ ├─┬ main
-+ │ │ └── index.ts    entry of Electron-Main
-+ │ └─┬ preload
-+ │   └── index.ts    entry of Preload-Scripts
+```
+  ├─┬ electron
+  │ ├─┬ main
+  │ │ └── index.ts    entry of Electron-Main
+  │ └─┬ preload
+  │   └── index.ts    entry of Preload-Scripts
   ├─┬ src
+  │ └── assets        entry of Renderer resources
+  │ └── components    entry of Vue custom components
+  │ └── locale        entry of Locale language file
+  │ └── node-ipc      entry of Node IPC Renderer
+  │ └── store         entry of Vue store base pinia
+  │ └── store         entry of util tool
   │ └── main.ts       entry of Electron-Renderer
   ├── index.html
   ├── package.json
   └── vite.config.ts
 ```
 
-## Be aware
-
-🚨 By default, this template integrates Node.js in the Renderer process. If you don't need it, you just remove the option below. [Because it will modify the default config of Vite](https://github.com/electron-vite/vite-plugin-electron-renderer#config-presets-opinionated).
-
-```diff
-# vite.config.ts
-
-export default {
-  plugins: [
--   // Use Node.js API in the Renderer-process
--   renderer({
--     nodeIntegration: true,
--   }),
-  ],
-}
-```
-
-## FAQ
-
-- [dependencies vs devDependencies](https://github.com/electron-vite/vite-plugin-electron-renderer#dependencies-vs-devdependencies)
-- [C/C++ addons, Node.js modules - Pre-Bundling](https://github.com/electron-vite/vite-plugin-electron-renderer#dependency-pre-bundling)

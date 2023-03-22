@@ -1,0 +1,76 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3961440 */
+  src: url('iconfont.woff2?t=1679454915497') format('woff2'),
+       url('iconfont.woff?t=1679454915497') format('woff'),
+       url('iconfont.ttf?t=1679454915497') format('truetype'),
+       url('iconfont.svg?t=1679454915497#iconfont') format('svg');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-process:before {
+  content: "\e6d8";
+}
+
+.icon-suoding:before {
+  content: "\e7af";
+}
+
+.icon-text:before {
+  content: "\e638";
+}
+
+.icon-server2:before {
+  content: "\e643";
+}
+
+.icon-ulock:before {
+  content: "\e636";
+}
+
+.icon-lock:before {
+  content: "\e637";
+}
+
+.icon-close:before {
+  content: "\e646";
+}
+
+.icon-infomation:before {
+  content: "\e8e8";
+}
+
+.icon-server:before {
+  content: "\e65c";
+}
+
+.icon-database:before {
+  content: "\e940";
+}
+
+.icon-home:before {
+  content: "\e6b8";
+}
+
+.icon-table:before {
+  content: "\e675";
+}
+
+.icon-view:before {
+  content: "\e847";
+}
+
+.icon-yuyan-kong:before {
+  content: "\e692";
+}
+
+.icon-biaoge:before {
+  content: "\e639";
+}
+

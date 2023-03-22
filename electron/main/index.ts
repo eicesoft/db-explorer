@@ -1,6 +1,7 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
-// import { release } from 'node:os';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
+import { release } from 'node:os';
 import { join } from 'node:path';
+import fs from 'node:fs';
 
 // The built directory structure
 //
@@ -17,7 +18,7 @@ process.env.DIST = join(process.env.DIST_ELECTRON, '../dist');
 process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL ? join(process.env.DIST_ELECTRON, '../public') : process.env.DIST;
 
 // Disable GPU Acceleration for Windows 7
-// if (release().startsWith('6.1')) app.disableHardwareAcceleration();
+if (release().startsWith('6.1')) app.disableHardwareAcceleration();
 
 // Set application name for Windows 10+ notifications
 if (process.platform === 'win32') app.setAppUserModelId(app.getName());
@@ -35,6 +36,7 @@ if (!app.requestSingleInstanceLock()) {
 let win: BrowserWindow | null = null;
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js');
+// console.log(ipcMessage);
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, 'index.html');
 
@@ -46,7 +48,12 @@ async function createWindow() {
     width: 1024,
     minWidth: 800,
     minHeight: 700,
-
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#2f3241',
+      symbolColor: '#ccdbfd',
+      height: 36,
+    },
     webPreferences: {
       preload,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
@@ -59,7 +66,9 @@ async function createWindow() {
 
   if (process.env.VITE_DEV_SERVER_URL) {
     // electron-vite-vue#298
-    win.loadURL(url);
+    win.loadURL(url, {
+      extraHeaders: `Content-Security-Policy: default-src 'self'`,
+    });
     // Open devTool if the app is not packaged
     win.webContents.openDevTools();
   } else {
@@ -119,5 +128,27 @@ ipcMain.handle('open-win', (_, arg) => {
     childWindow.loadURL(`${url}#${arg}`);
   } else {
     childWindow.loadFile(indexHtml, { hash: arg });
+  }
+});
+
+const packageInfo = require('../../package.json');
+ipcMain.handle('about', (event) => {
+  dialog.showMessageBox(win, {
+    title: packageInfo.productName,
+    message: `Name: \t\t${packageInfo.productName}\nVersion: \t\t${packageInfo.version}\nAuthor: ${packageInfo.author}`,
+  });
+});
+
+ipcMain.handle('open_file', (event) => {
+  let resp = dialog.showOpenDialogSync(win, {
+    properties: ['openFile'],
+    filters: [{ extensions: ['txt', 'sql'], name: '文本文件' }],
+  });
+  console.log(resp);
+  if (resp.length > 0) {
+    const data = fs.readFileSync(resp[0], 'utf-8');
+    console.log(data);
+
+    win?.webContents.send('load-file', data);
   }
 });

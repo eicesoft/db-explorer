@@ -17,7 +17,7 @@ export interface NodeRuntime {
 
 export interface Meta {
   NodeId?: Id;
-  DatabaseName?: String;
+  DatabaseName?: string;
   Param: any;
 }
 
@@ -28,6 +28,7 @@ export interface SimpleNode {
   type: NodeType;
   selectable: boolean;
   isLeaf: boolean;
+  switcherIcon?: Function;
   children?: Array<SimpleNode>;
   runtime?: NodeRuntime;
   meta?: Meta;

@@ -70,10 +70,10 @@ export default class MySQL {
 
   query(sql: string, params: any): Promise<any> {
     let that = this;
+    let start = new Date();
     return new Promise(function (resolve, reject) {
-      let start = new Date();
       that.conn.query(sql, params, (err: any, data: any, fields: any) => {
-        let gap = new Date().getMilliseconds() - start.getMilliseconds();
+        let gap = start.getMilliseconds() - new Date().getMilliseconds();
         console.log(gap);
         if (err) {
           reject(err);
@@ -86,6 +86,31 @@ export default class MySQL {
         }
       });
     });
+  }
+
+  async getDatabases() {
+    return await this.query('SELECT * FROM `information_schema`.`SCHEMATA`', []);
+  }
+
+  async getTables(database: string) {
+    this.conn.changeUser({ database: database });
+    return await this.query('SHOW TABLES;', [database]);
+  }
+
+  async getTableInfomations(database: string) {
+    return await this.query('SELECT * FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = ?', [database]);
+  }
+
+  async status() {
+    let resp = await this.query('SHOW STATUS', []);
+
+    return resp;
+  }
+
+  async processList() {
+    let resp = await this.query('SHOW PROCESSLIST;', []);
+
+    return resp;
   }
 
   close() {

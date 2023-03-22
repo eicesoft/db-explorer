@@ -46,7 +46,4 @@ export const useServerStore = defineStore({
       return this.links[name];
     },
   },
-  persist: {
-    enabled: true,
-  },
 });

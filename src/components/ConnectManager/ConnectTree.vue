@@ -1,37 +1,39 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, watch } from 'vue';
-  import { getIconRes } from '~/utils/res';
-  import { IconDown, IconPlus, IconMoreVertical } from '@arco-design/web-vue/es/icon';
+  import { ref, h } from 'vue';
+  import { getImageRes } from '~/utils/res';
+  import { IconMoreVertical } from '@arco-design/web-vue/es/icon';
 
-  import { SimpleNode } from './index';
-  import { NodeType } from './index';
-  import { useServerStore } from '~/store/modules/server';
-  import { uuid } from '~/utils/index';
+  import { Icon } from '@arco-design/web-vue';
+
+  import { SimpleNode, NodeType } from './index';
+  import { useTreeStore } from '~/store/modules/tree';
+  import { useStatausStore } from '~/store/modules/status';
+
   import Manager from '~/utils/link_manager';
+  import { useI18n } from 'vue-i18n';
 
-  defineProps({
-    height: Number,
+  const { t } = useI18n();
+
+  const props = defineProps({
+    height: { type: Number, default: 24 },
   });
 
   const emits = defineEmits<{
     (e: 'select-table', value: any): void;
+    (e: 'select-database', value: any): void;
+    (e: 'open-database', value: any): void;
     (e: 'menu-select', menu_key: string, value: any): void;
   }>();
 
+  const IconFont = Icon.addFromIconFontCn({
+    src: getImageRes('iconfont/iconfont.js'),
+  });
+  // console.log(IconFont);
   const manager: Manager = Manager.getInstance();
+  const treeStore = useTreeStore();
+  const statusStore = useStatausStore();
 
-  // console.error(serverStore.getConnect('Dev'));
-  let root: SimpleNode[] = reactive<SimpleNode[]>([
-    {
-      id: '_root',
-      title: '连接',
-      icon: 'home',
-      type: NodeType.Root,
-      selectable: false,
-      isLeaf: false,
-      children: [],
-    },
-  ]);
+  treeStore.init();
 
   const loadMore = async (data: SimpleNode) => {
     if (data.type == NodeType.Database) {
@@ -39,13 +41,11 @@
 
       try {
         const conn = manager.get(data.meta?.Param.serverKey);
-        const resp = await conn.query('SELECT * FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = ?', [
-          data.title,
-        ]);
-
+        const resp = await conn.getTables(data.title);
+        console.error(resp);
         let tabGroup: SimpleNode = {
           id: 'tables_' + data.title + '_groups',
-          title: '表格',
+          title: t('message.tree.table'),
           icon: 'table',
           type: NodeType.TableGroup,
           isLeaf: false,
@@ -60,15 +60,16 @@
           },
           children: [],
         };
-        const param = data.meta.Param;
+        const param = data.meta?.Param;
         for (let row of resp.data) {
+          const tableName = row['Tables_in_' + data.title];
           tabGroup.children?.push({
-            id: 'table_' + data.title + '_' + row.TABLE_NAME,
-            title: row.TABLE_NAME,
-            switcherIcon: '',
+            id: 'table_' + data.title + '_' + tableName,
+            title: tableName,
+            switcherIcon: () => h('span', {}),
             type: NodeType.Table,
             icon: 'table',
-            isLeaf: 2,
+            isLeaf: true,
             selectable: true,
             meta: {
               NodeId: data.id,
@@ -80,24 +81,19 @@
             },
           });
         }
-        // nodeMaps[data.id].runtime.load = true;
-        // nodeMaps[data.id].children = [tabGroup];
         data.children = [tabGroup];
-        // nodeMaps = reBuildNodes(root);
-        // console.log(nodeMaps);
       } catch (err: any) {
         console.log(err.message);
       }
     } else if (data.type == NodeType.Server) {
       const conn = manager.get(data.title);
+      console.log(data);
 
       try {
-        const resp = await conn.query('SELECT * FROM `information_schema`.`SCHEMATA`', []);
+        const resp = await conn.getDatabases();
         console.log(resp);
-        // console.log(root[0]?.children[0]);
+        // data.title += '(' + resp.data.length + ')';
         data.children = [];
-        // data.isLeaf = true;
-        // data.runtime.load = true;
         for (let row of resp.data) {
           data.children.push({
             id: 'db_' + row.SCHEMA_NAME,
@@ -123,45 +119,28 @@
       }
     }
   };
-  const reBuildNodes = (nodes: SimpleNode[] | undefined) => {
-    let maps: Record<string, any> = {};
-    for (let key in nodes) {
-      const node: SimpleNode = nodes[key];
-      maps[node.id] = node;
-      Object.assign(maps, reBuildNodes(node.children));
-    }
 
-    return maps;
+  const selectNode = async (key: any, data: any) => {
+    // console.error(data);
+    if (data.node.type == NodeType.Table) {
+      emits('select-table', data.node);
+    } else if (data.node.type == NodeType.Database) {
+      emits('select-database', data.node);
+    }
   };
 
-  const serverStore = useServerStore();
-  for (let key of Object.keys(serverStore.links)) {
-    // console.log(key);
-    const connect = serverStore.getConnect(key);
-    let id = 'server_' + uuid();
-    root[0].children?.push({
-      id: id,
-      icon: 'server',
-      title: key,
-      type: NodeType.Server,
-      selectable: true,
-      isLeaf: false,
-      runtime: {
-        load: false,
-      },
-      meta: {
-        NodeId: id,
-        Param: connect,
-      },
-      children: [],
-    });
-  }
-  // console.log(nodeMaps);
-  const context_item = ref<SimpleNode | null>(null);
-  const activeItem = ref<SimpleNode | null>();
-  const contextSelectItem = (data: SimpleNode) => {
-    context_item.value = data;
-    console.error(context_item.value);
+  const searchKey = ref('');
+  const searchTree = () => {
+    treeStore.setKeyword(searchKey.value);
+  };
+
+  const menuSelect = (key: any, node: any) => {
+    console.log(key, node);
+    emits('menu-select', key, node);
+  };
+
+  const openDatabase = (node: SimpleNode) => {
+    emits('open-database', node);
   };
 
   //高亮当前数据库连接
@@ -178,30 +157,19 @@
   //     }
   //   }
   // );
-
-  const selectNode = async (key: any, data: any) => {
-    // console.error(data);
-    if (data.node.type == NodeType.Table) {
-      emits('select-table', data.node);
-    }
-  };
-
-  const searchKey = ref('');
-  function getMatchIndex(title: string) {
-    if (!searchKey.value) return -1;
-    return title.toLowerCase().indexOf(searchKey.value.toLowerCase());
-  }
-
-  const menuSelect = (key: any, node: any) => {
-    console.log(key, node);
-    emits('menu-select', key, node);
-  };
 </script>
 
 <template>
-  <div class="tree" v-contextmenu:contextmenu>
+  <div class="tree">
     <div class="search-div">
-      <a-input-search class="search-text" placeholder="输入进行过滤" size="mini" v-model="searchKey" />
+      <a-input-search
+        @search="searchTree"
+        @press-enter="searchTree"
+        class="search-text"
+        placeholder="输入进行过滤"
+        size="mini"
+        v-model="searchKey"
+      />
     </div>
     <a-tree
       @select="selectNode"
@@ -221,7 +189,7 @@
       }"
       :show-line="true"
       :load-more="loadMore"
-      :data="root"
+      :data="[treeStore.filters]"
     >
       <template #extra="nodeData">
         <!-- <IconPlus
@@ -247,35 +215,26 @@
       </template>
 
       <template #title="nodeData">
-        <template v-if="((index = getMatchIndex(nodeData?.title)), index < 0)">{{ nodeData?.title }}</template>
-        <span v-else>
-          {{ nodeData?.title?.substr(0, index) }}
-          <span style="color: var(--color-primary-light-4)">
-            {{ nodeData?.title?.substr(index, searchKey.length) }} </span
-          >{{ nodeData?.title?.substr(index + searchKey.length) }}
-        </span>
+        <template
+          v-if="
+            (nodeData.type == NodeType.Server || nodeData.type == NodeType.TableGroup) && nodeData.children.length != 0
+          "
+        >
+          {{ nodeData?.title }}({{ nodeData.children.length }})
+        </template>
+        <template v-else-if="nodeData.type == NodeType.Database">
+          <span @dblclick="openDatabase(nodeData)">{{ nodeData?.title }}</span>
+        </template>
+        <template v-else>{{ nodeData?.title }}</template>
       </template>
 
       <template #icon="data">
-        <img :src="getIconRes(data.node.icon + '.png')" />
-      </template>
-
-      <template #switcher-icon="node, { isLeaf }">
-        <IconDown v-if="!isLeaf" />
-        <!-- <IconStar v-if="isLeaf" /> -->
+        <!-- <img :src="getIconRes(data.node.icon + '.png')" /> -->
+        <icon-font v-if="data.node.icon" :type="'icon-' + data.node.icon" :size="20" />
       </template>
     </a-tree>
 
-    <!-- <TreeNode
-      @connect="connect"
-      @select="selectNode"
-      @contextselect="contextSelectItem"
-      v-for="(item, index) in root"
-      :active="activeItem"
-      :item="item"
-    ></TreeNode> -->
-
-    <v-contextmenu ref="contextmenu">
+    <!-- <v-contextmenu ref="contextmenu">
       <template v-if="context_item && context_item?.type == NodeType.Root">
         <v-contextmenu-item>添加连接</v-contextmenu-item>
         <v-contextmenu-divider />
@@ -325,7 +284,7 @@
         <v-contextmenu-item>导出</v-contextmenu-item>
         <v-contextmenu-item>导入</v-contextmenu-item>
       </template>
-    </v-contextmenu>
+    </v-contextmenu> -->
   </div>
 </template>
 

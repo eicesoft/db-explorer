@@ -15,20 +15,20 @@
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 /* 滚动槽 */
 ::-webkit-scrollbar-track {
   border-radius: 10px;
-  background-color: rgba(216, 216, 216, 0.5);
+  /* background-color: rgba(216, 216, 216, 0.5); */
 }
 
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: rgba(114, 114, 114, 0.2);
+  background-color: rgb(226, 232, 241);
 }
 
 body {
@@ -92,4 +92,27 @@ pre {
 
 .cell-value-boolean {
   color: #651086;
+}
+.icon-font {
+  display: flex;
+  align-items: center;
+}
+.icon-font :hover {
+  color: #224daa;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.arco-tabs-tab-active .iconfont {
+  color: #2d90e7;
+}
+
+.arco-modal-title {
+  user-select: none;
+}
+
+.base-model {
+  border: 1px solid #ececec;
 }
