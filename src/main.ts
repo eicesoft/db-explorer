@@ -4,7 +4,7 @@ import App from './App.vue';
 import './node-ipc/node-api';
 import { setupStore } from '~/store';
 // import ArcoVue from '@arco-design/web-vue';
-import '@arco-design/web-vue/dist/arco.css';
+// import '@arco-design/web-vue/dist/arco.css';
 import 'highlight.js/styles/github.css';
 import 'highlight.js/lib/common';
 import hljsVuePlugin from '@highlightjs/vue-plugin';

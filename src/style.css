@@ -112,3 +112,7 @@ pre {
 .arco-modal-title {
   user-select: none;
 }
+
+.base-model {
+  border: 1px solid #ececec;
+}

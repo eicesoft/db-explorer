@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch, h } from 'vue';
+  import { ref, h } from 'vue';
   import { getImageRes } from '~/utils/res';
   import { IconMoreVertical } from '@arco-design/web-vue/es/icon';
 
@@ -10,7 +10,6 @@
 
   import Manager from '~/utils/link_manager';
   import { useI18n } from 'vue-i18n';
-  import { type } from 'os';
 
   const { t } = useI18n();
 
@@ -21,13 +20,14 @@
   const emits = defineEmits<{
     (e: 'select-table', value: any): void;
     (e: 'select-database', value: any): void;
+    (e: 'open-database', value: any): void;
     (e: 'menu-select', menu_key: string, value: any): void;
   }>();
 
   const IconFont = Icon.addFromIconFontCn({
     src: getImageRes('iconfont/iconfont.js'),
   });
-  console.log(IconFont);
+  // console.log(IconFont);
   const manager: Manager = Manager.getInstance();
   const treeStore = useTreeStore();
   treeStore.init();
@@ -116,16 +116,6 @@
       }
     }
   };
-  // const reBuildNodes = (nodes: SimpleNode[] | undefined) => {
-  //   let maps: Record<string, any> = {};
-  //   for (let key in nodes) {
-  //     const node: SimpleNode = nodes[key];
-  //     maps[node.id] = node;
-  //     Object.assign(maps, reBuildNodes(node.children));
-  //   }
-
-  //   return maps;
-  // };
 
   const selectNode = async (key: any, data: any) => {
     // console.error(data);
@@ -137,21 +127,19 @@
   };
 
   const searchKey = ref('');
-  watch(searchKey, () => {
-    console.log(searchKey.value);
-
+  const searchTree = () => {
     treeStore.setKeyword(searchKey.value);
-  });
-
-  function getMatchIndex(title: string): number {
-    if (!searchKey.value) return -1;
-    return title.toLowerCase().indexOf(searchKey.value.toLowerCase());
-  }
+  };
 
   const menuSelect = (key: any, node: any) => {
     console.log(key, node);
     emits('menu-select', key, node);
   };
+
+  const openDatabase = (node: SimpleNode) => {
+    emits('open-database', node);
+  };
+
   //高亮当前数据库连接
   // watch(
   //   () => activeItem.value,
@@ -171,7 +159,14 @@
 <template>
   <div class="tree">
     <div class="search-div">
-      <a-input-search class="search-text" placeholder="输入进行过滤" size="mini" v-model="searchKey" />
+      <a-input-search
+        @search="searchTree"
+        @press-enter="searchTree"
+        class="search-text"
+        placeholder="输入进行过滤"
+        size="mini"
+        v-model="searchKey"
+      />
     </div>
     <a-tree
       @select="selectNode"
@@ -191,7 +186,7 @@
       }"
       :show-line="true"
       :load-more="loadMore"
-      :data="treeStore.filters"
+      :data="[treeStore.filters]"
     >
       <template #extra="nodeData">
         <!-- <IconPlus
@@ -224,7 +219,9 @@
         >
           {{ nodeData?.title }}({{ nodeData.children.length }})
         </template>
-
+        <template v-else-if="nodeData.type == NodeType.Database">
+          <span @dblclick="openDatabase(nodeData)">{{ nodeData?.title }}</span>
+        </template>
         <template v-else>{{ nodeData?.title }}</template>
       </template>
 

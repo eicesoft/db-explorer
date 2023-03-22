@@ -5,35 +5,38 @@ import { useServerStore } from '~/store/modules/server';
 import { uuid } from '~/utils/index';
 
 export interface ITreeState {
-  root: SimpleNode[];
+  root: SimpleNode | null;
   keyword: string;
 }
 
-const filterTree = (tree: any, keyword: string) => {
-  return tree.filter((node: any) => {
-    const title = node.title.toLowerCase();
-    const type = node.type;
-    console.log('title', title, type, title.includes(keyword.toLowerCase()));
-    const filteredChildren = filterTree(node.children || [], keyword);
-    console.log('filteredChildren', title, filteredChildren);
-    if (type == NodeType.Table) {
-      if (title.includes(keyword.toLowerCase())) {
-        return {
-          ...node,
-          children: filteredChildren,
-        };
+const filterTree = (root: any, filterText: string) => {
+  if (root.type == NodeType.Table) {
+    console.error(root.title);
+    if (root.title.includes(filterText)) {
+      if (root.children) {
+        const filteredChildren = root.children
+          .map((child: any) => filterTree(child, filterText))
+          .filter((child: any) => child !== null);
+        return { ...root, children: filteredChildren };
+      } else {
+        return root;
       }
-      return [];
     } else {
-      return node;
+      return null;
     }
-  });
+  } else {
+    // root.children = filteredChildren;
+    const filteredChildren = root.children
+      .map((child: any) => filterTree(child, filterText))
+      .filter((child: any) => child !== null);
+    return { ...root, children: filteredChildren };
+  }
 };
 
 export const useTreeStore = defineStore({
   id: 'app-tree',
   state: (): ITreeState => ({
-    root: [],
+    root: null,
     keyword: '',
   }),
   getters: {
@@ -50,23 +53,21 @@ export const useTreeStore = defineStore({
     init() {
       const { t } = useI18n();
 
-      this.root = [
-        {
-          id: '_root',
-          title: t('message.tree.connect'),
-          icon: 'home',
-          type: NodeType.Root,
-          selectable: false,
-          isLeaf: false,
-          children: [],
-        },
-      ];
+      this.root = {
+        id: '_root',
+        title: t('message.tree.connect'),
+        icon: 'home',
+        type: NodeType.Root,
+        selectable: false,
+        isLeaf: false,
+        children: [],
+      };
 
       const serverStore = useServerStore();
       for (let key of Object.keys(serverStore.links)) {
         const connect = serverStore.getConnect(key);
         let id = 'server_' + uuid();
-        this.root[0].children?.push({
+        this.root.children?.push({
           id: id,
           icon: 'server',
           title: key,

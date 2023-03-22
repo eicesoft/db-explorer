@@ -16,10 +16,12 @@
       >
         <template #first>
           <ConnectTree
+            :status="statusInfo"
             :height="height - 40 - 28 * 2"
             @menu-select="menuSelect"
             @select-database="selectDatabase"
             @select-table="selectTable"
+            @open-database="openDatabase"
           />
         </template>
 
@@ -42,12 +44,13 @@
   <!-- Dialogs start -->
   <ConnectDialog v-model:visible="visibles.connectVisible" />
   <ServerStatus :serverKey="statusInfo?.serverName" v-model:visible="visibles.statusVisible" />
+  <ProcessList :serverKey="statusInfo?.serverName" v-model:visible="visibles.processVisible" />
   <!-- Dialogs end-->
 </template>
 
 <script lang="ts" setup>
   import packageInfo from '../../package.json';
-  import { ref, computed, reactive, onMounted, nextTick } from 'vue';
+  import { ref, computed, reactive, onMounted } from 'vue';
   import { StatusInfo } from '~/components/layout/status';
 
   import { useServerStore } from '~/store/modules/server';
@@ -66,8 +69,8 @@
   const setupStore = useSetupStore();
   const tabStore = useTabStore();
   setupStore.init();
-  // serverStore.addConnect('Dev', '192.168.1.25', 'root', 'HundyG63gF%42sdf', 'charge');
-  serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
+  serverStore.addConnect('Dev', '192.168.1.25', 'root', 'HundyG63gF%42sdf', 'charge');
+  // serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
   // serverStore.addConnect('Hr', '192.168.1.21', 'root', 'as$s3%hYb3fgv&r2', '');
 
   const cssVars = computed(() => {
@@ -81,14 +84,34 @@
   });
   const node = ref<SimpleNode | null>(null);
   const BASE_TITLE = 'MySQL Explorer';
-  const title = ref(BASE_TITLE);
+  // const title = ref(BASE_TITLE);
+
+  const title = computed(() => {
+    let t = BASE_TITLE;
+    if (statusInfo.serverName) {
+      t += ` - Server: ${statusInfo.serverName}`;
+    }
+
+    if (statusInfo.database) {
+      t += `, Db: ${statusInfo.database}`;
+    }
+
+    return t;
+  });
+
+  const statusInfo = reactive<StatusInfo>({
+    version: packageInfo.version,
+    serverName: undefined,
+    database: undefined,
+    queryCount: 0,
+    language: 'zh',
+  });
+
   const selectTable = (n: SimpleNode) => {
     node.value = n;
-    if (n.type == NodeType.Database) {
-      title.value = `${BASE_TITLE} - Server: ${n.meta?.Param.serverKey}, Db: ${n.title}`;
-    } else if (n.type == NodeType.Table) {
-      title.value = ` ${BASE_TITLE} - Server: ${n.meta?.Param.serverKey}, Db: ${n.meta?.DatabaseName}`;
-    }
+    statusInfo.serverName = n.meta?.Param.serverKey;
+    statusInfo.database = n.meta?.DatabaseName;
+
     let newTab: Tab = {
       id: n.id,
       title: n.title,
@@ -105,8 +128,15 @@
 
   const selectDatabase = (n: SimpleNode) => {
     node.value = n;
+    statusInfo.serverName = n.meta?.Param.serverKey;
+    statusInfo.database = n.title;
+  };
 
-    title.value = `${BASE_TITLE} - Server: ${n.meta?.Param.serverKey}, Db: ${n.title}`;
+  const openDatabase = (n: SimpleNode) => {
+    node.value = n;
+    statusInfo.serverName = n.meta?.Param.serverKey;
+    statusInfo.database = n.title;
+
     let newTab: Tab = {
       id: n.id,
       title: n.title,
@@ -141,6 +171,7 @@
   const closeAll = () => {
     tabStore.removeAll();
   };
+
   const size = ref('248px');
   const sideWidth = computed(() => {
     return parseInt(size.value.substring(0, size.value.length - 2));
@@ -171,16 +202,6 @@
     }
   };
 
-  const statusInfo = computed((): StatusInfo => {
-    return {
-      version: packageInfo.version,
-      serverName: node.value?.meta?.Param.serverKey ?? undefined,
-      database: node.value?.meta?.DatabaseName ?? undefined,
-      queryCount: 0,
-      language: 'zh',
-    };
-  });
-
   const resize = () => {
     width.value = window.innerWidth;
     height.value = window.innerHeight;
@@ -193,10 +214,12 @@
     };
     resize();
   });
-  // const connectVisible = ref(false);
+
+  /** Dialog visible */
   const visibles = reactive({
     statusVisible: false,
     connectVisible: false,
+    processVisible: false,
   });
 
   const toolbarTrigger = (key: ToolCommand) => {
@@ -206,6 +229,9 @@
         break;
       case ToolCommand.ServerInfomation:
         visibles.statusVisible = true;
+        break;
+      case ToolCommand.ProcessList:
+        visibles.processVisible = true;
         break;
     }
   };

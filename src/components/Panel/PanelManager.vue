@@ -11,7 +11,7 @@
     </template>
 
     <!--只有一个编辑器实例-->
-    <EditorPanel v-show="tabStore.activeTab && tabStore.activeTab?.type == TabType.Query" :node="tabStore.activeTab" />
+    <!-- <EditorPanel v-show="tabStore.activeTab && tabStore.activeTab?.type == TabType.Query" :node="tabStore.activeTab" /> -->
   </div>
 </template>
 

@@ -1,8 +1,17 @@
 <template>
-  <a-modal hide-cancel ok-text="关闭" :visible="visible" @ok="handleOk" @cancel="handleOk">
+  <a-modal
+    modal-class="base-model"
+    :mask="false"
+    draggable
+    hide-cancel
+    ok-text="关闭"
+    :visible="visible"
+    @ok="handleOk"
+    @cancel="handleOk"
+  >
     <template #title> {{ t('message.dialog.status.title') }} </template>
 
-    <a-input-search class="search-text" placeholder="输入进行过滤" size="mini" v-model="searchKey" />
+    <a-input-search class="search-text" :placeholder="t('message.base.filter')" size="mini" v-model="searchKey" />
 
     <a-table
       style="margin-top: 5px; overflow-x: hidden; overflow-x: auto"

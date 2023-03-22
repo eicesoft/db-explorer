@@ -107,6 +107,12 @@ export default class MySQL {
     return resp;
   }
 
+  async processList() {
+    let resp = await this.query('SHOW PROCESSLIST;', []);
+
+    return resp;
+  }
+
   close() {
     this.conn.end();
   }

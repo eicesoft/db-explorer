@@ -11,13 +11,19 @@
 
       <a-button-group style="margin-left: 10px">
         <a-tooltip :content="t('message.toolbar.userManager')">
-          <a-button :disabled="status?.database == null" @click="clickBtn(ToolCommand.UserManager)" size="mini">
+          <a-button :disabled="status?.serverName == null" @click="clickBtn(ToolCommand.UserManager)" size="mini">
             <template #icon><icon-user-group :size="iconSize" /></template>
           </a-button>
         </a-tooltip>
         <a-tooltip :content="t('message.toolbar.serverInfo')">
-          <a-button :disabled="status?.database == null" @click="clickBtn(ToolCommand.ServerInfomation)" size="mini">
+          <a-button :disabled="status?.serverName == null" @click="clickBtn(ToolCommand.ServerInfomation)" size="mini">
             <template #icon><icon-info-circle :size="iconSize" /></template>
+          </a-button>
+        </a-tooltip>
+
+        <a-tooltip :content="t('message.toolbar.serverInfo')">
+          <a-button :disabled="status?.serverName == null" @click="clickBtn(ToolCommand.ProcessList)" size="mini">
+            <template #icon><icon-font type="icon-process" :size="iconSize" /></template>
           </a-button>
         </a-tooltip>
       </a-button-group>
@@ -31,11 +37,16 @@
   import { ToolCommand } from './tool';
   import { useI18n } from 'vue-i18n';
   import { StatusInfo } from './status';
+  import { Icon } from '@arco-design/web-vue';
+  import { getImageRes } from '~/utils/res';
 
   const props = defineProps({
     status: Object as PropType<StatusInfo>,
   });
 
+  const IconFont = Icon.addFromIconFontCn({
+    src: getImageRes('iconfont/iconfont.js'),
+  });
   const { t } = useI18n();
 
   const iconSize = ref(18);

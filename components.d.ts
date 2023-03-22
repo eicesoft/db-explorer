@@ -38,6 +38,7 @@ declare module '@vue/runtime-core' {
     Main: typeof import('./src/components/Main.vue')['default']
     Menu: typeof import('./src/components/Base/Menu.vue')['default']
     PanelManager: typeof import('./src/components/Panel/PanelManager.vue')['default']
+    ProcessList: typeof import('./src/components/Dialog/ProcessList.vue')['default']
     ServerStatus: typeof import('./src/components/Dialog/ServerStatus.vue')['default']
     Statusbar: typeof import('./src/components/layout/Statusbar.vue')['default']
     Tabber: typeof import('./src/components/Tabber/Tabber.vue')['default']

@@ -1,5 +1,8 @@
 export default {
   message: {
+    base: {
+      filter: '输入进行过滤',
+    },
     menus: {
       system: '系统',
       addConnect: '新建连接',
@@ -33,6 +36,9 @@ export default {
         title: '服务器信息',
         variableName: '变量名称',
         value: '值',
+      },
+      processlist: {
+        title: '进程列表',
       },
     },
     tablepanel: {

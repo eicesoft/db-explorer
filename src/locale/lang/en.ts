@@ -53,6 +53,9 @@ export default {
         variableName: 'Variable Name',
         value: 'Value',
       },
+      processlist: {
+        title: 'Process list',
+      },
     },
     statusbar: {
       server: 'Servre',
