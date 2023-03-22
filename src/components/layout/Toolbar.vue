@@ -11,18 +11,22 @@
 
       <a-button-group style="margin-left: 10px">
         <a-tooltip :content="t('message.toolbar.userManager')">
-          <a-button :disabled="status?.serverName == null" @click="clickBtn(ToolCommand.UserManager)" size="mini">
+          <a-button :disabled="statusStore.serverName == null" @click="clickBtn(ToolCommand.UserManager)" size="mini">
             <template #icon><icon-user-group :size="iconSize" /></template>
           </a-button>
         </a-tooltip>
         <a-tooltip :content="t('message.toolbar.serverInfo')">
-          <a-button :disabled="status?.serverName == null" @click="clickBtn(ToolCommand.ServerInfomation)" size="mini">
+          <a-button
+            :disabled="statusStore.serverName == null"
+            @click="clickBtn(ToolCommand.ServerInfomation)"
+            size="mini"
+          >
             <template #icon><icon-info-circle :size="iconSize" /></template>
           </a-button>
         </a-tooltip>
 
         <a-tooltip :content="t('message.toolbar.serverInfo')">
-          <a-button :disabled="status?.serverName == null" @click="clickBtn(ToolCommand.ProcessList)" size="mini">
+          <a-button :disabled="statusStore.serverName == null" @click="clickBtn(ToolCommand.ProcessList)" size="mini">
             <template #icon><icon-font type="icon-process" :size="iconSize" /></template>
           </a-button>
         </a-tooltip>
@@ -33,22 +37,19 @@
 
 <script lang="ts" setup>
   import { IconPlus, IconUserGroup, IconInfoCircle } from '@arco-design/web-vue/es/icon';
-  import { ref, PropType } from 'vue';
+  import { ref } from 'vue';
   import { ToolCommand } from './tool';
   import { useI18n } from 'vue-i18n';
-  import { StatusInfo } from './status';
   import { Icon } from '@arco-design/web-vue';
   import { getImageRes } from '~/utils/res';
-
-  const props = defineProps({
-    status: Object as PropType<StatusInfo>,
-  });
+  import { useStatausStore } from '~/store/modules/status';
 
   const IconFont = Icon.addFromIconFontCn({
     src: getImageRes('iconfont/iconfont.js'),
   });
-  const { t } = useI18n();
 
+  const { t } = useI18n();
+  const statusStore = useStatausStore();
   const iconSize = ref(18);
 
   const emit = defineEmits<{

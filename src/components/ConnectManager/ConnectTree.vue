@@ -7,6 +7,7 @@
 
   import { SimpleNode, NodeType } from './index';
   import { useTreeStore } from '~/store/modules/tree';
+  import { useStatausStore } from '~/store/modules/status';
 
   import Manager from '~/utils/link_manager';
   import { useI18n } from 'vue-i18n';
@@ -30,6 +31,8 @@
   // console.log(IconFont);
   const manager: Manager = Manager.getInstance();
   const treeStore = useTreeStore();
+  const statusStore = useStatausStore();
+
   treeStore.init();
 
   const loadMore = async (data: SimpleNode) => {

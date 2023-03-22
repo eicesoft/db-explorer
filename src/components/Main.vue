@@ -1,7 +1,7 @@
 <template>
   <Captionbar :title="title"></Captionbar>
   <div class="main" :style="cssVars">
-    <Toolbar :status="statusInfo" @trigger="toolbarTrigger" />
+    <Toolbar @trigger="toolbarTrigger" />
 
     <div ref="box" class="container">
       <a-split
@@ -16,7 +16,6 @@
       >
         <template #first>
           <ConnectTree
-            :status="statusInfo"
             :height="height - 40 - 28 * 2"
             @menu-select="menuSelect"
             @select-database="selectDatabase"
@@ -38,27 +37,26 @@
       </a-split>
     </div>
 
-    <Statusbar @trigger="toolbarTrigger" :status="statusInfo" />
+    <Statusbar @trigger="toolbarTrigger" />
   </div>
 
   <!-- Dialogs start -->
   <ConnectDialog v-model:visible="visibles.connectVisible" />
-  <ServerStatus :serverKey="statusInfo?.serverName" v-model:visible="visibles.statusVisible" />
-  <ProcessList :serverKey="statusInfo?.serverName" v-model:visible="visibles.processVisible" />
+  <ServerStatus :serverKey="statusStore?.serverName" v-model:visible="visibles.statusVisible" />
+  <ProcessList :serverKey="statusStore?.serverName" v-model:visible="visibles.processVisible" />
   <!-- Dialogs end-->
 </template>
 
 <script lang="ts" setup>
-  import packageInfo from '../../package.json';
   import { ref, computed, reactive, onMounted } from 'vue';
-  import { StatusInfo } from '~/components/layout/status';
 
   import { useServerStore } from '~/store/modules/server';
   import { useSetupStore } from '~/store/modules/setup';
   import { useTabStore } from '~/store/modules/tab';
+  import { useStatausStore } from '~/store/modules/status';
 
   import { Tab, TabType } from './Tabber';
-  import { NodeType, SimpleNode } from './ConnectManager';
+  import { SimpleNode } from './ConnectManager';
   import { uuid } from '~/utils';
   import { ToolCommand } from './layout/tool';
 
@@ -68,9 +66,11 @@
   const serverStore = useServerStore();
   const setupStore = useSetupStore();
   const tabStore = useTabStore();
+  const statusStore = useStatausStore();
+  statusStore.init();
   setupStore.init();
-  serverStore.addConnect('Dev', '192.168.1.25', 'root', 'HundyG63gF%42sdf', 'charge');
-  // serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
+  // serverStore.addConnect('Dev', '192.168.1.25', 'root', 'HundyG63gF%42sdf', 'charge');
+  serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
   // serverStore.addConnect('Hr', '192.168.1.21', 'root', 'as$s3%hYb3fgv&r2', '');
 
   const cssVars = computed(() => {
@@ -88,30 +88,21 @@
 
   const title = computed(() => {
     let t = BASE_TITLE;
-    if (statusInfo.serverName) {
-      t += ` - Server: ${statusInfo.serverName}`;
+    if (statusStore.serverName) {
+      t += ` - Server: ${statusStore.serverName}`;
     }
 
-    if (statusInfo.database) {
-      t += `, Db: ${statusInfo.database}`;
+    if (statusStore.database) {
+      t += `, Db: ${statusStore.database}`;
     }
 
     return t;
   });
 
-  const statusInfo = reactive<StatusInfo>({
-    version: packageInfo.version,
-    serverName: undefined,
-    database: undefined,
-    queryCount: 0,
-    language: 'zh',
-  });
-
   const selectTable = (n: SimpleNode) => {
     node.value = n;
-    statusInfo.serverName = n.meta?.Param.serverKey;
-    statusInfo.database = n.meta?.DatabaseName;
-
+    statusStore.setDatabase(n.meta?.DatabaseName);
+    statusStore.setServer(n.meta?.Param.serverKey);
     let newTab: Tab = {
       id: n.id,
       title: n.title,
@@ -128,14 +119,14 @@
 
   const selectDatabase = (n: SimpleNode) => {
     node.value = n;
-    statusInfo.serverName = n.meta?.Param.serverKey;
-    statusInfo.database = n.title;
+    statusStore.setDatabase(n.title);
+    statusStore.setServer(n.meta?.Param.serverKey);
   };
 
   const openDatabase = (n: SimpleNode) => {
     node.value = n;
-    statusInfo.serverName = n.meta?.Param.serverKey;
-    statusInfo.database = n.title;
+    statusStore.setDatabase(n.title);
+    statusStore.setServer(n.meta?.Param.serverKey);
 
     let newTab: Tab = {
       id: n.id,

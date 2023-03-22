@@ -1,10 +1,14 @@
 <template>
   <div class="statusbar">
     <div class="left-bar">
-      <div class="info"> MySQL Explorer {{ status?.version }}</div>
-      <div class="info" v-if="status?.serverName"> {{ t('message.statusbar.server') }}: {{ status.serverName }}</div>
-      <div class="info" v-if="status?.database"> {{ t('message.statusbar.database') }}: {{ status.database }}</div>
-      <div class="info">{{ t('message.statusbar.history') }}: {{ status?.queryCount }}</div>
+      <div class="info"> MySQL Explorer {{ statusStore.version }}</div>
+      <div class="info" v-if="statusStore.serverName">
+        {{ t('message.statusbar.server') }}: {{ statusStore.serverName }}</div
+      >
+      <div class="info" v-if="statusStore.database">
+        {{ t('message.statusbar.database') }}: {{ statusStore.database }}</div
+      >
+      <div class="info">{{ t('message.statusbar.history') }}: {{ statusStore.queryCount }}</div>
     </div>
 
     <div class="right-bar">
@@ -26,15 +30,15 @@
 
 <script lang="ts" setup>
   import { Icon } from '@arco-design/web-vue';
-  import { PropType, ref } from 'vue';
+  import { ref } from 'vue';
   import { getImageRes } from '~/utils/res';
-  import { StatusInfo } from './status';
   import { useI18n } from 'vue-i18n';
   import { ToolCommand } from '~/components/layout/tool';
+  import { useStatausStore } from '~/store/modules/status';
 
-  const props = defineProps({
-    status: Object as PropType<StatusInfo>,
-  });
+  // const props = defineProps({
+  //   status: Object as PropType<StatusInfo>,
+  // });
   const emit = defineEmits<{
     (e: 'trigger', key: ToolCommand): void;
   }>();
@@ -43,8 +47,9 @@
     src: getImageRes('iconfont/iconfont.js'),
   });
   const { t, locale: i18nLanguage } = useI18n();
+  const statusStore = useStatausStore();
 
-  const lang = ref(props.status?.language);
+  const lang = ref(statusStore.language);
 
   const selectLang = (val: any) => {
     lang.value = val;
