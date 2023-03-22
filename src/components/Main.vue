@@ -54,7 +54,7 @@
   import { useSetupStore } from '~/store/modules/setup';
   import { useTabStore } from '~/store/modules/tab';
   import { useStatausStore } from '~/store/modules/status';
-
+  import packageInfo from '~/../package.json';
   import { Tab, TabType } from './Tabber';
   import { SimpleNode } from './ConnectManager';
   import { uuid } from '~/utils';
@@ -83,7 +83,7 @@
     };
   });
   const node = ref<SimpleNode | null>(null);
-  const BASE_TITLE = 'MySQL Explorer';
+  const BASE_TITLE = packageInfo.productName;
   // const title = ref(BASE_TITLE);
 
   const title = computed(() => {

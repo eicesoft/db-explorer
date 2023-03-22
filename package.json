@@ -1,6 +1,6 @@
 {
-  "name": "mysql-explorer",
-  "productName": "SQL Explorer",
+  "name": "db-explorer",
+  "productName": "DB Explorer",
   "version": "1.0.0",
   "main": "dist-electron/main/index.js",
   "description": "a new MySQL client.",
