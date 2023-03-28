@@ -34,10 +34,10 @@ ipcRenderer.on('load-file', (_event, ...args) => {
   tabStore.add(newTab);
 });
 
-lstat(cwd())
-  .then((stats) => {
-    console.log('[fs.lstat]', stats);
-  })
-  .catch((err) => {
-    console.error(err);
-  });
+// lstat(cwd())
+//   .then((stats) => {
+//     console.log('[fs.lstat]', stats);
+//   })
+//   .catch((err) => {
+//     console.error(err);
+//   });

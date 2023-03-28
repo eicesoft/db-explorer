@@ -39,7 +39,7 @@ const preload = join(__dirname, '../preload/index.js');
 // console.log(ipcMessage);
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, 'index.html');
-
+// console.warn(app.getPath('userData'));
 async function createWindow() {
   win = new BrowserWindow({
     title: 'SQL Explorer',
@@ -90,6 +90,7 @@ async function createWindow() {
   // win.webContents.on('will-navigate', (event, url) => { }) #344
 }
 
+console.log('App ready createWindow');
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {

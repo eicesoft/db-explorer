@@ -23,9 +23,6 @@
         children: [
           {
             title: t('message.menus.addConnect'),
-            disabled: () => {
-              return true;
-            },
             key: MenuKeys.NewConnection,
             children: [],
           },

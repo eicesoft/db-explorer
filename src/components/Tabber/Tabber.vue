@@ -9,18 +9,23 @@
         @click="toggleTab(item)"
       >
         <a-dropdown size="mini" trigger="contextMenu" alignPoint :style="{ display: 'block' }">
-          <div class="m-tab-title">
-            <icon-font style="color: #f18e27" v-if="item.lock" type="icon-lock" :size="14" />
+          <a-tooltip position="bottom">
+            <template #content>
+              {{ item }}
+            </template>
+            <div class="m-tab-title">
+              <icon-font style="color: #f18e27" v-if="item.lock" type="icon-lock" :size="14" />
 
-            <icon-font v-if="item.type == TabType.Database" type="icon-database" :size="12" />
-            <icon-font v-if="item.type == TabType.Table" type="icon-table" :size="12" />
-            <icon-font v-if="item.type == TabType.Query" type="icon-text" :size="16" />
+              <icon-font v-if="item.type == TabType.Database" type="icon-database" :size="12" />
+              <icon-font v-if="item.type == TabType.Table" type="icon-table" :size="12" />
+              <icon-font v-if="item.type == TabType.Query" type="icon-text" :size="16" />
 
-            <span style="margin: 0 4px">{{ item.title }}</span>
-            <div v-if="!item.lock" @click.stop="close(item)" class="x-icon"
-              ><icon-font type="icon-close" :size="14" />
+              <span style="margin: 0 4px">{{ item.title }}</span>
+              <div v-if="!item.lock" @click.stop="close(item)" class="x-icon"
+                ><icon-font type="icon-close" :size="14" />
+              </div>
             </div>
-          </div>
+          </a-tooltip>
           <template #content>
             <a-doption @click="lock(item)">{{
               item.lock ? t('message.tabber.contentMenu.ulock') : t('message.tabber.contentMenu.lock')
@@ -108,8 +113,6 @@
       tab.value.scrollLeft += delta * 100;
     });
   });
-
-  // const closeImg = ref(getIconRes('close.png'));
 </script>
 
 <style lang="scss">
@@ -160,13 +163,13 @@
     /* 滚动槽 */
     &::-webkit-scrollbar-track {
       border-radius: 10px;
-      background-color: rgba(233, 226, 226, 0.5);
+      background-color: #fff4dbe7;
     }
 
     /* 滚动条滑块 */
     &::-webkit-scrollbar-thumb {
       border-radius: 10px;
-      background-color: rgba(114, 114, 114, 0.2);
+      background-color: #ffe6afe7;
     }
 
     .m-tab-list {

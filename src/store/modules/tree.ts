@@ -41,7 +41,6 @@ export const useTreeStore = defineStore({
   }),
   getters: {
     filters: (state) => {
-      console.log('filters', state.keyword);
       if (state.keyword != '') {
         return filterTree(state.root, state.keyword);
       } else {
@@ -62,8 +61,8 @@ export const useTreeStore = defineStore({
         isLeaf: false,
         children: [],
       };
-
       const serverStore = useServerStore();
+
       for (let key of Object.keys(serverStore.links)) {
         const connect = serverStore.getConnect(key);
         let id = 'server_' + uuid();
@@ -83,6 +82,35 @@ export const useTreeStore = defineStore({
           },
           children: [],
         });
+      }
+    },
+    add(key: string) {
+      const serverStore = useServerStore();
+      const connect = serverStore.getConnect(key);
+      let id = 'server_' + uuid();
+      this.root.children?.push({
+        id: id,
+        icon: 'server',
+        title: key,
+        type: NodeType.Server,
+        selectable: true,
+        isLeaf: false,
+        runtime: {
+          load: false,
+        },
+        meta: {
+          NodeId: id,
+          Param: connect,
+        },
+        children: [],
+      });
+    },
+    remove(key: string) {
+      for (let i in this.root.children) {
+        let children = this.root?.children[i];
+        if (children.title == key) {
+          this.root.children.splice(i, 1);
+        }
       }
     },
     setKeyword(key: string) {

@@ -52,6 +52,8 @@
 
   import { useServerStore } from '~/store/modules/server';
   import { useSetupStore } from '~/store/modules/setup';
+  import { useTreeStore } from '~/store/modules/tree';
+
   import { useTabStore } from '~/store/modules/tab';
   import { useStatausStore } from '~/store/modules/status';
   import packageInfo from '~/../package.json';
@@ -59,6 +61,7 @@
   import { SimpleNode } from './ConnectManager';
   import { uuid } from '~/utils';
   import { ToolCommand } from './layout/tool';
+  import { TreeSelect } from '@arco-design/web-vue';
 
   let bodyWidth = ref(0);
   let width = ref(0);
@@ -67,10 +70,13 @@
   const setupStore = useSetupStore();
   const tabStore = useTabStore();
   const statusStore = useStatausStore();
+  const treeStore = useTreeStore();
+
   statusStore.init();
   setupStore.init();
+  serverStore.load();
   // serverStore.addConnect('Dev', '192.168.1.25', 'root', 'HundyG63gF%42sdf', 'charge');
-  serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
+  // serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
   // serverStore.addConnect('Hr', '192.168.1.21', 'root', 'as$s3%hYb3fgv&r2', '');
 
   const cssVars = computed(() => {
@@ -189,6 +195,11 @@
         };
         tabStore.active(newTab);
         tabStore.add(newTab);
+        break;
+      case 'remove-server':
+        // console.log(node);
+        treeStore.remove(node.title);
+        serverStore.removeConnect(node.title);
         break;
     }
   };

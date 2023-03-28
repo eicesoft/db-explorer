@@ -19,7 +19,7 @@ export const useSetupStore = defineStore({
   },
   actions: {
     init() {
-      console.log(Object.keys(this));
+      // console.log(Object.keys(this));
     },
     save() {},
     set(language: string) {
