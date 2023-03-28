@@ -15,7 +15,7 @@
   import 'ag-grid-community/styles/ag-theme-balham.css';
   import { GridOptions, GridApi, ColumnApi } from 'ag-grid-community';
   import { AgGridVue } from 'ag-grid-vue3';
-  import { ref, computed, defineExpose } from 'vue';
+  import { ref, computed } from 'vue';
   import DefaultRenderer from './render.js';
   import { FIELD_TYPE_MAP } from '~/utils/constants';
 

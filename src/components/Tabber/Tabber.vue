@@ -44,7 +44,7 @@
 
 <script lang="ts" setup>
   import { useTabStore } from '~/store/modules/tab';
-  import { onMounted, nextTick, ref, defineEmits, watch } from 'vue';
+  import { onMounted, nextTick, ref, watch } from 'vue';
   import { Tab, Id, TabType } from './index';
   import { getImageRes } from '~/utils/res';
   import { Icon } from '@arco-design/web-vue';
