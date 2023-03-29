@@ -5,7 +5,7 @@
         <slot name="title">{{ title }}</slot>
       </div>
       <div class="ice-dialog-close" @click.stop="close(DialogResult.Close)">
-        <IconFont :size="16" type="icon-close" />
+        <IconFont class="icon" :size="16" type="icon-close" />
       </div>
     </div>
 
@@ -65,44 +65,47 @@
   onMounted(() => {
     const dragArea: HTMLElement = dialogDrag.value;
     if (dragArea !== null) {
-      dragArea.onmousedown = function (env) {
-        // 兼容event事件
-        var env = env || window.event;
-        // 获取鼠标的坐标
-        var x = env.clientX;
-        var y = env.clientY;
-        // 获取元素的坐标
-        var left = dialogContainer.value.offsetLeft;
-        var top = dialogContainer.value.offsetTop;
-        // 获取鼠标在元素中的坐标
-        var x_left = x - left;
-        var y_top = y - top;
-        // 鼠标点击后改变颜色
+      let x_left: number, y_top: number;
+      const moveHandler = (evt: any) => {
+        let x = evt.clientX;
+        let y = evt.clientY;
+        let offsetLeft = x - x_left;
+        let offsetTop = y - y_top;
+
+        if (offsetLeft < 0) {
+          offsetLeft = 0;
+        }
+        if (offsetTop < 36) {
+          offsetTop = 36;
+        }
+
+        dialogContainer.value.style.left = offsetLeft + 'px';
+        dialogContainer.value.style.top = offsetTop + 'px';
+      };
+      dragArea.onmousedown = function (env: any) {
+        let x = env.clientX;
+        let y = env.clientY;
+        let left = dialogContainer.value.offsetLeft;
+        let top = dialogContainer.value.offsetTop;
+        x_left = x - left;
+        y_top = y - top;
         dialogContainer.value.classList.add('drag');
-        // 元素的移动事件函数
-        dragArea.onmousemove = function (env) {
-          // 兼容event事件
-          var env = env || window.event;
-          // 获取元素移动时的鼠标的坐标
-          var x = env.clientX;
-          var y = env.clientY;
-          // 元素的移动坐标
-          dialogContainer.value.style.left = x - x_left + 'px';
-          dialogContainer.value.style.top = y - y_top + 'px';
-        };
+
+        dragArea.addEventListener('mousemove', moveHandler);
       };
 
       dragArea.onmouseup = function () {
         dialogContainer.value.classList.remove('drag');
         // 在鼠标弹出后再次调用元素的鼠标移动事件
-        dragArea.onmousemove = function () {};
+        // dragArea.onmousemove = function () { };
+        dragArea.removeEventListener('mousemove', moveHandler);
       };
     }
   });
 
   const close = (button: DialogResult) => {
     const verification = () => {
-      if (button == DialogResult.Cancel) {
+      if (button == DialogResult.Cancel || button == DialogResult.Close) {
         return true;
       } else {
         return false;
@@ -118,7 +121,8 @@
 </script>
 
 <style lang="less" scoped>
-  @border-style1: 1px solid #ececec;
+  @border-style1: 1px solid #eeeeee;
+  @icon-width: 24px;
   .drag {
     border: 1px solid #fefefe !important;
     opacity: 0.95;
@@ -142,16 +146,23 @@
       padding: 4px 0px;
 
       .ice-dialog-text {
-        width: calc(100% - 32px);
+        width: calc(100% - @icon-width);
         cursor: move;
         font-weight: 800;
         font-size: 13px;
+        text-align: center;
       }
       .ice-dialog-close {
         cursor: pointer;
-        width: 32px;
+        width: @icon-width;
         text-align: right;
-        margin-right: 8px;
+        .icon {
+          padding: 2px;
+          &:hover {
+            border-radius: 4px;
+            background-color: #e2e2e2;
+          }
+        }
       }
     }
 
