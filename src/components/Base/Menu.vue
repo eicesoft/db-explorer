@@ -32,21 +32,22 @@
     emits('trigger', value);
   };
 </script>
-<style lang="scss">
+<style lang="less">
   .menu-drop {
     .arco-dropdown-option-active,
     .arco-dropdown-option:not(.arco-dropdown-option-disabled):hover {
-      background-color: #e8f1fc !important;
+      // background-color: #e8f1fc !important;
     }
   }
 </style>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .menu {
     display: flex;
     user-select: none;
     height: 24px;
     line-height: 24px;
+
     .menu-item {
       cursor: pointer;
       //   margin: 0 6px;

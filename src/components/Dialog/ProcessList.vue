@@ -1,31 +1,21 @@
 <template>
-  <a-modal
-    width="800px"
-    modal-class="base-model"
-    :mask="false"
-    :maskClosable="false"
-    renderToBody
-    draggable
-    hide-cancel
-    ok-text="关闭"
-    :visible="visible"
-    @ok="handleOk"
-    @cancel="handleOk"
-  >
+  <IceDialog width="800px" :visible="visible" @enter="handleEnter" @close="handleOk" title="进程管理">
     <template #title> {{ t('message.dialog.processlist.title') }} </template>
 
-    <a-input-search class="search-text" :placeholder="t('message.base.filter')" size="mini" v-model="searchKey" />
+    <template #body>
+      <a-input-search class="search-text" :placeholder="t('message.base.filter')" size="mini" v-model="searchKey" />
 
-    <a-table
-      style="margin-top: 5px; overflow-x: hidden; overflow-x: auto"
-      :virtual-list-props="{ height: 300 }"
-      :pagination="false"
-      size="mini"
-      :columns="columns"
-      :data="filter"
-    >
-    </a-table>
-  </a-modal>
+      <a-table
+        style="margin-top: 5px; overflow-x: hidden; overflow-x: auto"
+        :virtual-list-props="{ height: 300 }"
+        :pagination="false"
+        size="mini"
+        :columns="columns"
+        :data="filter"
+      >
+      </a-table>
+    </template>
+  </IceDialog>
 </template>
 
 <script lang="ts" setup>
@@ -113,12 +103,6 @@
   const searchKey = ref('');
   const filter = computed(() => {
     return rows.value.filter((item: any) => {
-      //   console.log(
-      //     item.User.indexOf(searchKey.value) != -1 ||
-      //       item.Id.toString().indexOf(searchKey.value) != -1 ||
-      //       item.db.indexOf(searchKey.value) != -1 ||
-      //       item.Host.indexOf(searchKey.value) != -1
-      //   );
       return (
         new String(item.User).toLocaleLowerCase().indexOf(searchKey.value.toLocaleLowerCase()) != -1 ||
         new String(item.Id).toLocaleLowerCase().indexOf(searchKey.value.toLocaleLowerCase()) != -1 ||
@@ -142,10 +126,17 @@
     { immediate: true }
   );
 
-  const handleOk = () => {
+  const handleOk = (button: any) => {
+    console.log(button);
     searchKey.value = '';
+    emit('update:visible', false);
+  };
+
+  const handleEnter = (button: any) => {
+    // searchKey.value = '';
+    // emit('update:visible', false);
     emit('update:visible', false);
   };
 </script>
 
-<style lang="scss"></style>
+<style lang="less"></style>

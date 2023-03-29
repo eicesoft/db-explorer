@@ -1,5 +1,14 @@
 <template>
-  <a-modal :visible="visible" @ok="handleOk" @cancel="handleCancel">
+  <a-modal
+    modal-class="base-model"
+    :mask="false"
+    :maskClosable="false"
+    renderToBody
+    draggable
+    :visible="visible"
+    @ok="handleOk"
+    @cancel="handleCancel"
+  >
     <template #title> 添加服务器 </template>
     <a-form :rules="rules" size="mini" :model="form">
       <a-form-item field="name" tooltip="请输入服务器名称" label="名称">
@@ -72,4 +81,4 @@
   };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="less" scoped></style>

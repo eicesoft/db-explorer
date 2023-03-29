@@ -18,6 +18,16 @@ export default defineConfig(({ command }) => {
   const sourcemap = isServe || !!process.env.VSCODE_DEBUG;
 
   return {
+    css: {
+      preprocessorOptions: {
+        less: {
+          modifyVars: {
+            // 'color-fill-2': '#e91818',
+          },
+          javascriptEnabled: true,
+        },
+      },
+    },
     plugins: [
       vue(),
       AutoImport({
@@ -92,14 +102,14 @@ export default defineConfig(({ command }) => {
       })(),
     clearScreen: false,
     build: {
-      minify: false,
+      minify: 'esnext',
     },
     optimizeDeps: {
       include: [
-        `monaco-editor/esm/vs/language/json/json.worker`,
-        `monaco-editor/esm/vs/language/css/css.worker`,
-        `monaco-editor/esm/vs/language/html/html.worker`,
-        `monaco-editor/esm/vs/language/typescript/ts.worker`,
+        // `monaco-editor/esm/vs/language/json/json.worker`,
+        // `monaco-editor/esm/vs/language/css/css.worker`,
+        // `monaco-editor/esm/vs/language/html/html.worker`,
+        // `monaco-editor/esm/vs/language/typescript/ts.worker`,
         `monaco-editor/esm/vs/editor/editor.worker`,
       ],
     },

@@ -168,7 +168,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style lang="less">
   .panel {
     .arco-tabs-content {
       padding-top: 0px !important;
@@ -176,7 +176,7 @@
   }
 </style>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   :deep(.hljs) {
     border-radius: 6px;
     border: 1px solid #ececec;

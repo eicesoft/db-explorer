@@ -1,6 +1,10 @@
 import { defineStore } from 'pinia';
-// import Store from 'electron-store';
-// const store = new Store();
+import Store from 'electron-store';
+const store = new Store({
+  name: 'servers',
+  fileExtension: 'conf',
+  encryptionKey: 'jdub237v',
+});
 
 // import { createStorage } from '@/utils/Storage';
 export interface IConnectState {
@@ -29,14 +33,14 @@ export const useServerStore = defineStore({
     },
   },
   actions: {
-    load() {
-      // let links = store.get(SERVER_KEY);
-      // if (links) {
-      //   this.links = links;
-      // }
+    load(cfg: any) {
+      let links = store.get(SERVER_KEY);
+      if (links) {
+        this.links = links;
+      }
     },
     save() {
-      // store.set(SERVER_KEY, this.links);
+      store.set(SERVER_KEY, this.links);
     },
     addConnect(
       name: string,

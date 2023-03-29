@@ -97,7 +97,7 @@
   });
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .panel {
     height: calc(var(--bodyHeight) - 36px - 36px);
     width: var(--bodyWidth);

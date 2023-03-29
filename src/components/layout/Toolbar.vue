@@ -61,7 +61,7 @@
   };
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .header {
     position: fixed;
     left: 0;

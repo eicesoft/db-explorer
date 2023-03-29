@@ -2,7 +2,9 @@ import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { release } from 'node:os';
 import { join } from 'node:path';
 import fs from 'node:fs';
+import Store from 'electron-store';
 
+Store.initRenderer();
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -79,6 +81,9 @@ async function createWindow() {
   // Test actively push message to the Electron-Renderer
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', new Date().toLocaleString());
+    win?.webContents.send('did-finish-load', {
+      key: 'jdub237v',
+    });
   });
 
   // Make all links open with the browser, not with the application
@@ -90,7 +95,7 @@ async function createWindow() {
   // win.webContents.on('will-navigate', (event, url) => { }) #344
 }
 
-console.log('App ready createWindow');
+// console.log('App ready createWindow');
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
@@ -132,8 +137,9 @@ ipcMain.handle('open-win', (_, arg) => {
   }
 });
 
-const packageInfo = require('../../package.json');
 ipcMain.handle('about', (event) => {
+  const packageInfo = require('../../package.json');
+
   dialog.showMessageBox(win, {
     title: packageInfo.productName,
     message: `Name: \t\t${packageInfo.productName}\nVersion: \t\t${packageInfo.version}\nAuthor: ${packageInfo.author}`,

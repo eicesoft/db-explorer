@@ -27,11 +27,11 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
   import { Notification } from '@arco-design/web-vue';
-  import { useClipboard } from '@vueuse/core';
   import { IconCopy, IconInfoCircleFill, IconStar, IconThunderbolt } from '@arco-design/web-vue/es/icon';
   import { format } from 'sql-formatter';
   import Manager from '~/utils/link_manager';
   import { TableFields } from './table';
+  import useClipboard from 'vue-clipboard3';
 
   const props = defineProps({
     serverKey: {
@@ -51,7 +51,7 @@
   const manager: Manager = Manager.getInstance();
   const tableInfos = ref(null);
   const createSQL = ref('');
-  const { copy } = useClipboard({ source: createSQL });
+  // const { copy } = useClipboard({ source: createSQL });
 
   const loadTableInfo = async () => {
     const conn = manager.get(props.serverKey);
@@ -66,9 +66,10 @@
   };
 
   const columns = ref(TableFields);
+  const { toClipboard } = useClipboard();
 
-  const copySQL = () => {
-    copy(createSQL.value);
+  const copySQL = async () => {
+    await toClipboard(createSQL.value);
     Notification.info({
       title: '复制成功',
       content: '',
@@ -77,7 +78,7 @@
   loadTableInfo();
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .container-info {
     background-color: #fafafa;
     width: 100%;

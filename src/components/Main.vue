@@ -31,20 +31,21 @@
           </div>
 
           <div v-else style="padding-top: calc(var(--bodyHeight) / 3)">
-            <a-empty />
+            <a-empty description="请在左侧选择服务器, 数据库或者表" />
           </div>
         </template>
       </a-split>
     </div>
 
     <Statusbar @trigger="toolbarTrigger" />
-  </div>
 
-  <!-- Dialogs start -->
-  <ConnectDialog v-model:visible="visibles.connectVisible" />
-  <ServerStatus :serverKey="statusStore?.serverName" v-model:visible="visibles.statusVisible" />
-  <ProcessList :serverKey="statusStore?.serverName" v-model:visible="visibles.processVisible" />
-  <!-- Dialogs end-->
+    <!-- Dialogs start -->
+    <ConnectDialog v-model:visible="visibles.connectVisible" />
+    <ServerStatus :serverKey="statusStore?.serverName" v-model:visible="visibles.statusVisible" />
+    <ProcessList :serverKey="statusStore?.serverName" v-model:visible="visibles.processVisible" />
+    <!-- <IceDialog v-model:visible="visibles.processVisible" title="进程管理" /> -->
+    <!-- Dialogs end-->
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -239,7 +240,7 @@
   };
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .main {
     overflow: hidden;
     height: calc(var(--windowHeight) - 28px);

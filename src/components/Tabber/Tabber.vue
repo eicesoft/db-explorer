@@ -115,21 +115,21 @@
   });
 </script>
 
-<style lang="scss">
+<style lang="less">
   .arco-dropdown-option {
     line-height: 24px !important;
     font-size: 12px !important;
     min-width: 96px !important;
   }
-  .arco-dropdown-option-active,
-  .arco-dropdown-option:not(.arco-dropdown-option-disabled):hover {
-    color: var(--color-text-1) !important;
-    background-color: #e8f1fc !important;
-    transition: all 0.1s cubic-bezier(0, 0, 1, 1);
-  }
+  // .arco-dropdown-option-active,
+  // .arco-dropdown-option:not(.arco-dropdown-option-disabled):hover {
+  //   color: var(--color-text-1) !important;
+  //   background-color: #e8f1fc !important;
+  //   transition: all 0.1s cubic-bezier(0, 0, 1, 1);
+  // }
 </style>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .x-icon {
     display: flex;
     align-items: center;

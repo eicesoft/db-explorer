@@ -1,5 +1,6 @@
 <template>
   <div class="caption-title">
+    <div class="title-icon"><img class="icon-img" :src="iconImg" /></div>
     <Menu @trigger="menuTrigger" :menus="menus" />
     <div class="title">{{ title }}</div>
   </div>
@@ -9,6 +10,9 @@
   import { ref, computed } from 'vue';
   import { MenuKeys } from '../Base/menu';
   import { useI18n } from 'vue-i18n';
+  import { getImageRes } from '~/utils/res';
+
+  const iconImg = getImageRes('icon.png');
   const { t } = useI18n();
   const { ipcRenderer } = require('electron');
 
@@ -65,17 +69,27 @@
   };
 </script>
 
-<style lang="scss" scoped>
-  $menuBackColor: #2f3241;
-  $menuColor: #ccdbfd;
+<style lang="less" scoped>
+  @menuBackColor: #2f3241;
+  @menuColor: #ccdbfd;
+  .title-icon {
+    display: flex;
+    align-items: center;
+    app-region: drag;
+    -webkit-app-region: drag;
+    .icon-img {
+      height: 18px;
+      width: 18px;
+    }
+  }
   .caption-title {
     display: flex;
     align-items: center;
     height: 36px;
     line-height: 36px;
     padding: 0 15px;
-    background-color: $menuBackColor;
-    color: $menuColor;
+    background-color: @menuBackColor;
+    color: @menuColor;
     position: fixed;
     left: 0;
     top: 0;

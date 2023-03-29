@@ -118,7 +118,7 @@
   });
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .container {
     width: 100%;
     height: calc(var(--bodyHeight) - 38px - 36px - 28px - 32px);

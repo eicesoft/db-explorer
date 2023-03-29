@@ -44,7 +44,7 @@
       try {
         const conn = manager.get(data.meta?.Param.serverKey);
         const resp = await conn.getTables(data.title);
-        console.error(resp);
+        // console.error(resp);
         let tabGroup: SimpleNode = {
           id: 'tables_' + data.title + '_groups',
           title: t('message.tree.table'),
@@ -68,7 +68,7 @@
           tabGroup.children?.push({
             id: 'table_' + data.title + '_' + tableName,
             title: tableName,
-            switcherIcon: () => h('span', {}),
+            // switcherIcon: () => h('span', {}),
             type: NodeType.Table,
             icon: 'table',
             isLeaf: true,
@@ -81,6 +81,7 @@
                 serverKey: param.serverKey,
               },
             },
+            children: null,
           });
         }
         data.children = [tabGroup];
@@ -188,10 +189,10 @@
           <template
             v-if="
               nodeData.type == NodeType.Server ||
-              (nodeData.type == NodeType.TableGroup && nodeData.children.length != 0)
+              (nodeData.type == NodeType.TableGroup && nodeData.children?.length != 0)
             "
           >
-            <div>{{ nodeData?.title }}({{ nodeData.children.length }})</div>
+            <div>{{ nodeData?.title }}</div>
           </template>
           <template v-else-if="nodeData.type == NodeType.Database">
             <div @dblclick="openDatabase(nodeData)">{{ nodeData?.title }}</div>
@@ -251,7 +252,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style lang="less">
   .arco-tree-node-disabled-selectable {
     .arco-tree-node-title {
       color: var(--color-text-1) !important;
@@ -261,7 +262,7 @@
   }
 </style>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .tree {
     padding: 0px;
     margin: 0px;

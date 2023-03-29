@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia';
-// import Store from 'electron-store';
+import Store from 'electron-store';
 
-// const store = new Store();
+const store = new Store({
+  name: 'setting',
+});
 
 export interface ISetupState {
   lang: string;

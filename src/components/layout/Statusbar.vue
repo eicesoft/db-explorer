@@ -62,7 +62,7 @@
   };
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .statusbar {
     position: fixed;
     left: 0;
