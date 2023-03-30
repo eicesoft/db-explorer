@@ -31,7 +31,33 @@
           </div>
 
           <div v-else style="padding-top: calc(var(--bodyHeight) / 3)">
-            <a-empty description="请在左侧选择服务器, 数据库或者表" />
+            <!-- <a-empty description="请在左侧选择服务器, 数据库或者表" /> -->
+
+            <IceTree
+              :node="{
+                id: 1,
+                title: '连接',
+                icon: 'home',
+                selectable: false,
+                isLeaf: false,
+                fold: true,
+                children: [
+                  { id: 2, title: 'Dev', fold: true, icon: 'server', selectable: false, isLeaf: true },
+                  {
+                    id: 3,
+                    title: 'Prod',
+                    icon: 'server',
+                    selectable: false,
+                    isLeaf: false,
+                    fold: false,
+                    children: [
+                      { id: 4, title: 'bi', icon: 'database', selectable: false, isLeaf: true },
+                      { id: 5, title: 'shop', icon: 'database', selectable: false, isLeaf: true },
+                    ],
+                  },
+                ],
+              }"
+            />
           </div>
         </template>
       </a-split>

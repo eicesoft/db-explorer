@@ -1,6 +1,13 @@
 <template>
-  <IceDialog width="800px" :visible="visible" @enter="handleEnter" @close="handleOk" title="进程管理">
-    <template #title> {{ t('message.dialog.processlist.title') }} </template>
+  <IceDialog
+    width="800px"
+    :visible="visible"
+    @enter="handleEnter"
+    @close="handleOk"
+    :buttons="DialogButton.Close"
+    :title="t('message.dialog.processlist.title')"
+  >
+    <template #title> {{ t('message.dialog.processlist.title') }}({{ rows.length }}) </template>
 
     <template #body>
       <a-input-search class="search-text" :placeholder="t('message.base.filter')" size="mini" v-model="searchKey" />
@@ -21,6 +28,8 @@
 <script lang="ts" setup>
   import { computed, ref, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
+  import { DialogButton } from '~/components/UI/dialog';
+
   import Manager from '~/utils/link_manager';
   const { t } = useI18n();
 

@@ -39,6 +39,7 @@ declare module '@vue/runtime-core' {
     IceButton: typeof import('./src/components/UI/IceButton.vue')['default']
     IceDialog: typeof import('./src/components/UI/IceDialog.vue')['default']
     IceInput: typeof import('./src/components/UI/IceInput.vue')['default']
+    IceTree: typeof import('./src/components/UI/Tree/IceTree.vue')['default']
     Main: typeof import('./src/components/Main.vue')['default']
     Menu: typeof import('./src/components/Base/Menu.vue')['default']
     PanelManager: typeof import('./src/components/Panel/PanelManager.vue')['default']
@@ -49,5 +50,7 @@ declare module '@vue/runtime-core' {
     TableInformation: typeof import('./src/components/Panel/TableInformation.vue')['default']
     TablePanel: typeof import('./src/components/Panel/TablePanel.vue')['default']
     Toolbar: typeof import('./src/components/layout/Toolbar.vue')['default']
+    Tree: typeof import('./src/components/UI/Tree/Tree.vue')['default']
+    TreeNode: typeof import('./src/components/UI/Tree/TreeNode.vue')['default']
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <a-modal
+  <!-- <a-modal
     modal-class="base-model"
     :mask="false"
     draggable
@@ -23,13 +23,39 @@
       :data="filter"
     >
     </a-table>
-  </a-modal>
+  </a-modal> -->
+
+  <IceDialog
+    width="500px"
+    :visible="visible"
+    @enter="handleOk"
+    @close="handleOk"
+    :buttons="DialogButton.Close"
+    :title="t('message.dialog.status.title')"
+  >
+    <template #body>
+      <a-input-search class="search-text" :placeholder="t('message.base.filter')" size="mini" v-model="searchKey" />
+
+      <a-table
+        style="margin-top: 5px; overflow-x: hidden; overflow-x: auto"
+        :virtual-list-props="{ height: 300 }"
+        column-resizable
+        :pagination="false"
+        size="mini"
+        :columns="columns"
+        :data="filter"
+      >
+      </a-table
+    ></template>
+  </IceDialog>
 </template>
 
 <script lang="ts" setup>
   import { computed, ref, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import Manager from '~/utils/link_manager';
+  import { DialogButton } from '~/components/UI/dialog';
+
   const { t } = useI18n();
 
   const columns = computed(() => {

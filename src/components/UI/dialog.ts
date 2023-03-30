@@ -1,11 +1,11 @@
 export enum DialogButton {
-  Ok,
-  Cancel,
-  Close,
+  Ok = 1 << 0,
+  Cancel = 1 << 1,
+  Close = 1 << 2,
 }
 
 export enum DialogResult {
-  Enter,
+  Enter = 1,
   Cancel,
   Close,
 }
