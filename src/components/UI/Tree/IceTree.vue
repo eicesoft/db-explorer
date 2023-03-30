@@ -1,10 +1,12 @@
 <template>
   <div class="tree">
-    <TreeNode v-if="node != null" :node="node"></TreeNode>
+    <TreeNode v-if="node != null" :active="active" :node="node"></TreeNode>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import emitter from '~/utils/bus';
+  import { ref } from 'vue';
   // import type { TreeNode, TreeProp } from './tree';
   export interface TreeProp {
     node?: TreeNode;
@@ -22,6 +24,12 @@
   }
 
   const props = withDefaults(defineProps<TreeProp>(), {});
+
+  const active = ref(null);
+  emitter.on('change-node', (node: any) => {
+    console.log('change node', node);
+    active.value = node;
+  });
 </script>
 
 <style lang="less" scoped>

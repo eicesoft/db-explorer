@@ -44,7 +44,7 @@ const indexHtml = join(process.env.DIST, 'index.html');
 // console.warn(app.getPath('userData'));
 async function createWindow() {
   win = new BrowserWindow({
-    title: 'SQL Explorer',
+    title: 'DB Explorer',
     icon: join(process.env.PUBLIC, 'favicon.ico'),
     height: 800,
     width: 1024,
@@ -69,7 +69,7 @@ async function createWindow() {
   if (process.env.VITE_DEV_SERVER_URL) {
     // electron-vite-vue#298
     win.loadURL(url, {
-      extraHeaders: `Content-Security-Policy: default-src 'self'`,
+      extraHeaders: `Content-Security-Policy: default-src 'unsafe-eval'`,
     });
     // Open devTool if the app is not packaged
     win.webContents.openDevTools();

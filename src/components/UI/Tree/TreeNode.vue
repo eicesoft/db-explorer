@@ -5,12 +5,17 @@
         <IconFont v-show="!rNode.isLeaf" size="20" :type="rNode.fold ? 'icon-fold' : 'icon-unfold'" />
       </div>
       <div class="tree-node-body">
-        <div class="tree-node-title">
+        <div @click="changeNode(rNode)" :class="{ 'tree-node-active': rNode.id == active?.id }" class="tree-node-title">
           <div class="tree-node-icon"><IconFont :size="18" :type="'icon-' + rNode.icon" /></div>
           <div class="tree-node-text">{{ rNode.title }}</div>
         </div>
         <template v-if="rNode.children">
-          <TreeNode v-show="rNode?.fold" v-for="(child, index) in rNode.children" :node="child"></TreeNode>
+          <TreeNode
+            v-show="rNode?.fold"
+            v-for="(child, index) in rNode.children"
+            :node="child"
+            :active="active"
+          ></TreeNode>
         </template>
       </div>
     </div>
@@ -22,12 +27,14 @@
   import { Icon } from '@arco-design/web-vue';
   import { ref } from 'vue';
   import { getImageRes } from '~/utils/res';
+  import emitter from '~/utils/bus';
 
   const IconFont = Icon.addFromIconFontCn({
     src: getImageRes('iconfont/iconfont.js'),
   });
 
   const emits = defineEmits<{
+    (e: 'change', node: TreeNode): void;
     (e: 'update:node', val: TreeNode): void;
   }>();
 
@@ -42,14 +49,19 @@
     runtime?: Record<string, any>;
   }
   interface TreeProp {
-    node?: TreeNode;
+    node: TreeNode;
+    active?: TreeNode;
   }
-  const props = withDefaults(defineProps<TreeProp>(), {});
+  const props = defineProps<TreeProp>();
   const rNode = ref<TreeNode>(props.node);
 
   const fold = () => {
     rNode.value.fold = !rNode.value?.fold;
-    emits('update:node', rNode);
+    emits('update:node', rNode.value);
+  };
+  const changeNode = (node: TreeNode) => {
+    console.log('change node', node);
+    emitter.emit('change-node', node);
   };
 </script>
 
@@ -65,7 +77,7 @@
     width: 100%;
     cursor: pointer;
     // border-left: 2px dashed #ececec;
-    outline-left: 2px dashed #ececec;
+    // outline-left: 2px dashed #ececec;
     .tree-node-fold {
       width: @icon-weight;
       display: flex;
@@ -76,6 +88,9 @@
     .tree-node-body {
       text-align: left;
       width: 100%;
+      .tree-node-active {
+        color: #3580f0;
+      }
     }
 
     .tree-node-title {
