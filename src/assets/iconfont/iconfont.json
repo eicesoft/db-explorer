@@ -1,10 +1,17 @@
 {
   "id": "3961440",
-  "name": "MySQLExplorer",
+  "name": "DB Explorer",
   "font_family": "iconfont",
   "css_prefix_text": "icon-",
   "description": "",
   "glyphs": [
+    {
+      "icon_id": "12225046",
+      "name": "加载",
+      "font_class": "loading",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
     {
       "icon_id": "7587980",
       "name": "展开",

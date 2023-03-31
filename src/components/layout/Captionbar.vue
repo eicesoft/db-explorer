@@ -77,6 +77,7 @@
     align-items: center;
     app-region: drag;
     -webkit-app-region: drag;
+    user-select: none;
     .icon-img {
       height: 18px;
       width: 18px;

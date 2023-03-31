@@ -88,7 +88,7 @@ export const useTreeStore = defineStore({
       const serverStore = useServerStore();
       const connect = serverStore.getConnect(key);
       let id = 'server_' + uuid();
-      this.root.children?.push({
+      this.root?.children?.push({
         id: id,
         icon: 'server',
         title: key,

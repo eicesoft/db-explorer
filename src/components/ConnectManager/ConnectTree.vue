@@ -178,7 +178,7 @@
       :virtualListProps="{
         height: height - 32,
         fixedSize: true,
-        buffer: 20,
+        buffer: 15,
       }"
       :show-line="true"
       :load-more="loadMore"

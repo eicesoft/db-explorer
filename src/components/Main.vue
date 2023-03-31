@@ -30,29 +30,33 @@
             <PanelManager></PanelManager>
           </div>
 
-          <div v-else style="padding-top: calc(var(--bodyHeight) / 3)">
-            <!-- <a-empty description="请在左侧选择服务器, 数据库或者表" /> -->
-
+          <!-- <div v-else style="padding-top: calc(var(--bodyHeight) / 3)"> -->
+          <!-- <a-empty description="请在左侧选择服务器, 数据库或者表" /> -->
+          <div>
             <IceTree
+              :loadmore="loadmore"
               :node="{
                 id: 1,
                 title: '连接',
                 icon: 'home',
                 selectable: false,
                 isLeaf: false,
-                fold: true,
+                expanded: true,
+                runtime: {
+                  finished: true,
+                },
                 children: [
-                  { id: 2, title: 'Dev', fold: true, icon: 'server', selectable: false, isLeaf: true },
+                  { id: 2, title: 'Dev', expanded: false, icon: 'server', selectable: true, isLeaf: false },
                   {
                     id: 3,
                     title: 'Prod',
                     icon: 'server',
-                    selectable: false,
+                    selectable: true,
                     isLeaf: false,
-                    fold: false,
+                    expanded: false,
                     children: [
-                      { id: 4, title: 'bi', icon: 'database', selectable: false, isLeaf: true },
-                      { id: 5, title: 'shop', icon: 'database', selectable: false, isLeaf: true },
+                      { id: 4, title: 'bi', icon: 'database', selectable: true, isLeaf: true },
+                      { id: 5, title: 'shop', icon: 'database', selectable: true, isLeaf: true },
                     ],
                   },
                 ],
@@ -88,7 +92,7 @@
   import { SimpleNode } from './ConnectManager';
   import { uuid } from '~/utils';
   import { ToolCommand } from './layout/tool';
-  import { TreeSelect } from '@arco-design/web-vue';
+  import { TreeNode } from './UI/Tree/tree';
 
   let bodyWidth = ref(0);
   let width = ref(0);
@@ -262,6 +266,24 @@
       case ToolCommand.ProcessList:
         visibles.processVisible = true;
         break;
+    }
+  };
+
+  const loadmore = (node: TreeNode) => {
+    for (let i = 0; i < 1000; i++) {
+      let child = {
+        id: 'tabletabletabletabletabletabletabletable' + i,
+        title: 'tabletab' + i,
+        expanded: false,
+        icon: 'table',
+        selectable: true,
+        isLeaf: true,
+      };
+      // console.log(child);
+      if (!node.children) {
+        node.children = [];
+      }
+      node.children?.push(child);
     }
   };
 </script>

@@ -33,7 +33,7 @@ export const useServerStore = defineStore({
     },
   },
   actions: {
-    load(cfg: any) {
+    load() {
       let links = store.get(SERVER_KEY);
       if (links) {
         this.links = links;
