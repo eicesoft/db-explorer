@@ -30,38 +30,8 @@
             <PanelManager></PanelManager>
           </div>
 
-          <!-- <div v-else style="padding-top: calc(var(--bodyHeight) / 3)"> -->
-          <!-- <a-empty description="请在左侧选择服务器, 数据库或者表" /> -->
-          <div>
-            <IceTree
-              :loadmore="loadmore"
-              :node="{
-                id: 1,
-                title: '连接',
-                icon: 'home',
-                selectable: false,
-                isLeaf: false,
-                expanded: true,
-                runtime: {
-                  finished: true,
-                },
-                children: [
-                  { id: 2, title: 'Dev', expanded: false, icon: 'server', selectable: true, isLeaf: false },
-                  {
-                    id: 3,
-                    title: 'Prod',
-                    icon: 'server',
-                    selectable: true,
-                    isLeaf: false,
-                    expanded: false,
-                    children: [
-                      { id: 4, title: 'bi', icon: 'database', selectable: true, isLeaf: true },
-                      { id: 5, title: 'shop', icon: 'database', selectable: true, isLeaf: true },
-                    ],
-                  },
-                ],
-              }"
-            />
+          <div v-else style="padding-top: calc(var(--bodyHeight) / 3)">
+            <a-empty description="请在左侧选择服务器, 数据库或者表" />
           </div>
         </template>
       </a-split>
@@ -92,8 +62,20 @@
   import { SimpleNode } from './ConnectManager';
   import { uuid } from '~/utils';
   import { ToolCommand } from './layout/tool';
-  import { TreeNode } from './UI/Tree/tree';
+  // import {
+  //   BaseTreeNode,
+  //   EventParams,
+  //   SelectEventParams,
+  //   TreeContext,
+  //   TreeNodeOptions,
+  //   VirTree,
+  // } from '@ysx-libs/vue-virtual-tree';
+  import { Icon } from '@arco-design/web-vue';
+  import { getImageRes } from '~/utils/res';
 
+  const IconFont = Icon.addFromIconFontCn({
+    src: getImageRes('iconfont/iconfont.js'),
+  });
   let bodyWidth = ref(0);
   let width = ref(0);
   let height = ref(0);
@@ -114,17 +96,16 @@
     return {
       '--windowWidth': width.value + 'px',
       '--windowHeight': height.value + 'px',
-      '--bodyHeight': height.value - 28 * 2 + 'px',
+      '--bodyHeight': height.value - 28 * 2 - 36 + 'px',
       '--bodyWidth': bodyWidth.value + 'px',
       '--sideWidth': sideWidth.value + 'px',
     };
   });
   const node = ref<SimpleNode | null>(null);
-  const BASE_TITLE = packageInfo.productName;
   // const title = ref(BASE_TITLE);
 
   const title = computed(() => {
-    let t = BASE_TITLE;
+    let t = packageInfo.productName;
     if (statusStore.serverName) {
       t += ` - Server: ${statusStore.serverName}`;
     }
@@ -241,11 +222,38 @@
     bodyWidth.value = width.value - sideWidth.value - 7;
   };
 
+  const list = ref<TreeNodeOptions[]>([]);
+  const virTree = ref<TreeContext>();
+
+  function recursion(path = '0', level = 3): TreeNodeOptions[] {
+    const list = [];
+    for (let i = 0; i < 10; i += 1) {
+      const nodeKey = `${path}-${i}`;
+      const treeNode: TreeNodeOptions = {
+        nodeKey,
+        name: nodeKey,
+        children: [],
+        hasChildren: true,
+      };
+
+      if (level > 0) {
+        treeNode.children = recursion(nodeKey, level - 1);
+      } else {
+        treeNode.hasChildren = false;
+      }
+
+      list.push(treeNode);
+    }
+    return list;
+  }
   onMounted(() => {
+    list.value = recursion();
+
     window.onresize = () => {
       resize();
     };
     resize();
+    console.log(virTree);
   });
 
   /** Dialog visible */
@@ -269,22 +277,22 @@
     }
   };
 
-  const loadmore = (node: TreeNode) => {
-    for (let i = 0; i < 1000; i++) {
-      let child = {
-        id: 'tabletabletabletabletabletabletabletable' + i,
-        title: 'tabletab' + i,
-        expanded: false,
-        icon: 'table',
-        selectable: true,
-        isLeaf: true,
+  const loadData = (node: any, callback: (children: TreeNodeOptions[]) => void) => {
+    console.log('loadData', node);
+    const result: TreeNodeOptions[] = [];
+    for (let i = 0; i < 5; i += 1) {
+      const nodeKey = `${node.nodeKey}-${i}`;
+      const treeNode: TreeNodeOptions = {
+        nodeKey: nodeKey,
+        name: nodeKey,
+        children: [],
+        hasChildren: true,
       };
-      // console.log(child);
-      if (!node.children) {
-        node.children = [];
-      }
-      node.children?.push(child);
+      result.push(treeNode);
     }
+    setTimeout(() => {
+      callback(result);
+    }, 100);
   };
 </script>
 

@@ -182,7 +182,7 @@
     border: 1px solid #ececec;
   }
   .panel {
-    height: calc(var(--bodyHeight) - 36px - 36px);
+    height: calc(var(--bodyHeight) - 36px);
     width: var(--bodyWidth);
 
     .toolbar {

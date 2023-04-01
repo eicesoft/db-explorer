@@ -50,7 +50,6 @@ declare module '@vue/runtime-core' {
     TableInformation: typeof import('./src/components/Panel/TableInformation.vue')['default']
     TablePanel: typeof import('./src/components/Panel/TablePanel.vue')['default']
     Toolbar: typeof import('./src/components/layout/Toolbar.vue')['default']
-    Tree: typeof import('./src/components/UI/Tree/Tree.vue')['default']
     TreeNode: typeof import('./src/components/UI/Tree/TreeNode.vue')['default']
   }
 }

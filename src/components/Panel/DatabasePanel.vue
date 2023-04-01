@@ -99,7 +99,7 @@
 
 <style lang="less" scoped>
   .panel {
-    height: calc(var(--bodyHeight) - 36px - 36px);
+    height: calc(var(--bodyHeight) - 36px);
     width: var(--bodyWidth);
   }
 </style>

@@ -68,7 +68,7 @@
           tabGroup.children?.push({
             id: 'table_' + data.title + '_' + tableName,
             title: tableName,
-            // switcherIcon: () => h('span', {}),
+            switcherIcon: () => h('span', {}),
             type: NodeType.Table,
             icon: 'table',
             isLeaf: true,
