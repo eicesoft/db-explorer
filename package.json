@@ -46,7 +46,7 @@
   "dependencies": {
     "@arco-design/web-vue": "^2.44.1",
     "@highlightjs/vue-plugin": "^2.1.0",
-    "@vueuse/core": "^8.2.0",
+    "@vueuse/core": "^9.13.0",
     "ag-grid-community": "^29.1.0",
     "ag-grid-vue3": "^29.1.0",
     "electron-store": "^8.1.0",
