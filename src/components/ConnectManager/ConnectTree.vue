@@ -150,6 +150,10 @@
   const removeServer = (node: any) => {
     emits('menu-select', 'remove-server', node);
   };
+
+  const tableDesign = (node: any) => {
+    emits('menu-select', 'table-design', node);
+  };
 </script>
 
 <template>
@@ -204,7 +208,7 @@
           <template #content>
             <template v-if="nodeData.type == NodeType.Table">
               <a-doption>打开表格</a-doption>
-              <a-doption>设计表结果</a-doption>
+              <a-doption @click="tableDesign(nodeData)">设计表结构</a-doption>
               <a-doption>重命名</a-doption>
               <a-divider margin="4px" />
 

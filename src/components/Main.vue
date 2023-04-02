@@ -187,12 +187,13 @@
   });
 
   const menuSelect = (menu_key: string, node: SimpleNode) => {
+    let newTab: Tab;
     switch (menu_key) {
       case 'new_query': //新建查询
         let queryTabs = tabStore.tabs.filter((i: any) => {
           return i.type == TabType.Query;
         });
-        let newTab: Tab = {
+        newTab = {
           id: 'Query' + uuid(),
           title: 'Query ' + (queryTabs.length + 1),
           type: TabType.Query,
@@ -212,6 +213,18 @@
         // console.log(node);
         treeStore.remove(node.title);
         serverStore.removeConnect(node.title);
+        break;
+      case 'table-design':
+        newTab = {
+          id: 'design_table_' + node.title,
+          title: 'Design Table:' + node.title,
+          type: TabType.TableDesign,
+          meta: {
+            node: node,
+          },
+        };
+        tabStore.active(newTab);
+        tabStore.add(newTab);
         break;
     }
   };

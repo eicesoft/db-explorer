@@ -47,6 +47,7 @@ declare module '@vue/runtime-core' {
     ServerStatus: typeof import('./src/components/Dialog/ServerStatus.vue')['default']
     Statusbar: typeof import('./src/components/layout/Statusbar.vue')['default']
     Tabber: typeof import('./src/components/Tabber/Tabber.vue')['default']
+    TableDesignPanel: typeof import('./src/components/Panel/TableDesignPanel.vue')['default']
     TableInformation: typeof import('./src/components/Panel/TableInformation.vue')['default']
     TablePanel: typeof import('./src/components/Panel/TablePanel.vue')['default']
     Toolbar: typeof import('./src/components/layout/Toolbar.vue')['default']

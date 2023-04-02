@@ -8,6 +8,10 @@
       <template v-else-if="tab.type == TabType.Database">
         <DatabasePanel v-show="tabStore.activeTab?.id == tab.id" :node="tab.meta?.node" />
       </template>
+
+      <template v-else-if="tab.type == TabType.TableDesign">
+        <TableDesignPanel v-show="tabStore.activeTab?.id == tab.id" :node="tab.meta?.node" />
+      </template>
     </template>
 
     <!--只有一个编辑器实例-->
@@ -16,8 +20,6 @@
 </template>
 
 <script setup lang="ts">
-  import TablePanel from './TablePanel.vue';
-  import EditorPanel from './EditorPanel.vue';
   import { useTabStore } from '~/store/modules/tab';
 
   import { TabType } from '~/components/Tabber/index';
