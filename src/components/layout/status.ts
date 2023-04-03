@@ -4,4 +4,8 @@ export interface StatusInfo {
   database?: string;
   queryCount: number;
   language: string;
+  window: {
+    bodyHeight: number;
+    bodyWidth: number;
+  };
 }

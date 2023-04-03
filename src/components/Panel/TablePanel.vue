@@ -5,7 +5,7 @@
   import { getImageRes } from '~/utils/res';
   import { useI18n } from 'vue-i18n';
   import { Icon } from '@arco-design/web-vue';
-  import { IconExpand } from '@arco-design/web-vue/es/icon';
+  import { IconExpand, IconRefresh } from '@arco-design/web-vue/es/icon';
   import { Message } from '@arco-design/web-vue';
   import { useStatausStore } from '~/store/modules/status';
 
@@ -101,10 +101,14 @@
     }
   };
 
+  const refresh = async () => {
+    await loadPage();
+  };
+
   const statusStore = useStatausStore();
 
   const gridHeight = computed(() => {
-    return statusStore.window.bodyHeight - 38 - 28 - 32;
+    return statusStore.window.bodyHeight - 38 - 28 - 34;
   });
 
   const doSearch = () => {
@@ -125,19 +129,26 @@
           <div class="toolbar-left">
             <!-- -->
 
-            <a-input
+            <!-- <a-input
               v-model="condition"
               @press-enter="doSearch"
               size="mini"
               :style="{ width: '340px' }"
               placeholder="请输入过滤条件 id=?"
               allow-clear
+            /> -->
+
+            <IceInput
+              @search="doSearch"
+              :style="{ width: '440px' }"
+              :placeholder="'请输入过滤条件 id=?'"
+              v-model="condition"
             />
           </div>
           <div class="toolbar-right">
             <a-tooltip :content="t('message.tablepanel.toolbar.resize')">
-              <a-button @click="resize" size="mini">
-                <template #icon><IconExpand :size="16" /></template>
+              <a-button @click="refresh" size="mini">
+                <template #icon><IconRefresh :size="16" /></template>
               </a-button>
             </a-tooltip>
 
@@ -210,6 +221,7 @@
       }
       .toolbar-right {
         display: flex;
+        align-items: center;
         .disable {
           color: rgb(207, 207, 207);
           cursor: not-allowed;

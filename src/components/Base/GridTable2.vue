@@ -47,7 +47,7 @@
       }
     } else {
       td.classList.add('cell-value-null');
-      td.innerHTML = '<span class="cell-value-null">null</span>';
+      td.innerHTML = '<span class="cell-value-null">NULL</span>';
     }
     // Handsontable.renderers.TextRenderer.apply(this, arguments);
   }
