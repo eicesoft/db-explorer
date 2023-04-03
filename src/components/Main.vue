@@ -77,8 +77,11 @@
     src: getImageRes('iconfont/iconfont.js'),
   });
   let bodyWidth = ref(0);
+  let bodyHeight = ref(0);
   let width = ref(0);
   let height = ref(0);
+  const size = ref('248px');
+
   const serverStore = useServerStore();
   const setupStore = useSetupStore();
   const tabStore = useTabStore();
@@ -96,7 +99,7 @@
     return {
       '--windowWidth': width.value + 'px',
       '--windowHeight': height.value + 'px',
-      '--bodyHeight': height.value - 28 * 2 - 36 + 'px',
+      '--bodyHeight': bodyHeight.value + 'px',
       '--bodyWidth': bodyWidth.value + 'px',
       '--sideWidth': sideWidth.value + 'px',
     };
@@ -181,7 +184,6 @@
     tabStore.removeAll();
   };
 
-  const size = ref('248px');
   const sideWidth = computed(() => {
     return parseInt(size.value.substring(0, size.value.length - 2));
   });
@@ -233,34 +235,36 @@
     width.value = window.innerWidth;
     height.value = window.innerHeight;
     bodyWidth.value = width.value - sideWidth.value - 7;
+    bodyHeight.value = height.value - 28 * 2 - 36;
+    statusStore.setWindow(bodyWidth.value, bodyHeight.value);
   };
 
   const list = ref<TreeNodeOptions[]>([]);
   const virTree = ref<TreeContext>();
 
-  function recursion(path = '0', level = 3): TreeNodeOptions[] {
-    const list = [];
-    for (let i = 0; i < 10; i += 1) {
-      const nodeKey = `${path}-${i}`;
-      const treeNode: TreeNodeOptions = {
-        nodeKey,
-        name: nodeKey,
-        children: [],
-        hasChildren: true,
-      };
+  // function recursion(path = '0', level = 3): TreeNodeOptions[] {
+  //   const list = [];
+  //   for (let i = 0; i < 10; i += 1) {
+  //     const nodeKey = `${path}-${i}`;
+  //     const treeNode: TreeNodeOptions = {
+  //       nodeKey,
+  //       name: nodeKey,
+  //       children: [],
+  //       hasChildren: true,
+  //     };
 
-      if (level > 0) {
-        treeNode.children = recursion(nodeKey, level - 1);
-      } else {
-        treeNode.hasChildren = false;
-      }
+  //     if (level > 0) {
+  //       treeNode.children = recursion(nodeKey, level - 1);
+  //     } else {
+  //       treeNode.hasChildren = false;
+  //     }
 
-      list.push(treeNode);
-    }
-    return list;
-  }
+  //     list.push(treeNode);
+  //   }
+  //   return list;
+  // }
   onMounted(() => {
-    list.value = recursion();
+    // list.value = recursion();
 
     window.onresize = () => {
       resize();
@@ -290,23 +294,23 @@
     }
   };
 
-  const loadData = (node: any, callback: (children: TreeNodeOptions[]) => void) => {
-    console.log('loadData', node);
-    const result: TreeNodeOptions[] = [];
-    for (let i = 0; i < 5; i += 1) {
-      const nodeKey = `${node.nodeKey}-${i}`;
-      const treeNode: TreeNodeOptions = {
-        nodeKey: nodeKey,
-        name: nodeKey,
-        children: [],
-        hasChildren: true,
-      };
-      result.push(treeNode);
-    }
-    setTimeout(() => {
-      callback(result);
-    }, 100);
-  };
+  // const loadData = (node: any, callback: (children: TreeNodeOptions[]) => void) => {
+  //   console.log('loadData', node);
+  //   const result: TreeNodeOptions[] = [];
+  //   for (let i = 0; i < 5; i += 1) {
+  //     const nodeKey = `${node.nodeKey}-${i}`;
+  //     const treeNode: TreeNodeOptions = {
+  //       nodeKey: nodeKey,
+  //       name: nodeKey,
+  //       children: [],
+  //       hasChildren: true,
+  //     };
+  //     result.push(treeNode);
+  //   }
+  //   setTimeout(() => {
+  //     callback(result);
+  //   }, 100);
+  // };
 </script>
 
 <style lang="less" scoped>

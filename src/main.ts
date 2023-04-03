@@ -10,7 +10,7 @@ import i18n from '~/locale/index';
 import '@arco-design/web-vue/dist/arco.less';
 import '@arco-design/web-vue/es/message/style/css.js';
 import '@arco-design/web-vue/es/notification/style/css.js';
-import '@ysx-libs/vue-virtual-tree/style.css';
+// import '@ysx-libs/vue-virtual-tree/style.css';
 
 const app = createApp(App);
 setupStore(app);

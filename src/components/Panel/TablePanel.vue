@@ -7,6 +7,7 @@
   import { Icon } from '@arco-design/web-vue';
   import { IconExpand } from '@arco-design/web-vue/es/icon';
   import { Message } from '@arco-design/web-vue';
+  import { useStatausStore } from '~/store/modules/status';
 
   const props = defineProps({
     node: {
@@ -55,13 +56,17 @@
         []
       );
       console.log(resp);
-
-      fields.value = resp.fields;
       rows.value = resp.data;
-      // gridApi.setRowData(resp.data);
-      // nextTick(() => {
-      //   autoResize();
-      // });
+
+      const fieldsResp = await conn.getTableFields(props.node?.meta?.DatabaseName, props.node?.title);
+      console.log(fieldsResp);
+      fields.value = fieldsResp.data.map((field: any) => {
+        return { name: field.Field, data: field.Field, type: 'text', desc: field.Comment, label: field.Field };
+      });
+
+      console.log(fields);
+
+      // fields.value = resp.fields;
     } catch (e: any) {
       Message.error(e.toString());
     }
@@ -95,10 +100,13 @@
       await loadPage();
     }
   };
-  const resize = () => {
-    console.log(gridTable.value);
-    gridTable.value.autoResize();
-  };
+
+  const statusStore = useStatausStore();
+
+  const gridHeight = computed(() => {
+    return statusStore.window.bodyHeight - 38 - 28 - 32;
+  });
+
   const doSearch = () => {
     loadPage();
   };
@@ -139,7 +147,9 @@
           </div>
         </div>
 
-        <GridTable ref="gridTable" :rows="rowData" :fields="fields" />
+        <!-- <GridTable2 :setting="{ rowHeaders: false, height: 300 }" :columns="columns" :datas="datas" /> -->
+
+        <GridTable2 :setting="{ rowHeaders: true, height: gridHeight }" :columns="fields" :datas="rowData" />
       </a-tab-pane>
 
       <a-tab-pane key="info">

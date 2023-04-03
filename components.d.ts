@@ -36,6 +36,7 @@ declare module '@vue/runtime-core' {
     DatabasePanel: typeof import('./src/components/Panel/DatabasePanel.vue')['default']
     EditorPanel: typeof import('./src/components/Panel/EditorPanel.vue')['default']
     GridTable: typeof import('./src/components/Base/GridTable.vue')['default']
+    GridTable2: typeof import('./src/components/Base/GridTable2.vue')['default']
     IceButton: typeof import('./src/components/UI/IceButton.vue')['default']
     IceDialog: typeof import('./src/components/UI/IceDialog.vue')['default']
     IceInput: typeof import('./src/components/UI/IceInput.vue')['default']

@@ -57,7 +57,7 @@
     const conn = manager.get(props.serverKey);
     // console.log('Load table info ' + pageInfo.page);
 
-    const resp = await conn.query('SHOW FULL FIELDS FROM `' + props.database + '`.`' + props.table + '`', []);
+    const resp = await conn.getTableFields(props.database, props.table);
     console.log(resp);
     tableInfos.value = resp.data;
 

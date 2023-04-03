@@ -10,6 +10,10 @@ export const useStatausStore = defineStore({
     database: undefined,
     queryCount: 0,
     language: '',
+    window: {
+      bodyHeight: 0,
+      bodyWidth: 0,
+    },
   }),
   getters: {
     // language: (state) => {
@@ -25,6 +29,12 @@ export const useStatausStore = defineStore({
     },
     setServer(sereverName: string | undefined) {
       this.serverName = sereverName;
+    },
+    setWindow(width, height) {
+      this.window = {
+        bodyWidth: width,
+        bodyHeight: height,
+      };
     },
     addQuery() {
       this.queryCount++;
