@@ -11,11 +11,14 @@ import '@arco-design/web-vue/dist/arco.less';
 import '@arco-design/web-vue/es/message/style/css.js';
 import '@arco-design/web-vue/es/notification/style/css.js';
 // import '@ysx-libs/vue-virtual-tree/style.css';
+import tooltip from '~/components/UI/Tooltip';
+import '~/components/UI/tooltip.css';
 
 const app = createApp(App);
 setupStore(app);
 app.use(hljsVuePlugin);
 app.use(i18n);
+app.directive('tooltip', tooltip);
 
 // document.body.setAttribute('arco-theme', 'dark');
 

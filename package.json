@@ -47,8 +47,6 @@
     "handsontable": "^12.3.2",
     "@arco-design/web-vue": "^2.44.1",
     "@highlightjs/vue-plugin": "^2.1.0",
-    "ag-grid-community": "^29.1.0",
-    "ag-grid-vue3": "^29.1.0",
     "electron-store": "^8.1.0",
     "highlight.js": "^11.7.0",
     "mitt": "^3.0.0",

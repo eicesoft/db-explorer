@@ -239,8 +239,8 @@
     statusStore.setWindow(bodyWidth.value, bodyHeight.value);
   };
 
-  const list = ref<TreeNodeOptions[]>([]);
-  const virTree = ref<TreeContext>();
+  // const list = ref<TreeNodeOptions[]>([]);
+  // const virTree = ref<TreeContext>();
 
   // function recursion(path = '0', level = 3): TreeNodeOptions[] {
   //   const list = [];
@@ -264,13 +264,11 @@
   //   return list;
   // }
   onMounted(() => {
-    // list.value = recursion();
-
     window.onresize = () => {
       resize();
     };
     resize();
-    console.log(virTree);
+    // console.log(virTree);
   });
 
   /** Dialog visible */

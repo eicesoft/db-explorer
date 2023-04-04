@@ -2,12 +2,10 @@
   import { SimpleNode } from '~/components/ConnectManager/index';
   import { ref, computed, reactive, PropType, watch, onMounted } from 'vue';
   import Manager from '~/utils/link_manager';
-  import { getImageRes } from '~/utils/res';
   import { useI18n } from 'vue-i18n';
-  import { Icon } from '@arco-design/web-vue';
-  import { IconExpand, IconRefresh } from '@arco-design/web-vue/es/icon';
   import { Message } from '@arco-design/web-vue';
   import { useStatausStore } from '~/store/modules/status';
+  import { formatRow, formatField } from '~/components/Base/grid';
 
   const props = defineProps({
     node: {
@@ -15,14 +13,11 @@
     },
   });
 
-  const IconFont = Icon.addFromIconFontCn({
-    src: getImageRes('iconfont/iconfont.js'),
-  });
   const manager: Manager = Manager.getInstance();
   const condition = ref('');
-  // console.error('First show', props.node);
+  const loading = ref(false);
 
-  const gridTable = ref(null);
+  // console.error('First show', props.node);
 
   const pageInfo = reactive({
     page: 1,
@@ -33,6 +28,7 @@
   const { t } = useI18n();
 
   const loadPage = async () => {
+    loading.value = true;
     let start = (pageInfo.page - 1) * pageInfo.page_size;
     const conn = manager.get(props.node?.meta?.Param.serverKey);
     console.log('Load Page ' + pageInfo.page);
@@ -61,11 +57,11 @@
       const fieldsResp = await conn.getTableFields(props.node?.meta?.DatabaseName, props.node?.title);
       console.log(fieldsResp);
       fields.value = fieldsResp.data.map((field: any) => {
-        return { name: field.Field, data: field.Field, type: 'text', desc: field.Comment, label: field.Field };
+        return formatField(field);
       });
 
       console.log(fields);
-
+      loading.value = false;
       // fields.value = resp.fields;
     } catch (e: any) {
       Message.error(e.toString());
@@ -75,7 +71,8 @@
   loadPage();
   const rowData = computed(() => {
     return rows.value.map((item: any) => {
-      return item;
+      // console.warn(item);
+      return formatRow(item);
     });
   });
 
@@ -121,10 +118,11 @@
     <a-tabs size="mini" :position="'top'">
       <a-tab-pane key="data">
         <template #title>
-          <icon-font class="iconfont" type="icon-table" size="14" /><span style="margin-left: 6px">{{
-            t('message.tablepanel.data')
-          }}</span></template
-        >
+          <div class="tab-title">
+            <IceIcon :size="14" icon="table" />
+            <span style="margin-left: 6px">{{ t('message.tablepanel.data') }}</span>
+          </div>
+        </template>
         <div class="toolbar">
           <div class="toolbar-left">
             <!-- -->
@@ -137,7 +135,6 @@
               placeholder="请输入过滤条件 id=?"
               allow-clear
             /> -->
-
             <IceInput
               @search="doSearch"
               :style="{ width: '440px' }"
@@ -146,11 +143,7 @@
             />
           </div>
           <div class="toolbar-right">
-            <a-tooltip :content="t('message.tablepanel.toolbar.resize')">
-              <a-button @click="refresh" size="mini">
-                <template #icon><IconRefresh :size="16" /></template>
-              </a-button>
-            </a-tooltip>
+            <IceIcon @click="refresh" icon="refresh" :size="18" />
 
             <div :class="{ disable: pageInfo.page == 1 }" class="icon" @click="previous">◀</div>
             <input size="2" v-model="pageInfo.page" class="text-number" type="number" />
@@ -158,17 +151,23 @@
           </div>
         </div>
 
-        <!-- <GridTable2 :setting="{ rowHeaders: false, height: 300 }" :columns="columns" :datas="datas" /> -->
-
-        <GridTable2 :setting="{ rowHeaders: true, height: gridHeight }" :columns="fields" :datas="rowData" />
+        <GridTable
+          :loading="loading"
+          class="gridTable"
+          :setting="{ height: gridHeight }"
+          :columns="fields"
+          :datas="rowData"
+        />
       </a-tab-pane>
 
       <a-tab-pane key="info">
         <template #title>
-          <icon-font class="iconfont" type="icon-infomation" size="14" /><span style="margin-left: 6px">{{
-            t('message.tablepanel.info')
-          }}</span></template
-        >
+          <!-- <icon-font class="iconfont" type="icon-infomation" size="14" /> -->
+          <div class="tab-title">
+            <IceIcon :size="14" icon="infomation" />
+            <span style="margin-left: 6px">{{ t('message.tablepanel.info') }}</span>
+          </div>
+        </template>
         <TableInformation
           :server-key="node?.meta?.Param.serverKey"
           :database="node?.meta?.DatabaseName"
@@ -202,9 +201,14 @@
     border-radius: 6px;
     border: 1px solid #ececec;
   }
+
   .panel {
     height: calc(var(--bodyHeight) - 36px);
     width: var(--bodyWidth);
+    .tab-title {
+      display: flex;
+      align-items: center;
+    }
 
     .toolbar {
       height: 28px;
@@ -212,6 +216,10 @@
       display: flex;
       justify-content: space-between;
       background-color: rgb(245, 245, 245);
+      color: #555555;
+      &:hover {
+        color: #838383;
+      }
       .toolbar-left {
         display: flex;
         justify-content: flex-start;

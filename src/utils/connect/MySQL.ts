@@ -34,13 +34,14 @@ export default class MySQL {
           return new Date(val);
         } else if (field.type === 'TINY') {
           let val = field.string();
-          if (val === '1') {
-            return true;
-          } else if (val === '0') {
-            return false;
-          } else {
-            return val;
-          }
+          // if (val === '1') {
+          //   return true;
+          // } else if (val === '0') {
+          //   return false;
+          // } else {
+          //   return val;
+          // }
+          return val;
         } /*else if (field.type === 'BIT') {
           // let val = field.string();
           console.error(field);

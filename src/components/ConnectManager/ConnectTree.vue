@@ -249,8 +249,7 @@
       <!-- </template> -->
 
       <template #icon="data">
-        <!-- <img :src="getIconRes(data.node.icon + '.png')" /> -->
-        <icon-font v-if="data.node.icon" :type="'icon-' + data.node.icon" :size="20" />
+        <IceIcon v-if="data.node.icon" activeColor="#515151" :icon="data.node.icon" :size="20" />
       </template>
     </a-tree>
   </div>

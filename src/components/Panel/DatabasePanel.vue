@@ -1,7 +1,7 @@
 <template>
   <div class="panel">
     <a-table
-      :virtual-list-props="{ height: 400 }"
+      :height="400"
       column-resizable
       style="user-select: auto"
       :pagination="false"

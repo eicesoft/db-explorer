@@ -9,7 +9,7 @@
       type="text"
     />
 
-    <div class="clearable">x</div>
+    <div class="clearable"> <IceIcon :size="16" icon="close" /> </div>
   </div>
 </template>
 
