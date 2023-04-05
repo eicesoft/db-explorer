@@ -17,15 +17,20 @@
       <slot name="footer">
         <!-- <template :key="index" v-for="(button, index) in [DialogButton.Ok, DialogButton.Cancel, DialogButton.Close]"> -->
         <IceButton
+          class="space"
           v-if="(buttons & DialogButton.Ok) == DialogButton.Ok"
           type="primary"
           @click="close(DialogResult.Enter)"
           >确认</IceButton
         >
-        <IceButton v-if="(buttons & DialogButton.Cancel) == DialogButton.Cancel" @click="close(DialogResult.Cancel)"
+        <IceButton
+          class="space"
+          v-if="(buttons & DialogButton.Cancel) == DialogButton.Cancel"
+          @click="close(DialogResult.Cancel)"
           >取消</IceButton
         >
         <IceButton
+          class="space"
           v-if="(buttons & DialogButton.Close) == DialogButton.Close"
           type="primary"
           @click="close(DialogResult.Close)"
@@ -164,6 +169,9 @@
     if (result) {
       emits('update:visible', false);
       emits('close', button);
+    } else {
+      emits('update:visible', false);
+      emits('enter', button);
     }
   };
 </script>
@@ -221,6 +229,9 @@
       padding: 8px 0px;
       border-top: @border-style1;
       text-align: center;
+      .space {
+        margin-right: 8px;
+      }
     }
   }
 </style>

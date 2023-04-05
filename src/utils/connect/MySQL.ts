@@ -106,6 +106,13 @@ export default class MySQL {
     return await this.query('SHOW FULL FIELDS FROM `' + database + '`.`' + table + '`', []);
   }
 
+  async getTableFieldInfomation(database: string, table: string) {
+    return await this.query('SELECT * FROM `information_schema`.`COLUMNS` WHERE `TABLE_SCHEMA` = ? AND TABLE_NAME=?', [
+      database,
+      table,
+    ]);
+  }
+
   async status() {
     let resp = await this.query('SHOW STATUS', []);
 

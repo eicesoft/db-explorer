@@ -28,10 +28,7 @@
     const conn = manager.get(props.node?.meta?.Param.serverKey);
     // console.log('Load table info ' + pageInfo.page);
 
-    const resp = await conn.query(
-      'SHOW FULL FIELDS FROM `' + props.node?.meta?.DatabaseName + '`.`' + props.node?.title + '`',
-      []
-    );
+    const resp = await conn.getTableFieldInfomation(props.node?.meta?.DatabaseName, props.node?.title);
     // console.log(resp);
     tableInfos.value = resp.data;
 

@@ -6,6 +6,41 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "2815716",
+      "name": "上一个",
+      "font_class": "prev",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "2815717",
+      "name": "删除",
+      "font_class": "remove",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "2815726",
+      "name": "搜索",
+      "font_class": "search",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "2815734",
+      "name": "下一个",
+      "font_class": "next",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "2815744",
+      "name": "重命名",
+      "font_class": "zhongmingming",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
       "icon_id": "4686545",
       "name": "刷新",
       "font_class": "refresh",

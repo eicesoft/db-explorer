@@ -145,9 +145,11 @@
           <div class="toolbar-right">
             <IceIcon @click="refresh" icon="refresh" :size="18" />
 
-            <div :class="{ disable: pageInfo.page == 1 }" class="icon" @click="previous">◀</div>
+            <!-- <div :class="{ disable: pageInfo.page == 1 }" class="icon" @click="previous">◀</div> -->
+            <IceIcon @click="previous" v :class="{ disable: pageInfo.page == 1 }" size="18" icon="prev" />
             <input size="2" v-model="pageInfo.page" class="text-number" type="number" />
-            <div :class="{ disable: !isNext }" class="icon" @click="next">▶</div>
+            <IceIcon @click="next" :class="{ disable: !isNext }" size="18" icon="next" />
+            <!-- <div :class="{ disable: !isNext }" class="icon" @click="next">▶</div> -->
           </div>
         </div>
 
@@ -200,8 +202,10 @@
   :deep(.hljs) {
     border-radius: 6px;
     border: 1px solid #ececec;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana,
+      sans-serif;
+    font-size: 13px;
   }
-
   .panel {
     height: calc(var(--bodyHeight) - 36px);
     width: var(--bodyWidth);

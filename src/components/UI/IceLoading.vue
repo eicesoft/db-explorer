@@ -1,6 +1,6 @@
 <template>
   <div v-if="visible" class="loading">
-    <IceIcon animation hoverColor="#515151" icon="loading" :size="30" />
+    <IceIcon animation hoverColor="#515151" icon="loading" :size="48" />
   </div>
 </template>
 

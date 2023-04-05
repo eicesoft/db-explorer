@@ -218,7 +218,7 @@
       //     },
       //   },
       // },
-      fixedColumnsStart: 1,
+      // fixedColumnsStart: 1,
       minSpareRows: 1,
       afterChange: function (change, source) {
         console.log(arguments);
