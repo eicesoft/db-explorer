@@ -6,6 +6,48 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "2690446",
+      "name": "设计",
+      "font_class": "design",
+      "unicode": "e70a",
+      "unicode_decimal": 59146
+    },
+    {
+      "icon_id": "5286710",
+      "name": "复制",
+      "font_class": "copy",
+      "unicode": "e63d",
+      "unicode_decimal": 58941
+    },
+    {
+      "icon_id": "9229181",
+      "name": "index",
+      "font_class": "index",
+      "unicode": "e90f",
+      "unicode_decimal": 59663
+    },
+    {
+      "icon_id": "11493429",
+      "name": "主键",
+      "font_class": "primary",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "1304889",
+      "name": "添加",
+      "font_class": "plus",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "11882444",
+      "name": "用户组管理",
+      "font_class": "user-group",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
       "icon_id": "2815716",
       "name": "上一个",
       "font_class": "prev",

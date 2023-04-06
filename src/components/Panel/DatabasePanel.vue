@@ -20,7 +20,6 @@
   import { ref, computed, reactive, PropType, onMounted } from 'vue';
   import { SimpleNode } from '~/components/ConnectManager/index';
   import { useI18n } from 'vue-i18n';
-  import { Icon } from '@arco-design/web-vue';
   import Manager from '~/utils/link_manager';
   import { formatLength } from '~/utils/index';
 

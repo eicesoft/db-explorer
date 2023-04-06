@@ -10,8 +10,7 @@
     <template #title> {{ t('message.dialog.processlist.title') }}({{ rows.length }}) </template>
 
     <template #body>
-      <a-input-search class="search-text" :placeholder="t('message.base.filter')" size="mini" v-model="searchKey" />
-
+      <IceInput style="height: 26px" :placeholder="t('message.base.filter')" v-model="searchKey" />
       <a-table
         style="margin-top: 5px; overflow-x: hidden; overflow-x: auto"
         :virtual-list-props="{ height: 300 }"

@@ -31,7 +31,20 @@
           </div>
 
           <div v-else style="padding-top: calc(var(--bodyHeight) / 3)">
-            <a-empty description="请在左侧选择服务器, 数据库或者表" />
+            <!-- <a-empty description="请在左侧选择服务器, 数据库或者表" /> -->
+            <IceTable
+              :fields="['Id', 'Name', 'Age']"
+              :datas="[
+                { Id: 22, Name: 'sdgsdg', Age: 20 },
+                { Id: 23, Name: 'sgadgdsgd', Age: 40 },
+                { Id: 24, Name: '上涨的幅度是', Age: 20 },
+                { Id: 25, Name: '12412', Age: 10 },
+                { Id: 25, Name: '12412', Age: 10 },
+                { Id: 25, Name: '12412', Age: 10 },
+                { Id: 25, Name: '12412', Age: 10 },
+              ]"
+            >
+            </IceTable>
           </div>
         </template>
       </a-split>
@@ -43,8 +56,9 @@
     <ConnectDialog v-model:visible="visibles.connectVisible" />
     <ServerStatus :serverKey="statusStore?.serverName" v-model:visible="visibles.statusVisible" />
     <ProcessList :serverKey="statusStore?.serverName" v-model:visible="visibles.processVisible" />
-    <!-- <IceDialog v-model:visible="visibles.processVisible" title="进程管理" /> -->
     <!-- Dialogs end-->
+
+    <notifications :duration="1500" position="bottom right" />
   </div>
 </template>
 
@@ -54,28 +68,15 @@
   import { useServerStore } from '~/store/modules/server';
   import { useSetupStore } from '~/store/modules/setup';
   import { useTreeStore } from '~/store/modules/tree';
-
   import { useTabStore } from '~/store/modules/tab';
   import { useStatausStore } from '~/store/modules/status';
+
   import packageInfo from '~/../package.json';
   import { Tab, TabType } from './Tabber';
   import { SimpleNode } from './ConnectManager';
   import { uuid } from '~/utils';
   import { ToolCommand } from './layout/tool';
-  // import {
-  //   BaseTreeNode,
-  //   EventParams,
-  //   SelectEventParams,
-  //   TreeContext,
-  //   TreeNodeOptions,
-  //   VirTree,
-  // } from '@ysx-libs/vue-virtual-tree';
-  import { Icon } from '@arco-design/web-vue';
-  import { getImageRes } from '~/utils/res';
 
-  const IconFont = Icon.addFromIconFontCn({
-    src: getImageRes('iconfont/iconfont.js'),
-  });
   let bodyWidth = ref(0);
   let bodyHeight = ref(0);
   let width = ref(0);
@@ -219,7 +220,7 @@
       case 'table-design':
         newTab = {
           id: 'design_table_' + node.title,
-          title: 'Design Table:' + node.title,
+          title: node.title,
           type: TabType.TableDesign,
           meta: {
             node: node,

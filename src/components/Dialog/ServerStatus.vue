@@ -1,30 +1,4 @@
 <template>
-  <!-- <a-modal
-    modal-class="base-model"
-    :mask="false"
-    draggable
-    hide-cancel
-    ok-text="关闭"
-    :visible="visible"
-    @ok="handleOk"
-    @cancel="handleOk"
-  >
-    <template #title> {{ t('message.dialog.status.title') }} </template>
-
-    <a-input-search class="search-text" :placeholder="t('message.base.filter')" size="mini" v-model="searchKey" />
-
-    <a-table
-      style="margin-top: 5px; overflow-x: hidden; overflow-x: auto"
-      :virtual-list-props="{ height: 300 }"
-      column-resizable
-      :pagination="false"
-      size="mini"
-      :columns="columns"
-      :data="filter"
-    >
-    </a-table>
-  </a-modal> -->
-
   <IceDialog
     width="500px"
     :visible="visible"
@@ -34,9 +8,9 @@
     :title="t('message.dialog.status.title')"
   >
     <template #body>
-      <a-input-search class="search-text" :placeholder="t('message.base.filter')" size="mini" v-model="searchKey" />
+      <IceInput class="search-text" :placeholder="t('message.base.filter')" v-model="searchKey" />
 
-      <a-table
+      <!-- <a-table
         style="margin-top: 5px; overflow-x: hidden; overflow-x: auto"
         :virtual-list-props="{ height: 300 }"
         column-resizable
@@ -45,8 +19,10 @@
         :columns="columns"
         :data="filter"
       >
-      </a-table
-    ></template>
+      </a-table> -->
+
+      <IceTable style="margin-top: 10px" :fields="columns" :datas="filter"></IceTable>
+    </template>
   </IceDialog>
 </template>
 
@@ -55,6 +31,7 @@
   import { useI18n } from 'vue-i18n';
   import Manager from '~/utils/link_manager';
   import { DialogButton } from '~/components/UI/dialog';
+  import IceTable from '../UI/IceTable.vue';
 
   const { t } = useI18n();
 
@@ -118,4 +95,8 @@
   };
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .search-text {
+    height: 28px;
+  }
+</style>

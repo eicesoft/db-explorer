@@ -6,6 +6,8 @@
 
 <script lang="ts" setup>
   import { ref, computed } from 'vue';
+  import '~/assets/iconfont/iconfont.js';
+
   const props = defineProps({
     size: {
       type: Number,

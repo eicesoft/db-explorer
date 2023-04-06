@@ -1,13 +1,9 @@
 <script setup lang="ts">
   import { ref, h, computed } from 'vue';
-  import { getImageRes } from '~/utils/res';
-
-  import { Icon } from '@arco-design/web-vue';
-
   import { SimpleNode, NodeType } from './index';
   import { useTreeStore } from '~/store/modules/tree';
   import { useStatausStore } from '~/store/modules/status';
-
+  import ContextMenu from '@imengyu/vue3-context-menu';
   import Manager from '~/utils/link_manager';
   import { useI18n } from 'vue-i18n';
 
@@ -28,9 +24,6 @@
     (e: 'menu-select', menu_key: string, value: any): void;
   }>();
 
-  const IconFont = Icon.addFromIconFontCn({
-    src: getImageRes('iconfont/iconfont.js'),
-  });
   // console.log(IconFont);
   const manager: Manager = Manager.getInstance();
   const treeStore = useTreeStore();
@@ -154,19 +147,106 @@
   const tableDesign = (node: any) => {
     emits('menu-select', 'table-design', node);
   };
+
+  const onContextTableMenu = (node: any, e: any) => {
+    ContextMenu.showContextMenu({
+      theme: 'win10',
+      x: e.x,
+      y: e.y,
+      zIndex: 1000,
+      items: [
+        {
+          label: '设计表结构',
+          onClick: () => {
+            tableDesign(node);
+          },
+        },
+        {
+          label: '重命名',
+          onClick: () => {},
+          divided: true,
+        },
+        {
+          label: '更多操作',
+          onClick: () => {},
+          children: [
+            {
+              label: '截断',
+            },
+            {
+              label: '删除',
+            },
+            {
+              label: '优化表',
+            },
+          ],
+          divided: true,
+        },
+        {
+          label: '导出',
+          onClick: () => {},
+        },
+        {
+          label: '导入',
+          onClick: () => {},
+        },
+      ],
+    });
+  };
+
+  const onContextServerMenu = (node: any, e: any) => {
+    ContextMenu.showContextMenu({
+      theme: 'win10',
+      x: e.x,
+      y: e.y,
+      zIndex: 1000,
+      items: [
+        {
+          label: '添加数据库',
+        },
+        {
+          label: '移除服务器',
+          onClick: () => {
+            removeServer(node);
+          },
+        },
+      ],
+    });
+  };
+
+  const onContextDatabaseMenu = (node: any, e: any) => {
+    ContextMenu.showContextMenu({
+      theme: 'win10',
+      x: e.x,
+      y: e.y,
+      zIndex: 1000,
+      items: [
+        {
+          label: '新建查询',
+        },
+        {
+          label: '添加',
+          children: [
+            {
+              label: '表格',
+            },
+            {
+              label: '视图',
+            },
+            {
+              label: '存储过程',
+            },
+          ],
+        },
+      ],
+    });
+  };
 </script>
 
 <template>
   <div class="tree">
     <div class="search-div">
-      <a-input-search
-        @search="searchTree"
-        @press-enter="searchTree"
-        class="search-text"
-        placeholder="输入进行过滤"
-        size="mini"
-        v-model="searchKey"
-      />
+      <IceInput isClearable @search="searchTree" class="search-text" placeholder="输入进行过滤" v-model="searchKey" />
     </div>
     <a-tree
       @select="selectNode"
@@ -189,64 +269,32 @@
       :data="rootNode"
     >
       <template #title="nodeData">
-        <a-dropdown size="mini" trigger="contextMenu" alignPoint :style="{ display: 'block' }">
-          <template
-            v-if="
-              nodeData.type == NodeType.Server ||
-              (nodeData.type == NodeType.TableGroup && nodeData.children?.length != 0)
-            "
-          >
-            <div>{{ nodeData?.title }}</div>
-          </template>
-          <template v-else-if="nodeData.type == NodeType.Database">
-            <div @dblclick="openDatabase(nodeData)">{{ nodeData?.title }}</div>
-          </template>
-          <template v-else>
-            <div>{{ nodeData?.title }}</div>
-          </template>
+        <template v-if="nodeData.type == NodeType.Server">
+          <div @contextmenu="onContextServerMenu(nodeData, $event)"
+            >{{ nodeData?.title }}<span v-show="nodeData.children?.length != 0">({{ nodeData.children?.length }})</span>
+          </div>
+        </template>
 
-          <template #content>
-            <template v-if="nodeData.type == NodeType.Table">
-              <a-doption>打开表格</a-doption>
-              <a-doption @click="tableDesign(nodeData)">设计表结构</a-doption>
-              <a-doption>重命名</a-doption>
-              <a-divider margin="4px" />
+        <template v-else-if="nodeData.type == NodeType.Database">
+          <div @contextmenu="onContextDatabaseMenu(nodeData, $event)" @dblclick="openDatabase(nodeData)"
+            >{{ nodeData?.title }}
+          </div>
+        </template>
 
-              <a-dsubmenu value="more" trigger="hover">
-                <template #default>更多操作</template>
-                <template #content>
-                  <a-doption>截断</a-doption>
-                  <a-doption>删除</a-doption>
-                  <a-doption>优化表</a-doption>
-                </template>
-              </a-dsubmenu>
-              <a-divider margin="4px" />
-              <a-doption>导出</a-doption>
-              <a-doption>导入</a-doption>
-            </template>
+        <template v-else-if="nodeData.type == NodeType.TableGroup">
+          <div
+            >{{ nodeData?.title }}<span v-show="nodeData.children?.length != 0">({{ nodeData.children?.length }})</span>
+          </div>
+        </template>
 
-            <template v-else-if="nodeData.type == NodeType.Database">
-              <a-doption>新建查询</a-doption>
-              <a-dsubmenu value="more" trigger="hover">
-                <template #default>添加</template>
-                <template #content>
-                  <a-doption>表格</a-doption>
-                  <a-doption>视图</a-doption>
-                  <a-doption>存储过程</a-doption>
-                </template>
-              </a-dsubmenu>
-            </template>
+        <template v-else-if="nodeData.type == NodeType.Table">
+          <div @contextmenu="onContextTableMenu(nodeData, $event)">{{ nodeData.title }}</div>
+        </template>
 
-            <template v-else-if="nodeData.type == NodeType.Server">
-              <a-doption @click="addDatabase(nodeData)">添加数据库</a-doption>
-              <a-doption @click="removeServer(nodeData)"> 移除服务器</a-doption>
-            </template>
-          </template>
-
-          <template v-if="nodeData.type == NodeType.Database"> </template>
-        </a-dropdown>
+        <template v-else>
+          {{ nodeData.title }}
+        </template>
       </template>
-      <!-- </template> -->
 
       <template #icon="data">
         <IceIcon v-if="data.node.icon" activeColor="#515151" :icon="data.node.icon" :size="20" />
@@ -275,6 +323,7 @@
       width: 100%;
       .search-text {
         margin: 4px;
+        height: 24px;
         width: calc(100% - 8px);
       }
     }

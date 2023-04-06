@@ -1,11 +1,11 @@
 <script setup lang="ts">
   import { SimpleNode } from '~/components/ConnectManager/index';
-  import { ref, computed, reactive, PropType, watch, onMounted } from 'vue';
+  import { ref, computed, reactive, PropType } from 'vue';
   import Manager from '~/utils/link_manager';
   import { useI18n } from 'vue-i18n';
-  import { Message } from '@arco-design/web-vue';
   import { useStatausStore } from '~/store/modules/status';
   import { formatRow, formatField } from '~/components/Base/grid';
+  import { notify } from '@kyvg/vue3-notification';
 
   const props = defineProps({
     node: {
@@ -21,7 +21,7 @@
 
   const pageInfo = reactive({
     page: 1,
-    page_size: 500,
+    page_size: 200,
   });
   const fields = ref([]);
   const rows = ref([]);
@@ -64,7 +64,10 @@
       loading.value = false;
       // fields.value = resp.fields;
     } catch (e: any) {
-      Message.error(e.toString());
+      notify({
+        title: e.toString(),
+        type: 'error',
+      });
     }
   };
 
@@ -125,30 +128,21 @@
         </template>
         <div class="toolbar">
           <div class="toolbar-left">
-            <!-- -->
-
-            <!-- <a-input
-              v-model="condition"
-              @press-enter="doSearch"
-              size="mini"
-              :style="{ width: '340px' }"
-              placeholder="请输入过滤条件 id=?"
-              allow-clear
-            /> -->
             <IceInput
               @search="doSearch"
               :style="{ width: '440px' }"
               :placeholder="'请输入过滤条件 id=?'"
               v-model="condition"
+              isClearable
             />
           </div>
           <div class="toolbar-right">
             <IceIcon @click="refresh" icon="refresh" :size="18" />
 
             <!-- <div :class="{ disable: pageInfo.page == 1 }" class="icon" @click="previous">◀</div> -->
-            <IceIcon @click="previous" v :class="{ disable: pageInfo.page == 1 }" size="18" icon="prev" />
+            <IceIcon @click="previous" v :class="{ disable: pageInfo.page == 1 }" :size="18" icon="prev" />
             <input size="2" v-model="pageInfo.page" class="text-number" type="number" />
-            <IceIcon @click="next" :class="{ disable: !isNext }" size="18" icon="next" />
+            <IceIcon @click="next" :class="{ disable: !isNext }" :size="18" icon="next" />
             <!-- <div :class="{ disable: !isNext }" class="icon" @click="next">▶</div> -->
           </div>
         </div>
@@ -164,7 +158,6 @@
 
       <a-tab-pane key="info">
         <template #title>
-          <!-- <icon-font class="iconfont" type="icon-infomation" size="14" /> -->
           <div class="tab-title">
             <IceIcon :size="14" icon="infomation" />
             <span style="margin-left: 6px">{{ t('message.tablepanel.info') }}</span>

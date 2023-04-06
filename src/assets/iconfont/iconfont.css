@@ -1,9 +1,9 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3961440 */
-  src: url('iconfont.woff2?t=1680653909802') format('woff2'),
-       url('iconfont.woff?t=1680653909802') format('woff'),
-       url('iconfont.ttf?t=1680653909802') format('truetype'),
-       url('iconfont.svg?t=1680653909802#iconfont') format('svg');
+  src: url('iconfont.woff2?t=1680774771248') format('woff2'),
+       url('iconfont.woff?t=1680774771248') format('woff'),
+       url('iconfont.ttf?t=1680774771248') format('truetype'),
+       url('iconfont.svg?t=1680774771248#iconfont') format('svg');
 }
 
 .iconfont {
@@ -12,6 +12,30 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-design:before {
+  content: "\e70a";
+}
+
+.icon-copy:before {
+  content: "\e63d";
+}
+
+.icon-index:before {
+  content: "\e90f";
+}
+
+.icon-primary:before {
+  content: "\e617";
+}
+
+.icon-plus:before {
+  content: "\e622";
+}
+
+.icon-user-group:before {
+  content: "\e62d";
 }
 
 .icon-prev:before {
@@ -26,7 +50,7 @@
   content: "\e602";
 }
 
-.icon-nextt:before {
+.icon-next:before {
   content: "\e603";
 }
 

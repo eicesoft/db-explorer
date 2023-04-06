@@ -8,7 +8,9 @@
 
 <script lang="ts" setup>
   import { ref, computed } from 'vue';
+  import type { Menu } from '../Base/menu';
   import { MenuKeys } from '../Base/menu';
+
   import { useI18n } from 'vue-i18n';
   import { getImageRes } from '~/utils/res';
 
@@ -20,7 +22,7 @@
     title: { type: String, default: 'SQL Explorer' },
   });
 
-  const menus = computed(() => {
+  const menus = computed<Menu[]>((): Menu[] => {
     return [
       {
         title: t('message.menus.system'),
@@ -39,6 +41,9 @@
       },
       {
         title: t('message.menus.edit'),
+        disabled: () => {
+          return true;
+        },
         children: [{ title: t('message.menus.refresh'), key: MenuKeys.Refresh, children: [] }],
       },
       {

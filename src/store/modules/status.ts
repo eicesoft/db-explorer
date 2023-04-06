@@ -23,6 +23,7 @@ export const useStatausStore = defineStore({
   actions: {
     init() {
       this.version = packageInfo.version;
+      this.language = localStorage.getItem('sql-locale') || 'zh';
     },
     setDatabase(database: string | undefined) {
       this.database = database;
@@ -30,7 +31,10 @@ export const useStatausStore = defineStore({
     setServer(sereverName: string | undefined) {
       this.serverName = sereverName;
     },
-    setWindow(width, height) {
+    setLang(val: string) {
+      this.language = val;
+    },
+    setWindow(width: number, height: number) {
       this.window = {
         bodyWidth: width,
         bodyHeight: height,

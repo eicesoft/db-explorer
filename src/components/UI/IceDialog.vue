@@ -1,11 +1,22 @@
 <template>
-  <div ref="dialogContainer" @click="focusin" class="ice-dialog" :style="cssVars" v-show="visible">
+  <div
+    @keypress="
+      {
+        console.log($event);
+      }
+    "
+    ref="dialogContainer"
+    @click="focusin"
+    class="ice-dialog"
+    :style="cssVars"
+    v-show="visible"
+  >
     <div class="ice-dialog-title">
       <div ref="dialogDrag" class="ice-dialog-text">
         <slot name="title">{{ title }}</slot>
       </div>
       <div class="ice-dialog-close" @click.stop="close(DialogResult.Close)">
-        <IconFont class="icon" :size="16" type="icon-close" />
+        <IceIcon class="icon" :size="16" icon="close" />
       </div>
     </div>
 
@@ -36,6 +47,7 @@
           @click="close(DialogResult.Close)"
           >关闭</IceButton
         >
+        <slot name="footer-buttons"></slot>
         <!-- </template> -->
       </slot>
     </div>
@@ -44,14 +56,8 @@
 
 <script lang="ts" setup>
   import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
-  import { Icon } from '@arco-design/web-vue';
-  import { getImageRes } from '~/utils/res';
   import { DialogButton, DialogResult } from './dialog';
   import emitter from '~/utils/bus';
-
-  const IconFont = Icon.addFromIconFontCn({
-    src: getImageRes('iconfont/iconfont.js'),
-  });
 
   interface DialogProp {
     title: string;
@@ -136,14 +142,16 @@
         x_left = x - left;
         y_top = y - top;
         dialogContainer.value.classList.add('drag');
-        dialogBody.value.style.visibility = 'hidden';
+        // dialogBody.value.style.visibility = 'hidden';
+        // dialogBody.value.style.filter = 'blur(4px)';
         focusin();
         window.addEventListener('mousemove', moveHandler);
       };
 
       dragArea.onmouseup = function () {
         dialogContainer.value.classList.remove('drag');
-        dialogBody.value.style.visibility = 'inherit';
+        // dialogBody.value.style.visibility = 'inherit';
+        // dialogBody.value.style.filter = '';
         // 在鼠标弹出后再次调用元素的鼠标移动事件
         // dragArea.onmousemove = function () { };
         window.removeEventListener('mousemove', moveHandler);
@@ -181,11 +189,12 @@
   @icon-width: 24px;
   .drag {
     border: 1px solid #fefefe !important;
-    opacity: 0.95;
+    opacity: 0.8;
+    filter: drop-shadow(2px);
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2) !important;
   }
   .ice-dialog {
-    background-color: #fefefe;
+    background-color: rgba(254, 254, 254, 1);
     position: fixed;
     top: 20%;
     left: calc((var(--windowWidth) - var(--dialogWidth)) / 2);

@@ -36,7 +36,7 @@ body {
   border-radius: 10px;
   background-color: rgb(226, 232, 241);
   &:hover {
-      background-color: rgb(204, 209, 218);
+    background-color: rgb(204, 209, 218);
   }
 }
 
@@ -44,7 +44,6 @@ body {
   border-radius: 10px;
   background-color: rgb(226, 232, 241);
 }
-
 
 body {
   margin: 0;
@@ -133,11 +132,67 @@ pre {
   border: 1px solid #ececec;
 }
 
-
 // svg {
 //   fill: currentColor;
 // }
 
 path {
   fill: unset;
+}
+
+.v-contextmenu {
+  border-color: #4d4d4d !important;
+  background-color: #2f3241 !important;
+  box-shadow: 2px 2px 8px 0px rgba(#000, 0.2);
+  min-width: 120px;
+  border-radius: 2px;
+  &-item {
+    color: #ccdbfd !important;
+    font-size: 12px;
+    &--hover {
+      color: #a1adc7 !important;
+      background-color: #404458 !important;
+    }
+
+    &--disabled {
+      color: rgba(#888, 0.9);
+    }
+  }
+
+  &-divider {
+    border-bottom-color: rgba(#4d4d4d, 0.6) !important;
+  }
+
+  &-group__title {
+    color: rgba(#ccdbfd, 0.7);
+  }
+}
+
+.mx-context-menu.win10.dark {
+  --mx-menu-backgroud: #2f3241;
+  --mx-menu-hover-backgroud: #404458;
+  --mx-menu-text: #ccdbfd;
+  --mx-menu-hover-text: #a1adc7;
+  --mx-menu-divider: #a1adc7;
+  --mx-menu-shadow-color: rgba(0, 0, 0, 0.1);
+  --mx-menu-backgroud-radius: 4px;
+  --mx-menu-border-color: #2f3241;
+  box-shadow: 0px 0px 0px 0px var(--mx-menu-shadow-color) !important;
+  border: 1px solid #404458 !important;
+  border-radius: 4px;
+}
+
+.mx-context-menu.win10 {
+  padding: 4px !important;
+  .mx-context-menu-item-sperator {
+    padding: 4px 0 !important;
+    margin: 0 2px !important;
+  }
+}
+
+.mx-context-menu-item {
+  padding: 2px 8px !important;
+  .label {
+    font-size: 12px !important;
+  }
 }

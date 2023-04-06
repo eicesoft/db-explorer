@@ -70,4 +70,16 @@
       background-color: #0e42d2;
     }
   }
+
+  .ice-success-button {
+    background-color: #00b42a;
+    color: #fff;
+    display: inline-block;
+    &:hover {
+      background-color: #23c343;
+    }
+    &:active {
+      background-color: #009a29;
+    }
+  }
 </style>

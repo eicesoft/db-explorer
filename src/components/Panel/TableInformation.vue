@@ -1,6 +1,7 @@
 <template>
   <div class="container-info">
     <div style="margin: 5px 15px; user-select: auto">字段信息:</div>
+    {{ columns }}
     <a-table
       :bordered="{ cell: true }"
       column-resizable
@@ -11,23 +12,27 @@
       :data="tableInfos"
     >
       <template #Pk="{ record }">
-        <IconStar style="color: cf1322" v-if="record.Key == 'PRI'" />
-        <IconThunderbolt style="color: #ffc53d" v-if="record.Key == 'MUL'" />
+        <!-- <IconStar style="color: cf1322" v-if="record.Key == 'PRI'" /> -->
+        <IceIcon style="color: #cf1322" v-if="record.Key == 'PRI'" icon="primary" />
+        <IceIcon style="color: #ffc53d" v-if="record.Key == 'MUL'" icon="index" />
+
+        <!-- <IconThunderbolt style="color: #ffc53d" v-if="record.Key == 'MUL'" /> -->
       </template>
     </a-table>
     <div style="margin: 15px 15px 5px 15px; user-select: auto">Table DDL:</div>
 
     <div class="code">
       <highlightjs language="sql" :autodetect="false" :code="createSQL" />
-      <div class="copy"><IconCopy size="22" @click="copySQL" /></div>
+      <div class="copy">
+        <IceIcon :size="22" icon="copy" @click="copySQL" />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
   import { ref } from 'vue';
-  import { Notification } from '@arco-design/web-vue';
-  import { IconCopy, IconInfoCircleFill, IconStar, IconThunderbolt } from '@arco-design/web-vue/es/icon';
+  import { notify } from '@kyvg/vue3-notification';
   import { format } from 'sql-formatter';
   import Manager from '~/utils/link_manager';
   import { TableFields } from './table';
@@ -47,7 +52,6 @@
       default: '',
     },
   });
-
   const manager: Manager = Manager.getInstance();
   const tableInfos = ref(null);
   const createSQL = ref('');
@@ -70,9 +74,14 @@
 
   const copySQL = async () => {
     await toClipboard(createSQL.value);
-    Notification.info({
+    // Notification.info({
+    //   title: '复制成功',
+    //   content: '',
+    // });
+
+    notify({
+      // title: 'DB Explorer',
       title: '复制成功',
-      content: '',
     });
   };
   loadTableInfo();
