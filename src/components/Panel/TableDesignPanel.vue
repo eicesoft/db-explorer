@@ -1,10 +1,22 @@
 <template>
   <div>
-    <a-tabs>
-      <a-tab-pane key="1" title="基本"> {{ node }} </a-tab-pane>
-      <a-tab-pane key="2" title="索引"> {{ tableInfos }} </a-tab-pane>
-      <a-tab-pane key="3" title="选项"> Content of Tab Panel 3 </a-tab-pane>
-    </a-tabs>
+    <IceTabs
+      :tabs="[
+        { key: 'basic', title: '基本', icon: 'table' },
+        { key: 'index', title: '索引' },
+        { key: 'option', title: '选项' },
+      ]"
+    >
+      <template #basic>
+        {{ node }}
+      </template>
+      <template #index>
+        {{ tableInfos }}
+      </template>
+      <template #option>
+        {{ 'test' }}
+      </template>
+    </IceTabs>
   </div>
 </template>
 
@@ -27,15 +39,13 @@
   const loadTableInfo = async () => {
     const conn = manager.get(props.node?.meta?.Param.serverKey);
     // console.log('Load table info ' + pageInfo.page);
-
-    const resp = await conn.getTableFieldInfomation(props.node?.meta?.DatabaseName, props.node?.title);
+    let database = props.node?.meta?.DatabaseName ?? '';
+    let table = props.node?.title ?? '';
+    const resp = await conn.getTableFieldInfomation(database, table);
     // console.log(resp);
     tableInfos.value = resp.data;
 
-    const tableResp = await conn.query(
-      'SHOW CREATE TABLE `' + props.node?.meta?.DatabaseName + '`.`' + props.node?.title + '`',
-      []
-    );
+    const tableResp = await conn.getTableDDL(database, table);
     createSQL.value = format(tableResp.data[0]['Create Table']);
   };
 

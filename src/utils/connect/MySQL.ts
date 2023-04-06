@@ -30,8 +30,11 @@ export default class MySQL {
         if (field.type === 'DATETIME') {
           let val = field.string();
           // console.log(new Date(val));
-
-          return new Date(val);
+          if (val) {
+            return new Date(val);
+          } else {
+            return null;
+          }
         } else if (field.type === 'TINY') {
           let val = field.string();
           // if (val === '1') {
@@ -111,6 +114,10 @@ export default class MySQL {
       database,
       table,
     ]);
+  }
+
+  async getTableDDL(database: string, table: string) {
+    return await this.query('SHOW CREATE TABLE `' + database + '`.`' + table + '`', []);
   }
 
   async status() {

@@ -32,19 +32,33 @@
 
           <div v-else style="padding-top: calc(var(--bodyHeight) / 3)">
             <!-- <a-empty description="请在左侧选择服务器, 数据库或者表" /> -->
-            <IceTable
-              :fields="['Id', 'Name', 'Age']"
-              :datas="[
-                { Id: 22, Name: 'sdgsdg', Age: 20 },
-                { Id: 23, Name: 'sgadgdsgd', Age: 40 },
-                { Id: 24, Name: '上涨的幅度是', Age: 20 },
-                { Id: 25, Name: '12412', Age: 10 },
-                { Id: 25, Name: '12412', Age: 10 },
-                { Id: 25, Name: '12412', Age: 10 },
-                { Id: 25, Name: '12412', Age: 10 },
+            <IceTabs
+              :tabs="[
+                { key: 'a1', title: 'tab1', icon: 'table' },
+                { key: 'a2', title: 'tab2' },
+                { key: 'a3', title: 'tab3' },
+                { key: 'a4', title: 'tab3' },
+                { key: 'a5', title: 'tab3' },
+                { key: 'a6', title: 'tab3' },
+                { key: 'a7', title: 'tab3' },
+                { key: 'a8', title: 'tab3524354233' },
+                { key: 'a9', title: '3464326324663263246' },
+                { key: 'a19', title: '3464326324663263246' },
+
+                { key: 'a11', title: '3464326324663263246' },
+                { key: 'a12', title: '3464326324663263246' },
+                { key: 'a13', title: '3464326324663263246' },
+                { key: 'a14', title: '3464326324663263246' },
               ]"
             >
-            </IceTable>
+              <template #title="{ tab }">
+                <IceIcon v-if="tab.icon" :size="14" :icon="tab.icon" />
+                <span style="margin: 0 4px">{{ tab.title }}</span></template
+              >
+              <template #a1>sdgsagsas</template>
+              <template #a2>123</template>
+              <template #a3>456</template>
+            </IceTabs>
           </div>
         </template>
       </a-split>
@@ -76,6 +90,7 @@
   import { SimpleNode } from './ConnectManager';
   import { uuid } from '~/utils';
   import { ToolCommand } from './layout/tool';
+  import IceTabs from './UI/IceTabs.vue';
 
   let bodyWidth = ref(0);
   let bodyHeight = ref(0);

@@ -22,6 +22,7 @@ declare module '@vue/runtime-core' {
     AInputNumber: typeof import('@arco-design/web-vue')['InputNumber']
     AInputPassword: typeof import('@arco-design/web-vue')['InputPassword']
     AInputSearch: typeof import('@arco-design/web-vue')['InputSearch']
+    AModal: typeof import('@arco-design/web-vue')['Modal']
     ASplit: typeof import('@arco-design/web-vue')['Split']
     ATable: typeof import('@arco-design/web-vue')['Table']
     ATabPane: typeof import('@arco-design/web-vue')['TabPane']
@@ -42,7 +43,6 @@ declare module '@vue/runtime-core' {
     IceLoading: typeof import('./src/components/UI/IceLoading.vue')['default']
     IceTable: typeof import('./src/components/UI/IceTable.vue')['default']
     IceTabs: typeof import('./src/components/UI/IceTabs.vue')['default']
-    IceTree: typeof import('./src/components/UI/Tree/IceTree.vue')['default']
     Main: typeof import('./src/components/Main.vue')['default']
     Menu: typeof import('./src/components/Base/Menu.vue')['default']
     PanelManager: typeof import('./src/components/Panel/PanelManager.vue')['default']
@@ -54,6 +54,5 @@ declare module '@vue/runtime-core' {
     TableInformation: typeof import('./src/components/Panel/TableInformation.vue')['default']
     TablePanel: typeof import('./src/components/Panel/TablePanel.vue')['default']
     Toolbar: typeof import('./src/components/layout/Toolbar.vue')['default']
-    TreeNode: typeof import('./src/components/UI/Tree/TreeNode.vue')['default']
   }
 }

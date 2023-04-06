@@ -57,11 +57,12 @@
     }
 
     .text-input {
+      margin: auto;
       position: relative;
       outline: none;
       border: 1px solid #efefef;
       width: calc(100% - 16px);
-      height: calc(100% - 4px);
+      height: calc(100% - 6px);
       padding: 2px 8px;
       margin: auto;
       border-radius: 2px;

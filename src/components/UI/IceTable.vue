@@ -11,9 +11,11 @@
       <template :key="index" v-for="(data, index) in datas">
         <tr>
           <template :key="index + '-' + i" v-for="(field, i) in fields">
-            <slot :field="field" row="data" :value="data[field.dataIndex]" :name="field">
-              <td :title="data[field.dataIndex]">{{ data[field.dataIndex] }}</td>
-            </slot>
+            <td :title="data[field.dataIndex]">
+              <slot :field="field" :row="data" :value="data[field.dataIndex]" :name="field.dataIndex">
+                {{ data[field.dataIndex] }}
+              </slot>
+            </td>
           </template>
         </tr>
       </template>
@@ -31,7 +33,7 @@
     fields?: Field[];
     datas: Record<string, any>;
   }
-  withDefaults(defineProps<CompProp>(), { datas: [] });
+  defineProps<CompProp>();
 </script>
 
 <style lang="less" scoped>

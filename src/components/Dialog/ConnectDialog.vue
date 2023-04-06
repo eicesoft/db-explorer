@@ -97,7 +97,7 @@
         notify({ title: '服务器连接成功.', type: 'success' });
       }
       return true;
-    } catch (e) {
+    } catch (e: any) {
       if (showMsg) {
         notify({ title: e.toString(), type: 'error' });
       }
@@ -116,7 +116,7 @@
       // } else {
       //   notify({ title: '服务器连接失败', type: 'error' });
       // }
-    } catch (e) {
+    } catch (e: any) {
       notify({ title: e.toString(), type: 'error' });
     }
   };
