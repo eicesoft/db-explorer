@@ -99,9 +99,10 @@
   });
 
   const horizontalRightPanel = computed(() => {
-    console.log(left.value, horizontalTriggerPanelWidth.value, gSplitWidth.value);
+    let leftWidth = left.value * 100;
+    // console.log(left.value, horizontalTriggerPanelWidth.value, gSplitWidth.value);
     return {
-      left: (left.value + horizontalTriggerPanelWidth.value / gSplitWidth.value) * 100 + '%',
+      left: `calc(${leftWidth}% + 5px)`,
       width: `var(--bodyWidth)`,
     };
   });
