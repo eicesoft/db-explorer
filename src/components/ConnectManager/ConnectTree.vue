@@ -1,12 +1,13 @@
 <script setup lang="ts">
   import { ref, h, computed } from 'vue';
-  import { SimpleNode, NodeType } from './index';
+  import { SimpleNode, NodeType, MetaNode } from './index';
   import { useTreeStore } from '~/store/modules/tree';
   import { useStatausStore } from '~/store/modules/status';
   import ContextMenu from '@imengyu/vue3-context-menu';
   import Manager from '~/utils/link_manager';
   import { useI18n } from 'vue-i18n';
-
+  import Vtree, { TreeNode, VTreeSearch } from '@wsfe/vue-tree';
+  import IceIcon from '~/components/UI/IceIcon.vue';
   const { t } = useI18n();
 
   const props = defineProps({
@@ -16,6 +17,71 @@
   const rootNode = computed(() => {
     return [treeStore.filters];
   });
+
+  const toMetaNode = (data: any, mode: number): MetaNode => {
+    if (mode == 1) {
+      return {
+        id: data.id,
+        serverKey: data.meta.Param.serverKey,
+      };
+    } else if (mode == 2) {
+      return {
+        id: data.id,
+        database: data.title,
+        serverKey: data.meta.Param.serverKey,
+      };
+    } else {
+      return {
+        id: data.id,
+        tableName: data.title,
+        database: data.meta.DatabaseName,
+        serverKey: data.meta.Param.serverKey,
+      };
+    }
+  };
+  const renderNode = (node: TreeNode) => {
+    return h(
+      'div',
+      {
+        class: 'node-title',
+        onDblclick: (evt: any) => {
+          if (node.type == NodeType.Database) {
+            let metaNode = toMetaNode(node, 2);
+            openDatabase(metaNode);
+          }
+        },
+        onContextmenu: (evt: any) => {
+          console.log(node, evt);
+          let metaNode;
+
+          if (node.type == NodeType.Server) {
+            metaNode = toMetaNode(node, 1);
+
+            onContextServerMenu(metaNode, evt);
+          } else if (node.type == NodeType.Database) {
+            metaNode = toMetaNode(node, 2);
+            onContextDatabaseMenu(metaNode, evt);
+          } else if (node.type == NodeType.Table) {
+            metaNode = toMetaNode(node, 3);
+            onContextTableMenu(metaNode, evt);
+          }
+        },
+      },
+      [
+        h(IceIcon, { icon: node.icon, size: 20 }),
+        h(
+          'div',
+          {
+            style: {
+              fontSize: '12px',
+              padding: '0 6px',
+            },
+          },
+          node.title
+        ),
+      ]
+    );
+  };
 
   const emits = defineEmits<{
     (e: 'select-table', value: any): void;
@@ -30,7 +96,7 @@
   const statusStore = useStatausStore();
   treeStore.init();
 
-  const loadMore = async (data: any) => {
+  const loadMore = async (data: any, resolve: Function) => {
     if (data.type == NodeType.Database) {
       console.warn('Load database');
 
@@ -45,6 +111,7 @@
           type: NodeType.TableGroup,
           isLeaf: false,
           selectable: false,
+          expand: true,
           meta: {
             NodeId: data.id,
             DatabaseName: data.title,
@@ -74,10 +141,11 @@
                 serverKey: param.serverKey,
               },
             },
-            children: null,
+            children: [],
           });
         }
-        data.children = [tabGroup];
+        // data.children = [tabGroup];
+        resolve([tabGroup]);
       } catch (err: any) {
         console.log(err.message);
       }
@@ -89,9 +157,9 @@
         const resp = await conn.getDatabases();
         console.log(resp);
         // data.title += '(' + resp.data.length + ')';
-        data.children = [];
+        let children = [];
         for (let row of resp.data) {
-          data.children.push({
+          children.push({
             id: 'db_' + row.SCHEMA_NAME,
             icon: 'database',
             title: row.SCHEMA_NAME,
@@ -109,6 +177,7 @@
             children: [],
           });
         }
+        resolve(children);
         // console.log(nodeMaps);
       } catch (err: any) {
         console.log(err.message);
@@ -116,12 +185,14 @@
     }
   };
 
-  const selectNode = async (key: any, data: any) => {
-    // console.error(data);
-    if (data.node.type == NodeType.Table) {
-      emits('select-table', data.node);
-    } else if (data.node.type == NodeType.Database) {
-      emits('select-database', data.node);
+  const selectNode = async (data: any) => {
+    console.error(data);
+    if (data.type == NodeType.Table) {
+      let metaNode = toMetaNode(data, 3);
+      emits('select-table', metaNode);
+    } else if (data.type == NodeType.Database) {
+      let metaNode = toMetaNode(data, 2);
+      emits('select-database', metaNode);
     }
   };
 
@@ -135,7 +206,7 @@
     emits('menu-select', key, node);
   };
 
-  const openDatabase = (node: SimpleNode) => {
+  const openDatabase = (node: MetaNode) => {
     emits('open-database', node);
   };
 
@@ -158,6 +229,7 @@
         {
           label: '设计表结构',
           onClick: () => {
+            console.error(node);
             tableDesign(node);
           },
         },
@@ -244,80 +316,36 @@
 </script>
 
 <template>
-  <div class="tree">
+  <div class="tree" style="height: var(--bodyHeight)">
     <div class="search-div">
       <IceInput isClearable @search="searchTree" class="search-text" placeholder="输入进行过滤" v-model="searchKey" />
     </div>
-    <a-tree
-      @select="selectNode"
-      blockNode
-      size="mini"
-      :fieldNames="{
-        key: 'id',
-        title: 'title',
-        children: 'children',
-        icon: 'customIcon',
-      }"
-      :animation="false"
-      :virtualListProps="{
-        height: height - 32,
-        fixedSize: true,
-        buffer: 15,
-      }"
-      :show-line="true"
-      :load-more="loadMore"
+    <Vtree
+      style="height: calc(100% - 36px)"
+      :unselectOnClick="false"
+      :render="renderNode"
+      selectable
+      :renderNodeAmount="30"
+      :load="loadMore"
+      ref="tree"
       :data="rootNode"
-    >
-      <template #title="nodeData">
-        <template v-if="nodeData.type == NodeType.Server">
-          <div @contextmenu="onContextServerMenu(nodeData, $event)"
-            >{{ nodeData?.title }}<span v-show="nodeData.children?.length != 0">({{ nodeData.children?.length }})</span>
-          </div>
-        </template>
-
-        <template v-else-if="nodeData.type == NodeType.Database">
-          <div @contextmenu="onContextDatabaseMenu(nodeData, $event)" @dblclick="openDatabase(nodeData)"
-            >{{ nodeData?.title }}
-          </div>
-        </template>
-
-        <template v-else-if="nodeData.type == NodeType.TableGroup">
-          <div
-            >{{ nodeData?.title }}<span v-show="nodeData.children?.length != 0">({{ nodeData.children?.length }})</span>
-          </div>
-        </template>
-
-        <template v-else-if="nodeData.type == NodeType.Table">
-          <div @contextmenu="onContextTableMenu(nodeData, $event)">{{ nodeData.title }}</div>
-        </template>
-
-        <template v-else>
-          {{ nodeData.title }}
-        </template>
-      </template>
-
-      <template #icon="data">
-        <IceIcon v-if="data.node.icon" activeColor="#515151" :icon="data.node.icon" :size="20" />
-      </template>
-    </a-tree>
+      @select="selectNode"
+    ></Vtree>
   </div>
 </template>
 
-<style lang="less">
-  .arco-tree-node-disabled-selectable {
-    .arco-tree-node-title {
-      color: var(--color-text-1) !important;
-      font-style: italic !important;
-      cursor: default !important;
-    }
+<style>
+  .node-title {
+    display: flex;
+    align-items: center;
   }
 </style>
-
 <style lang="less" scoped>
   .tree {
     padding: 0px;
     margin: 0px;
     cursor: default;
+    width: 100%;
     user-select: none;
     .search-div {
       width: 100%;

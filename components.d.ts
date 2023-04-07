@@ -9,7 +9,6 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    ATree: typeof import('@arco-design/web-vue')['Tree']
     Captionbar: typeof import('./src/components/layout/Captionbar.vue')['default']
     CodeEditor: typeof import('./src/components/CodeEditor/CodeEditor.vue')['default']
     ConnectDialog: typeof import('./src/components/Dialog/ConnectDialog.vue')['default']

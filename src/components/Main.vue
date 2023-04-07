@@ -53,11 +53,13 @@
 
   import packageInfo from '~/../package.json';
   import { Tab, TabType } from './Tabber';
-  import { SimpleNode } from './ConnectManager';
+  import { MetaNode } from './ConnectManager';
   import { uuid } from '~/utils';
   import { ToolCommand } from './layout/tool';
   import { getImageRes } from '~/utils/res';
   import { nextTick } from 'process';
+  import '@wsfe/vue-tree/dist/style.css';
+
   let bodyWidth = ref(0);
   let bodyHeight = ref(0);
   let width = ref(0);
@@ -83,10 +85,10 @@
       '--sideWidth': sideWidth.value + 'px',
     };
   });
-  const node = ref<SimpleNode | null>(null);
+  const node = ref<MetaNode | null>(null);
   const leftSplit = ref(0.22);
   const sideWidth = ref(235);
-  const split = ref(null);
+  const split = ref();
 
   const title = computed(() => {
     let t = packageInfo.productName;
@@ -101,13 +103,13 @@
     return t;
   });
 
-  const selectTable = (n: SimpleNode) => {
+  const selectTable = (n: MetaNode) => {
     node.value = n;
-    statusStore.setDatabase(n.meta?.DatabaseName);
-    statusStore.setServer(n.meta?.Param.serverKey);
+    statusStore.setDatabase(n.database);
+    statusStore.setServer(n.serverKey);
     let newTab: Tab = {
       id: n.id,
-      title: n.title,
+      title: n.tableName ?? '',
       type: TabType.Table,
       lock: false,
       meta: {
@@ -119,20 +121,20 @@
     tabStore.add(newTab);
   };
 
-  const selectDatabase = (n: SimpleNode) => {
+  const selectDatabase = (n: MetaNode) => {
     node.value = n;
-    statusStore.setDatabase(n.title);
-    statusStore.setServer(n.meta?.Param.serverKey);
+    statusStore.setDatabase(n.database);
+    statusStore.setServer(n.serverKey);
   };
 
-  const openDatabase = (n: SimpleNode) => {
+  const openDatabase = (n: MetaNode) => {
     node.value = n;
-    statusStore.setDatabase(n.title);
-    statusStore.setServer(n.meta?.Param.serverKey);
+    statusStore.setDatabase(n.database);
+    statusStore.setServer(n.serverKey);
 
     let newTab: Tab = {
       id: n.id,
-      title: n.title,
+      title: n.database ?? '',
       type: TabType.Database,
       lock: false,
       meta: {
@@ -165,7 +167,7 @@
     tabStore.removeAll();
   };
 
-  const menuSelect = (menu_key: string, node: SimpleNode) => {
+  const menuSelect = (menu_key: string, node: MetaNode) => {
     let newTab: Tab;
     switch (menu_key) {
       case 'new_query': //新建查询
@@ -194,9 +196,10 @@
         serverStore.removeConnect(node.title);
         break;
       case 'table-design':
+        console.log(node);
         newTab = {
-          id: 'design_table_' + node.title,
-          title: node.title,
+          id: 'design_table_' + node.tableName,
+          title: node.tableName ?? '',
           type: TabType.TableDesign,
           meta: {
             node: node,
@@ -226,30 +229,6 @@
     statusStore.setWindow(bodyWidth.value, bodyHeight.value);
   };
 
-  // const list = ref<TreeNodeOptions[]>([]);
-  // const virTree = ref<TreeContext>();
-
-  // function recursion(path = '0', level = 3): TreeNodeOptions[] {
-  //   const list = [];
-  //   for (let i = 0; i < 10; i += 1) {
-  //     const nodeKey = `${path}-${i}`;
-  //     const treeNode: TreeNodeOptions = {
-  //       nodeKey,
-  //       name: nodeKey,
-  //       children: [],
-  //       hasChildren: true,
-  //     };
-
-  //     if (level > 0) {
-  //       treeNode.children = recursion(nodeKey, level - 1);
-  //     } else {
-  //       treeNode.hasChildren = false;
-  //     }
-
-  //     list.push(treeNode);
-  //   }
-  //   return list;
-  // }
   onMounted(() => {
     window.onresize = () => {
       resize();

@@ -58,6 +58,7 @@ export const useTreeStore = defineStore({
         icon: 'home',
         type: NodeType.Root,
         selectable: false,
+        expand: true,
         isLeaf: false,
         children: [],
       };
@@ -73,6 +74,7 @@ export const useTreeStore = defineStore({
           type: NodeType.Server,
           selectable: true,
           isLeaf: false,
+          expand: false,
           runtime: {
             load: false,
           },

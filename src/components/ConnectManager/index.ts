@@ -33,3 +33,10 @@ export interface SimpleNode {
   runtime?: NodeRuntime;
   meta?: Meta;
 }
+
+export interface MetaNode {
+  id: string;
+  tableName?: string;
+  database?: string;
+  serverKey: string;
+}

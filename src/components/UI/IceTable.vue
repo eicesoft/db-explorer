@@ -36,10 +36,10 @@
 
   interface CompProp {
     fields?: Field[];
-    datas: Record<string, any>;
+    datas?: Array<Record<string, any>>;
     height?: string;
   }
-  withDefaults(defineProps<CompProp>(), { datas: [], height: '200px', center: false });
+  withDefaults(defineProps<CompProp>(), { height: '200px', center: false });
 </script>
 
 <style lang="less" scoped>
