@@ -9,13 +9,9 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    AButton: typeof import('@arco-design/web-vue')['Button']
-    AButtonGroup: typeof import('@arco-design/web-vue')['ButtonGroup']
     ASplit: typeof import('@arco-design/web-vue')['Split']
-    ATable: typeof import('@arco-design/web-vue')['Table']
     ATabPane: typeof import('@arco-design/web-vue')['TabPane']
     ATabs: typeof import('@arco-design/web-vue')['Tabs']
-    ATooltip: typeof import('@arco-design/web-vue')['Tooltip']
     ATree: typeof import('@arco-design/web-vue')['Tree']
     Captionbar: typeof import('./src/components/layout/Captionbar.vue')['default']
     CodeEditor: typeof import('./src/components/CodeEditor/CodeEditor.vue')['default']
@@ -32,6 +28,7 @@ declare module '@vue/runtime-core' {
     IceIconButton: typeof import('./src/components/UI/IceIconButton.vue')['default']
     IceInput: typeof import('./src/components/UI/IceInput.vue')['default']
     IceLoading: typeof import('./src/components/UI/IceLoading.vue')['default']
+    IceSplit: typeof import('./src/components/UI/IceSplit.vue')['default']
     IceTable: typeof import('./src/components/UI/IceTable.vue')['default']
     IceTabs: typeof import('./src/components/UI/IceTabs.vue')['default']
     Main: typeof import('./src/components/Main.vue')['default']

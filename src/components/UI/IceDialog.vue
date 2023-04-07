@@ -221,6 +221,8 @@
 
     .ice-dialog-body {
       padding: 14px;
+      max-height: 500px;
+      overflow: auto;
     }
 
     .ice-dialog-footer {

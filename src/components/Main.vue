@@ -4,7 +4,31 @@
     <Toolbar @trigger="toolbarTrigger" />
 
     <div ref="box" class="container">
-      <a-split
+      <IceSplit @on-move-end="sideResize" :value="leftSplit">
+        <template #left>
+          <ConnectTree
+            :height="height - 40 - 28 * 2"
+            @menu-select="menuSelect"
+            @select-database="selectDatabase"
+            @select-table="selectTable"
+            @open-database="openDatabase"
+        /></template>
+        <template #right
+          ><div style="overflow: hidden" v-if="!tabStore.isEmpty">
+            <Tabber @closeOther="closeOther" @closeAll="closeAll" @close="closeTab" @change="changeTab" />
+            <PanelManager></PanelManager>
+          </div>
+
+          <div v-else style="padding-top: calc(var(--bodyHeight) / 3)">
+            <div class="empty"
+              ><div><img style="width: 48px; height: 48px" :src="emptyIcon" /></div
+              ><div>请在左侧选择服务器, 数据库或者表</div></div
+            >
+          </div></template
+        >
+      </IceSplit>
+
+      <!-- <a-split
         @move-end="resize"
         :style="{
           height: cssVars['--bodyHeight'],
@@ -35,36 +59,9 @@
               ><div><img style="width: 48px; height: 48px" :src="emptyIcon" /></div
               ><div>请在左侧选择服务器, 数据库或者表</div></div
             >
-            <!-- <IceTabs
-              :tabs="[
-                { key: 'a1', title: 'tab1', icon: 'table' },
-                { key: 'a2', title: 'tab2' },
-                { key: 'a3', title: 'tab3' },
-                { key: 'a4', title: 'tab3' },
-                { key: 'a5', title: 'tab3' },
-                { key: 'a6', title: 'tab3' },
-                { key: 'a7', title: 'tab3' },
-                { key: 'a8', title: 'tab3524354233' },
-                { key: 'a9', title: '3464326324663263246' },
-                { key: 'a19', title: '3464326324663263246' },
-
-                { key: 'a11', title: '3464326324663263246' },
-                { key: 'a12', title: '3464326324663263246' },
-                { key: 'a13', title: '3464326324663263246' },
-                { key: 'a14', title: '3464326324663263246' },
-              ]"
-            >
-              <template #title="{ tab }">
-                <IceIcon v-if="tab.icon" :size="14" :icon="tab.icon" />
-                <span style="margin: 0 4px">{{ tab.title }}</span></template
-              >
-              <template #a1>sdgsagsas</template>
-              <template #a2>123</template>
-              <template #a3>456</template>
-            </IceTabs> -->
           </div>
         </template>
-      </a-split>
+      </a-split> -->
     </div>
 
     <Statusbar @trigger="toolbarTrigger" />
@@ -76,12 +73,6 @@
     <!-- Dialogs end-->
 
     <notifications :duration="50500" position="bottom right" />
-
-    <!-- <IceDrawer v-model:visible="visibles.historyVisible" title="SQL 历史">
-      <template #body>
-        <div v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14]"> test {{ item }} </div>
-      </template>
-    </IceDrawer> -->
     <HistoryDrawer v-model:visible="visibles.historyVisible" />
   </div>
 </template>
@@ -105,7 +96,6 @@
   let bodyHeight = ref(0);
   let width = ref(0);
   let height = ref(0);
-  const size = ref('248px');
   const emptyIcon = getImageRes('empty.png');
 
   const serverStore = useServerStore();
@@ -131,6 +121,9 @@
     };
   });
   const node = ref<SimpleNode | null>(null);
+  const leftSplit = ref(0.22);
+  const sideWidth = ref(0);
+
   // const title = ref(BASE_TITLE);
 
   const title = computed(() => {
@@ -210,10 +203,6 @@
     tabStore.removeAll();
   };
 
-  const sideWidth = computed(() => {
-    return parseInt(size.value.substring(0, size.value.length - 2));
-  });
-
   const menuSelect = (menu_key: string, node: SimpleNode) => {
     let newTab: Tab;
     switch (menu_key) {
@@ -257,7 +246,14 @@
     }
   };
 
+  const sideResize = (e: any, width: any) => {
+    console.log(width);
+    sideWidth.value = width;
+    resize();
+  };
+
   const resize = () => {
+    console.log('resize window');
     width.value = window.innerWidth;
     height.value = window.innerHeight;
     bodyWidth.value = width.value - sideWidth.value - 7;
@@ -294,6 +290,8 @@
       resize();
     };
     resize();
+    sideWidth.value = bodyWidth.value * leftSplit.value;
+
     // console.log(virTree);
   });
 
@@ -339,10 +337,12 @@
     position: absolute;
     width: var(--windowWidth);
     top: calc(28px);
+    height: var(--bodyHeight);
   }
   .empty {
     text-align: center;
     font-size: 16px;
+    user-select: none;
     color: rgb(151, 151, 151);
   }
   //split resize

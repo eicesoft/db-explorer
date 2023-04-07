@@ -19,7 +19,7 @@
 
     <div class="m-tab-container" v-if="is_show_panel">
       <template v-for="(tab, i) in tabs">
-        <div v-if="activeTab?.key == tab.key" class="m-tab-panel"> <slot :tab="tab" :name="tab.key"></slot> </div>
+        <div v-show="activeTab?.key == tab.key" class="m-tab-panel"> <slot :tab="tab" :name="tab.key"></slot> </div>
       </template>
     </div>
   </div>
@@ -161,8 +161,8 @@
   }
 
   .m-tab-panel {
-    width: calc(100% - 14px);
+    width: calc(100% - 2px);
     border: 1px solid #ececec;
-    padding: 6px;
+    // padding: 6px;
   }
 </style>

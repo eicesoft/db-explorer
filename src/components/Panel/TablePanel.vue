@@ -119,15 +119,14 @@
 
 <template>
   <div class="panel">
-    <a-tabs size="mini" :position="'top'">
-      <a-tab-pane key="data">
-        <template #title>
-          <div class="tab-title">
-            <IceIcon :size="14" icon="table" />
-            <span style="margin-left: 6px">{{ t('message.tablepanel.data') }}</span>
-          </div>
-        </template>
-        <div class="toolbar">
+    <IceTabs
+      :tabs="[
+        { key: 'data', title: t('message.tablepanel.data'), icon: 'table' },
+        { key: 'info', title: t('message.tablepanel.info'), icon: 'infomation' },
+      ]"
+    >
+      <template #data
+        ><div class="toolbar">
           <div class="toolbar-left">
             <IceInput
               @search="doSearch"
@@ -154,23 +153,15 @@
           :setting="{ height: gridHeight }"
           :columns="fields"
           :datas="rowData"
-        />
-      </a-tab-pane>
-
-      <a-tab-pane key="info">
-        <template #title>
-          <div class="tab-title">
-            <IceIcon :size="14" icon="infomation" />
-            <span style="margin-left: 6px">{{ t('message.tablepanel.info') }}</span>
-          </div>
-        </template>
+      /></template>
+      <template #info>
         <TableInformation
           :server-key="node?.meta?.Param.serverKey"
           :database="node?.meta?.DatabaseName"
           :table="node?.title"
         />
-      </a-tab-pane>
-    </a-tabs>
+      </template>
+    </IceTabs>
 
     <!-- <v-contextmenu ref="contextmenu">
       <v-contextmenu-item>删除选择行</v-contextmenu-item>

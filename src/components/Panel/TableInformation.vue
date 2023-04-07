@@ -1,24 +1,14 @@
 <template>
   <div class="container-info">
     <div style="margin: 5px 15px; user-select: auto">字段信息:</div>
-    {{ columns }}
-    <a-table
-      :bordered="{ cell: true }"
-      column-resizable
-      style="margin: 5px 15px; user-select: auto"
-      :pagination="false"
-      size="mini"
-      :columns="columns"
-      :data="tableInfos"
-    >
-      <template #Pk="{ record }">
-        <!-- <IconStar style="color: cf1322" v-if="record.Key == 'PRI'" /> -->
-        <IceIcon style="color: #cf1322" v-if="record.Key == 'PRI'" icon="primary" />
-        <IceIcon style="color: #ffc53d" v-if="record.Key == 'MUL'" icon="index" />
 
-        <!-- <IconThunderbolt style="color: #ffc53d" v-if="record.Key == 'MUL'" /> -->
-      </template>
-    </a-table>
+    <IceTable style="margin: 5px 15px; user-select: auto" :fields="columns" :datas="tableInfos">
+      <template #Pk="{ row }">
+        <IceIcon style="color: #cf1322" v-if="row.Key == 'PRI'" icon="primary" />
+        <IceIcon style="color: #ffc53d" v-if="row.Key == 'MUL'" icon="index"
+      /></template>
+    </IceTable>
+
     <div style="margin: 15px 15px 5px 15px; user-select: auto">Table DDL:</div>
 
     <div class="code">

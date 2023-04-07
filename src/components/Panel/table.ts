@@ -1,8 +1,9 @@
 export const TableFields = [
   {
     title: 'Pk',
-    slotName: 'Pk',
+    dataIndex: 'Pk',
     width: 40,
+    center: true,
   },
   {
     title: '字段名',
@@ -21,6 +22,7 @@ export const TableFields = [
   {
     title: 'IsNull',
     dataIndex: 'Null',
+    center: true,
     ellipsis: true,
     tooltip: true,
     width: 80,
