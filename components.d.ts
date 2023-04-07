@@ -9,9 +9,6 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    ASplit: typeof import('@arco-design/web-vue')['Split']
-    ATabPane: typeof import('@arco-design/web-vue')['TabPane']
-    ATabs: typeof import('@arco-design/web-vue')['Tabs']
     ATree: typeof import('@arco-design/web-vue')['Tree']
     Captionbar: typeof import('./src/components/layout/Captionbar.vue')['default']
     CodeEditor: typeof import('./src/components/CodeEditor/CodeEditor.vue')['default']
