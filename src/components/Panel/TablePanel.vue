@@ -1,12 +1,11 @@
 <script setup lang="ts">
   import { SimpleNode } from '~/components/ConnectManager/index';
-  import { ref, computed, reactive, PropType, watch, onMounted } from 'vue';
+  import { ref, computed, reactive, PropType } from 'vue';
   import Manager from '~/utils/link_manager';
-  import { getImageRes } from '~/utils/res';
   import { useI18n } from 'vue-i18n';
-  import { Icon } from '@arco-design/web-vue';
-  import { IconExpand } from '@arco-design/web-vue/es/icon';
-  import { Message } from '@arco-design/web-vue';
+  import { useStatausStore } from '~/store/modules/status';
+  import { formatRow, formatField } from '~/components/Base/grid';
+  import { notify } from '@kyvg/vue3-notification';
 
   const props = defineProps({
     node: {
@@ -14,24 +13,22 @@
     },
   });
 
-  const IconFont = Icon.addFromIconFontCn({
-    src: getImageRes('iconfont/iconfont.js'),
-  });
   const manager: Manager = Manager.getInstance();
   const condition = ref('');
-  // console.error('First show', props.node);
+  const loading = ref(false);
 
-  const gridTable = ref(null);
+  // console.error('First show', props.node);
 
   const pageInfo = reactive({
     page: 1,
-    page_size: 500,
+    page_size: 200,
   });
   const fields = ref([]);
   const rows = ref([]);
   const { t } = useI18n();
 
   const loadPage = async () => {
+    loading.value = true;
     let start = (pageInfo.page - 1) * pageInfo.page_size;
     const conn = manager.get(props.node?.meta?.Param.serverKey);
     console.log('Load Page ' + pageInfo.page);
@@ -55,22 +52,31 @@
         []
       );
       console.log(resp);
-
-      fields.value = resp.fields;
       rows.value = resp.data;
-      // gridApi.setRowData(resp.data);
-      // nextTick(() => {
-      //   autoResize();
-      // });
+
+      const fieldsResp = await conn.getTableFields(props.node?.meta?.DatabaseName, props.node?.title);
+      console.log(fieldsResp);
+      fields.value = fieldsResp.data.map((field: any) => {
+        return formatField(field);
+      });
+
+      console.log(fields);
+      loading.value = false;
+      // fields.value = resp.fields;
     } catch (e: any) {
-      Message.error(e.toString());
+      loading.value = false;
+      notify({
+        title: e.toString(),
+        type: 'error',
+      });
     }
   };
 
   loadPage();
   const rowData = computed(() => {
     return rows.value.map((item: any) => {
-      return item;
+      // console.warn(item);
+      return formatRow(item);
     });
   });
 
@@ -95,10 +101,17 @@
       await loadPage();
     }
   };
-  const resize = () => {
-    console.log(gridTable.value);
-    gridTable.value.autoResize();
+
+  const refresh = async () => {
+    await loadPage();
   };
+
+  const statusStore = useStatausStore();
+
+  const gridHeight = computed(() => {
+    return statusStore.window.bodyHeight - 38 - 28 - 34;
+  });
+
   const doSearch = () => {
     loadPage();
   };
@@ -106,55 +119,49 @@
 
 <template>
   <div class="panel">
-    <a-tabs size="mini" :position="'top'">
-      <a-tab-pane key="data">
-        <template #title>
-          <icon-font class="iconfont" type="icon-table" size="14" /><span style="margin-left: 6px">{{
-            t('message.tablepanel.data')
-          }}</span></template
-        >
-        <div class="toolbar">
+    <IceTabs
+      :tabs="[
+        { key: 'data', title: t('message.tablepanel.data'), icon: 'table' },
+        { key: 'info', title: t('message.tablepanel.info'), icon: 'infomation' },
+      ]"
+    >
+      <template #data
+        ><div class="toolbar">
           <div class="toolbar-left">
-            <!-- -->
-
-            <a-input
+            <IceInput
+              @search="doSearch"
+              :style="{ width: '440px' }"
+              :placeholder="'请输入过滤条件 id=?'"
               v-model="condition"
-              @press-enter="doSearch"
-              size="mini"
-              :style="{ width: '340px' }"
-              placeholder="请输入过滤条件 id=?"
-              allow-clear
+              isClearable
             />
           </div>
           <div class="toolbar-right">
-            <a-tooltip :content="t('message.tablepanel.toolbar.resize')">
-              <a-button @click="resize" size="mini">
-                <template #icon><IconExpand :size="16" /></template>
-              </a-button>
-            </a-tooltip>
+            <IceIcon @click="refresh" icon="refresh" :size="18" />
 
-            <div :class="{ disable: pageInfo.page == 1 }" class="icon" @click="previous">◀</div>
+            <!-- <div :class="{ disable: pageInfo.page == 1 }" class="icon" @click="previous">◀</div> -->
+            <IceIcon @click="previous" v :class="{ disable: pageInfo.page == 1 }" :size="18" icon="prev" />
             <input size="2" v-model="pageInfo.page" class="text-number" type="number" />
-            <div :class="{ disable: !isNext }" class="icon" @click="next">▶</div>
+            <IceIcon @click="next" :class="{ disable: !isNext }" :size="18" icon="next" />
+            <!-- <div :class="{ disable: !isNext }" class="icon" @click="next">▶</div> -->
           </div>
         </div>
 
-        <GridTable ref="gridTable" :rows="rowData" :fields="fields" />
-      </a-tab-pane>
-
-      <a-tab-pane key="info">
-        <template #title>
-          <icon-font class="iconfont" type="icon-infomation" size="14" /><span style="margin-left: 6px">{{
-            t('message.tablepanel.info')
-          }}</span></template
-        >
+        <GridTable
+          :loading="loading"
+          class="gridTable"
+          :setting="{ height: gridHeight }"
+          :columns="fields"
+          :datas="rowData"
+      /></template>
+      <template #info>
         <TableInformation
           :server-key="node?.meta?.Param.serverKey"
           :database="node?.meta?.DatabaseName"
           :table="node?.title"
         />
-      </a-tab-pane>
-    </a-tabs>
+      </template>
+    </IceTabs>
 
     <!-- <v-contextmenu ref="contextmenu">
       <v-contextmenu-item>删除选择行</v-contextmenu-item>
@@ -168,7 +175,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style lang="less">
   .panel {
     .arco-tabs-content {
       padding-top: 0px !important;
@@ -176,14 +183,19 @@
   }
 </style>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   :deep(.hljs) {
     border-radius: 6px;
     border: 1px solid #ececec;
+    font-size: 13px;
   }
   .panel {
-    height: calc(var(--bodyHeight) - 36px - 36px);
+    height: calc(var(--bodyHeight) - 36px);
     width: var(--bodyWidth);
+    .tab-title {
+      display: flex;
+      align-items: center;
+    }
 
     .toolbar {
       height: 28px;
@@ -191,6 +203,10 @@
       display: flex;
       justify-content: space-between;
       background-color: rgb(245, 245, 245);
+      color: #555555;
+      &:hover {
+        color: #838383;
+      }
       .toolbar-left {
         display: flex;
         justify-content: flex-start;
@@ -200,6 +216,7 @@
       }
       .toolbar-right {
         display: flex;
+        align-items: center;
         .disable {
           color: rgb(207, 207, 207);
           cursor: not-allowed;

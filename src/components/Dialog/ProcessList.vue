@@ -1,36 +1,27 @@
 <template>
-  <a-modal
+  <IceDialog
     width="800px"
-    modal-class="base-model"
-    :mask="false"
-    :maskClosable="false"
-    renderToBody
-    draggable
-    hide-cancel
-    ok-text="关闭"
     :visible="visible"
-    @ok="handleOk"
-    @cancel="handleOk"
+    @enter="handleEnter"
+    @close="handleOk"
+    :buttons="DialogButton.Close"
+    :title="t('message.dialog.processlist.title')"
   >
-    <template #title> {{ t('message.dialog.processlist.title') }} </template>
+    <template #title> {{ t('message.dialog.processlist.title') }}({{ rows.length }}) </template>
 
-    <a-input-search class="search-text" :placeholder="t('message.base.filter')" size="mini" v-model="searchKey" />
+    <template #body>
+      <IceInput style="height: 26px" :placeholder="t('message.base.filter')" v-model="searchKey" />
 
-    <a-table
-      style="margin-top: 5px; overflow-x: hidden; overflow-x: auto"
-      :virtual-list-props="{ height: 300 }"
-      :pagination="false"
-      size="mini"
-      :columns="columns"
-      :data="filter"
-    >
-    </a-table>
-  </a-modal>
+      <IceTable style="margin-top: 10px" :fields="columns" :datas="filter"></IceTable>
+    </template>
+  </IceDialog>
 </template>
 
 <script lang="ts" setup>
   import { computed, ref, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
+  import { DialogButton } from '~/components/UI/dialog';
+
   import Manager from '~/utils/link_manager';
   const { t } = useI18n();
 
@@ -113,12 +104,6 @@
   const searchKey = ref('');
   const filter = computed(() => {
     return rows.value.filter((item: any) => {
-      //   console.log(
-      //     item.User.indexOf(searchKey.value) != -1 ||
-      //       item.Id.toString().indexOf(searchKey.value) != -1 ||
-      //       item.db.indexOf(searchKey.value) != -1 ||
-      //       item.Host.indexOf(searchKey.value) != -1
-      //   );
       return (
         new String(item.User).toLocaleLowerCase().indexOf(searchKey.value.toLocaleLowerCase()) != -1 ||
         new String(item.Id).toLocaleLowerCase().indexOf(searchKey.value.toLocaleLowerCase()) != -1 ||
@@ -142,10 +127,17 @@
     { immediate: true }
   );
 
-  const handleOk = () => {
+  const handleOk = (button: any) => {
+    console.log(button);
     searchKey.value = '';
+    emit('update:visible', false);
+  };
+
+  const handleEnter = (button: any) => {
+    // searchKey.value = '';
+    // emit('update:visible', false);
     emit('update:visible', false);
   };
 </script>
 
-<style lang="scss"></style>
+<style lang="less"></style>

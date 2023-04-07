@@ -1,22 +1,15 @@
 <template>
   <div class="menu">
-    <a-dropdown class="menu-drop" @select="menuSelect" v-for="(menu, index) in menus">
-      <div class="menu-item">{{ menu.title }}</div>
-      <template #content>
-        <a-doption
-          :disabled="child.disabled && child.disabled()"
-          :value="child.key"
-          v-for="(child, index) in menu.children"
-          >{{ child.title }}</a-doption
-        >
-      </template>
-    </a-dropdown>
+    <div @click="onShowMenu($event, menu.children)" v-for="(menu, index) in menus" class="menu-item">{{
+      menu.title
+    }}</div>
   </div>
 </template>
 
 <script lang="ts" setup>
   import { PropType } from 'vue';
   import { Menu, MenuKeys } from './menu';
+  import ContextMenu from '@imengyu/vue3-context-menu';
 
   const emits = defineEmits<{
     (e: 'trigger', key: MenuKeys): void;
@@ -28,25 +21,39 @@
     },
   });
 
-  const menuSelect = (value: MenuKeys, evt: any) => {
+  const menuSelect = (value: MenuKeys) => {
     emits('trigger', value);
   };
-</script>
-<style lang="scss">
-  .menu-drop {
-    .arco-dropdown-option-active,
-    .arco-dropdown-option:not(.arco-dropdown-option-disabled):hover {
-      background-color: #e8f1fc !important;
-    }
-  }
-</style>
 
-<style lang="scss" scoped>
+  const onShowMenu = (e: any, children: Menu[]) => {
+    let items = children.map((item: Menu) => {
+      return {
+        label: item.title,
+        preserveIconWidth: false,
+        disabled: item.disabled ? item.disabled() : false,
+        onClick: () => {
+          menuSelect(item.key ?? MenuKeys.Unknonw);
+        },
+      };
+    });
+    ContextMenu.showContextMenu({
+      theme: 'win10 dark',
+      x: e.x,
+      y: e.y,
+      zIndex: 1000,
+      items: items,
+    });
+  };
+</script>
+
+<style lang="less" scoped>
   .menu {
     display: flex;
     user-select: none;
     height: 24px;
+    margin-left: 8px;
     line-height: 24px;
+
     .menu-item {
       cursor: pointer;
       //   margin: 0 6px;

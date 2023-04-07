@@ -1,9 +1,9 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3961440 */
-  src: url('iconfont.woff2?t=1679454915497') format('woff2'),
-       url('iconfont.woff?t=1679454915497') format('woff'),
-       url('iconfont.ttf?t=1679454915497') format('truetype'),
-       url('iconfont.svg?t=1679454915497#iconfont') format('svg');
+  src: url('iconfont.woff2?t=1680850599265') format('woff2'),
+       url('iconfont.woff?t=1680850599265') format('woff'),
+       url('iconfont.ttf?t=1680850599265') format('truetype'),
+       url('iconfont.svg?t=1680850599265#iconfont') format('svg');
 }
 
 .iconfont {
@@ -12,6 +12,74 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-empty:before {
+  content: "\e6ad";
+}
+
+.icon-clear:before {
+  content: "\e62a";
+}
+
+.icon-design:before {
+  content: "\e70a";
+}
+
+.icon-copy:before {
+  content: "\e63d";
+}
+
+.icon-index:before {
+  content: "\e90f";
+}
+
+.icon-primary:before {
+  content: "\e617";
+}
+
+.icon-plus:before {
+  content: "\e622";
+}
+
+.icon-user-group:before {
+  content: "\e62d";
+}
+
+.icon-prev:before {
+  content: "\e600";
+}
+
+.icon-remove:before {
+  content: "\e601";
+}
+
+.icon-search:before {
+  content: "\e602";
+}
+
+.icon-next:before {
+  content: "\e603";
+}
+
+.icon-zhongmingming:before {
+  content: "\e604";
+}
+
+.icon-refresh:before {
+  content: "\ec08";
+}
+
+.icon-loading:before {
+  content: "\e60f";
+}
+
+.icon-fold:before {
+  content: "\e619";
+}
+
+.icon-unfold:before {
+  content: "\e941";
 }
 
 .icon-process:before {

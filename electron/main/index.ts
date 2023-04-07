@@ -2,7 +2,9 @@ import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { release } from 'node:os';
 import { join } from 'node:path';
 import fs from 'node:fs';
+import Store from 'electron-store';
 
+Store.initRenderer();
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -39,10 +41,10 @@ const preload = join(__dirname, '../preload/index.js');
 // console.log(ipcMessage);
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, 'index.html');
-
+// console.warn(app.getPath('userData'));
 async function createWindow() {
   win = new BrowserWindow({
-    title: 'SQL Explorer',
+    title: 'DB Explorer',
     icon: join(process.env.PUBLIC, 'favicon.ico'),
     height: 800,
     width: 1024,
@@ -67,7 +69,7 @@ async function createWindow() {
   if (process.env.VITE_DEV_SERVER_URL) {
     // electron-vite-vue#298
     win.loadURL(url, {
-      extraHeaders: `Content-Security-Policy: default-src 'self'`,
+      extraHeaders: `Content-Security-Policy: default-src 'unsafe-eval'`,
     });
     // Open devTool if the app is not packaged
     win.webContents.openDevTools();
@@ -79,6 +81,9 @@ async function createWindow() {
   // Test actively push message to the Electron-Renderer
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', new Date().toLocaleString());
+    win?.webContents.send('did-finish-load', {
+      key: 'jdub237v',
+    });
   });
 
   // Make all links open with the browser, not with the application
@@ -90,6 +95,7 @@ async function createWindow() {
   // win.webContents.on('will-navigate', (event, url) => { }) #344
 }
 
+// console.log('App ready createWindow');
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
@@ -131,8 +137,9 @@ ipcMain.handle('open-win', (_, arg) => {
   }
 });
 
-const packageInfo = require('../../package.json');
 ipcMain.handle('about', (event) => {
+  const packageInfo = require('../../package.json');
+
   dialog.showMessageBox(win, {
     title: packageInfo.productName,
     message: `Name: \t\t${packageInfo.productName}\nVersion: \t\t${packageInfo.version}\nAuthor: ${packageInfo.author}`,

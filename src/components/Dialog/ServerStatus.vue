@@ -1,35 +1,25 @@
 <template>
-  <a-modal
-    modal-class="base-model"
-    :mask="false"
-    draggable
-    hide-cancel
-    ok-text="关闭"
+  <IceDialog
+    width="500px"
     :visible="visible"
-    @ok="handleOk"
-    @cancel="handleOk"
+    @enter="handleOk"
+    @close="handleOk"
+    :buttons="DialogButton.Close"
+    :title="t('message.dialog.status.title')"
   >
-    <template #title> {{ t('message.dialog.status.title') }} </template>
-
-    <a-input-search class="search-text" :placeholder="t('message.base.filter')" size="mini" v-model="searchKey" />
-
-    <a-table
-      style="margin-top: 5px; overflow-x: hidden; overflow-x: auto"
-      :virtual-list-props="{ height: 300 }"
-      column-resizable
-      :pagination="false"
-      size="mini"
-      :columns="columns"
-      :data="filter"
-    >
-    </a-table>
-  </a-modal>
+    <template #body>
+      <IceInput class="search-text" :placeholder="t('message.base.filter')" v-model="searchKey" />
+      <IceTable style="margin-top: 10px" :fields="columns" :datas="filter"></IceTable>
+    </template>
+  </IceDialog>
 </template>
 
 <script lang="ts" setup>
   import { computed, ref, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import Manager from '~/utils/link_manager';
+  import { DialogButton } from '~/components/UI/dialog';
+
   const { t } = useI18n();
 
   const columns = computed(() => {
@@ -92,4 +82,8 @@
   };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="less" scoped>
+  .search-text {
+    height: 28px;
+  }
+</style>

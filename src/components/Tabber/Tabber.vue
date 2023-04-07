@@ -1,37 +1,27 @@
 <template>
   <div class="m-tab" ref="tab">
     <div class="m-tab-list">
-      <div
-        class="m-tab-item"
-        v-for="(item, i) in tabStore.tabs"
-        :class="{ 'm-tab-item-active': tabStore.activeTab?.id == item.id }"
-        :key="i"
-        @click="toggleTab(item)"
-      >
-        <a-dropdown size="mini" trigger="contextMenu" alignPoint :style="{ display: 'block' }">
+      <template v-for="(item, i) in tabStore.tabs">
+        <div
+          @contextmenu="onContextMenu(item, $event)"
+          class="m-tab-item"
+          :class="{ 'm-tab-item-active': tabStore.activeTab?.id == item.id }"
+          @click="toggleTab(item)"
+        >
           <div class="m-tab-title">
-            <icon-font style="color: #f18e27" v-if="item.lock" type="icon-lock" :size="14" />
-
-            <icon-font v-if="item.type == TabType.Database" type="icon-database" :size="12" />
-            <icon-font v-if="item.type == TabType.Table" type="icon-table" :size="12" />
-            <icon-font v-if="item.type == TabType.Query" type="icon-text" :size="16" />
+            <IceIcon style="color: #f18e27" v-if="item.lock" icon="lock" :size="14" />
+            <IceIcon v-if="item.type == TabType.Database" icon="database" :size="12" />
+            <IceIcon v-if="item.type == TabType.Table" icon="table" :size="12" />
+            <IceIcon v-if="item.type == TabType.Query" icon="query" :size="16" />
+            <IceIcon v-if="item.type == TabType.TableDesign" icon="design" :size="12" />
 
             <span style="margin: 0 4px">{{ item.title }}</span>
-            <div v-if="!item.lock" @click.stop="close(item)" class="x-icon"
-              ><icon-font type="icon-close" :size="14" />
+            <div v-if="!item.lock" @click.stop="close(item)" class="x-icon">
+              <IceIcon icon="close" :size="14" />
             </div>
           </div>
-          <template #content>
-            <a-doption @click="lock(item)">{{
-              item.lock ? t('message.tabber.contentMenu.ulock') : t('message.tabber.contentMenu.lock')
-            }}</a-doption>
-            <a-divider margin="2px" />
-            <a-doption v-if="!item.lock" @click="close(item)">{{ t('message.tabber.contentMenu.close') }}</a-doption>
-            <a-doption @click="closeOther(item)">{{ t('message.tabber.contentMenu.closeOther') }}</a-doption>
-            <a-doption @click="closeAll()">{{ t('message.tabber.contentMenu.closeAll') }}</a-doption>
-          </template>
-        </a-dropdown>
-      </div>
+        </div>
+      </template>
     </div>
     <slot name="options"></slot>
   </div>
@@ -39,16 +29,12 @@
 
 <script lang="ts" setup>
   import { useTabStore } from '~/store/modules/tab';
-  import { onMounted, nextTick, ref, defineEmits, watch } from 'vue';
+  import { onMounted, nextTick, ref, watch } from 'vue';
   import { Tab, Id, TabType } from './index';
-  import { getImageRes } from '~/utils/res';
-  import { Icon } from '@arco-design/web-vue';
   import { useI18n } from 'vue-i18n';
+  import ContextMenu from '@imengyu/vue3-context-menu';
   const { t } = useI18n();
 
-  const IconFont = Icon.addFromIconFontCn({
-    src: getImageRes('iconfont/iconfont.js'),
-  });
   // const props = defineProps({
   //   tabs: {
   //     type: Array<Tab>,
@@ -57,7 +43,6 @@
 
   const tabStore = useTabStore();
   const tab = ref();
-
   watch(
     () => tabStore.tabs,
     (newVal, oldVal) => {
@@ -86,20 +71,58 @@
     // emit('update:active', tab);
   };
 
-  const lock = (item: Tab) => {
-    item.lock = !item.lock;
+  const lock = (tab: Tab) => {
+    tab.lock = !tab.lock;
   };
 
-  const closeOther = (item: Tab) => {
-    emit('closeOther', item);
+  const closeOther = (tab: Tab) => {
+    emit('closeOther', tab);
   };
 
   const closeAll = () => {
     emit('closeAll');
   };
 
-  const close = (item: Tab) => {
-    emit('close', item);
+  const close = (tab: Tab) => {
+    emit('close', tab);
+  };
+
+  const onContextMenu = (tab: Tab, e: any) => {
+    //show our menu
+    ContextMenu.showContextMenu({
+      theme: 'win10 dark',
+      x: e.x,
+      y: e.y,
+      zIndex: 1000,
+      items: [
+        {
+          label: tab.lock ? t('message.tabber.contentMenu.ulock') : t('message.tabber.contentMenu.lock'),
+          onClick: () => {
+            lock(tab);
+          },
+          divided: true,
+        },
+        {
+          label: t('message.tabber.contentMenu.close'),
+          disabled: tab.lock,
+          onClick: () => {
+            close(tab);
+          },
+        },
+        {
+          label: t('message.tabber.contentMenu.closeOther'),
+          onClick: () => {
+            closeOther(tab);
+          },
+        },
+        {
+          label: t('message.tabber.contentMenu.closeAll'),
+          onClick: () => {
+            closeAll();
+          },
+        },
+      ],
+    });
   };
 
   onMounted(() => {
@@ -108,25 +131,9 @@
       tab.value.scrollLeft += delta * 100;
     });
   });
-
-  // const closeImg = ref(getIconRes('close.png'));
 </script>
 
-<style lang="scss">
-  .arco-dropdown-option {
-    line-height: 24px !important;
-    font-size: 12px !important;
-    min-width: 96px !important;
-  }
-  .arco-dropdown-option-active,
-  .arco-dropdown-option:not(.arco-dropdown-option-disabled):hover {
-    color: var(--color-text-1) !important;
-    background-color: #e8f1fc !important;
-    transition: all 0.1s cubic-bezier(0, 0, 1, 1);
-  }
-</style>
-
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .x-icon {
     display: flex;
     align-items: center;
@@ -160,13 +167,13 @@
     /* 滚动槽 */
     &::-webkit-scrollbar-track {
       border-radius: 10px;
-      background-color: rgba(233, 226, 226, 0.5);
+      background-color: #fff4dbe7;
     }
 
     /* 滚动条滑块 */
     &::-webkit-scrollbar-thumb {
       border-radius: 10px;
-      background-color: rgba(114, 114, 114, 0.2);
+      background-color: #ffe6afe7;
     }
 
     .m-tab-list {

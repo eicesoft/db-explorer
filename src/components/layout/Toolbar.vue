@@ -1,52 +1,49 @@
 <template>
   <div class="header">
     <div class="icon-list">
-      <a-button-group>
-        <a-tooltip :content="t('message.toolbar.addTip')">
-          <a-button @click="clickBtn(ToolCommand.Add)" size="mini">
-            <template #icon><icon-plus :size="iconSize" /></template>
-          </a-button>
-        </a-tooltip>
-      </a-button-group>
+      <IceIconButton
+        :title="t('message.toolbar.addTip')"
+        @click.prevent="clickBtn(ToolCommand.Add)"
+        icon="plus"
+        :size="iconSize"
+      />
 
-      <a-button-group style="margin-left: 10px">
-        <a-tooltip :content="t('message.toolbar.userManager')">
-          <a-button :disabled="statusStore.serverName == null" @click="clickBtn(ToolCommand.UserManager)" size="mini">
-            <template #icon><icon-user-group :size="iconSize" /></template>
-          </a-button>
-        </a-tooltip>
-        <a-tooltip :content="t('message.toolbar.serverInfo')">
-          <a-button
-            :disabled="statusStore.serverName == null"
-            @click="clickBtn(ToolCommand.ServerInfomation)"
-            size="mini"
-          >
-            <template #icon><icon-info-circle :size="iconSize" /></template>
-          </a-button>
-        </a-tooltip>
+      <div class="tool-group">
+        <IceIconButton
+          :title="t('message.toolbar.userManager')"
+          :disabled="statusStore.serverName == null"
+          @click.prevent="clickBtn(ToolCommand.UserManager)"
+          icon="user-group"
+          is-divider
+          :size="iconSize"
+        />
 
-        <a-tooltip :content="t('message.toolbar.serverInfo')">
-          <a-button :disabled="statusStore.serverName == null" @click="clickBtn(ToolCommand.ProcessList)" size="mini">
-            <template #icon><icon-font type="icon-process" :size="iconSize" /></template>
-          </a-button>
-        </a-tooltip>
-      </a-button-group>
+        <IceIconButton
+          :title="t('message.toolbar.serverInfo')"
+          :disabled="statusStore.serverName == null"
+          @click.prevent="clickBtn(ToolCommand.ServerInfomation)"
+          icon="infomation"
+          is-divider
+          :size="iconSize"
+        />
+
+        <IceIconButton
+          :title="t('message.toolbar.serverInfo')"
+          :disabled="statusStore.serverName == null"
+          @click.prevent="clickBtn(ToolCommand.ProcessList)"
+          icon="process"
+          :size="iconSize"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { IconPlus, IconUserGroup, IconInfoCircle } from '@arco-design/web-vue/es/icon';
   import { ref } from 'vue';
   import { ToolCommand } from './tool';
   import { useI18n } from 'vue-i18n';
-  import { Icon } from '@arco-design/web-vue';
-  import { getImageRes } from '~/utils/res';
   import { useStatausStore } from '~/store/modules/status';
-
-  const IconFont = Icon.addFromIconFontCn({
-    src: getImageRes('iconfont/iconfont.js'),
-  });
 
   const { t } = useI18n();
   const statusStore = useStatausStore();
@@ -61,7 +58,7 @@
   };
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .header {
     position: fixed;
     left: 0;
@@ -80,6 +77,10 @@
       align-items: center;
       height: 28px;
       margin: 0 4px;
+      .tool-group {
+        display: flex;
+        margin-left: 10px;
+      }
     }
   }
 </style>

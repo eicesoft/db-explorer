@@ -1,10 +1,129 @@
 {
   "id": "3961440",
-  "name": "MySQLExplorer",
+  "name": "DB Explorer",
   "font_family": "iconfont",
   "css_prefix_text": "icon-",
   "description": "",
   "glyphs": [
+    {
+      "icon_id": "18320823",
+      "name": "空数据",
+      "font_class": "empty",
+      "unicode": "e6ad",
+      "unicode_decimal": 59053
+    },
+    {
+      "icon_id": "15726868",
+      "name": "清理clear",
+      "font_class": "clear",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "2690446",
+      "name": "设计",
+      "font_class": "design",
+      "unicode": "e70a",
+      "unicode_decimal": 59146
+    },
+    {
+      "icon_id": "5286710",
+      "name": "复制",
+      "font_class": "copy",
+      "unicode": "e63d",
+      "unicode_decimal": 58941
+    },
+    {
+      "icon_id": "9229181",
+      "name": "index",
+      "font_class": "index",
+      "unicode": "e90f",
+      "unicode_decimal": 59663
+    },
+    {
+      "icon_id": "11493429",
+      "name": "主键",
+      "font_class": "primary",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "1304889",
+      "name": "添加",
+      "font_class": "plus",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "11882444",
+      "name": "用户组管理",
+      "font_class": "user-group",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "2815716",
+      "name": "上一个",
+      "font_class": "prev",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "2815717",
+      "name": "删除",
+      "font_class": "remove",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "2815726",
+      "name": "搜索",
+      "font_class": "search",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "2815734",
+      "name": "下一个",
+      "font_class": "next",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "2815744",
+      "name": "重命名",
+      "font_class": "zhongmingming",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "4686545",
+      "name": "刷新",
+      "font_class": "refresh",
+      "unicode": "ec08",
+      "unicode_decimal": 60424
+    },
+    {
+      "icon_id": "12225046",
+      "name": "加载",
+      "font_class": "loading",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "7587980",
+      "name": "展开",
+      "font_class": "fold",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "34833655",
+      "name": "展开-copy",
+      "font_class": "unfold",
+      "unicode": "e941",
+      "unicode_decimal": 59713
+    },
     {
       "icon_id": "4840848",
       "name": "进程",

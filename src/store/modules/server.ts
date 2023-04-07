@@ -1,4 +1,11 @@
 import { defineStore } from 'pinia';
+import Store from 'electron-store';
+const store = new Store({
+  name: 'servers',
+  fileExtension: 'conf',
+  encryptionKey: 'jdub237v',
+});
+
 // import { createStorage } from '@/utils/Storage';
 export interface IConnectState {
   host: string;
@@ -13,6 +20,8 @@ export interface IConnectsState {
   links: Record<string, IConnectState>;
 }
 
+const SERVER_KEY = 'servers';
+
 export const useServerStore = defineStore({
   id: 'app-server',
   state: (): IConnectsState => ({
@@ -24,6 +33,15 @@ export const useServerStore = defineStore({
     },
   },
   actions: {
+    load() {
+      let links = store.get(SERVER_KEY);
+      if (links) {
+        this.links = links;
+      }
+    },
+    save() {
+      store.set(SERVER_KEY, this.links);
+    },
     addConnect(
       name: string,
       host: string,
@@ -33,14 +51,23 @@ export const useServerStore = defineStore({
       port: number = 3306,
       options: any = {}
     ): void {
-      this.links[name] = {
-        host,
-        user,
-        password,
-        database,
-        port,
-        options,
-      };
+      if (!this.links[name]) {
+        this.links[name] = {
+          host,
+          user,
+          password,
+          database,
+          port,
+          options,
+        };
+        this.save();
+      } else {
+        throw new Error('服务器名称已存在');
+      }
+    },
+    removeConnect(key: string) {
+      delete this.links[key];
+      this.save();
     },
     getConnect(name: string): IConnectState {
       return this.links[name];

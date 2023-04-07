@@ -1,5 +1,8 @@
 export default {
   message: {
+    base: {
+      filter: 'Input condition to filter',
+    },
     menus: {
       system: 'System',
       addConnect: 'Add Connection',

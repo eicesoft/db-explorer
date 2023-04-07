@@ -4,7 +4,7 @@
 // database: "charge",
 // port: 3306,
 import mysql from 'mysql';
-
+import { IHistoryState, useHistoryStore } from '~/store/modules/history';
 export default class MySQL {
   host: string;
   user: string;
@@ -12,6 +12,8 @@ export default class MySQL {
   database: string;
   port: number;
   conn: mysql.Connection;
+  store?: any;
+
   constructor(host: string, user: string, password: string, database: string, port: number = 3306) {
     this.host = host;
     this.user = user;
@@ -30,17 +32,21 @@ export default class MySQL {
         if (field.type === 'DATETIME') {
           let val = field.string();
           // console.log(new Date(val));
-
-          return new Date(val);
+          if (val) {
+            return new Date(val);
+          } else {
+            return null;
+          }
         } else if (field.type === 'TINY') {
           let val = field.string();
-          if (val === '1') {
-            return true;
-          } else if (val === '0') {
-            return false;
-          } else {
-            return val;
-          }
+          // if (val === '1') {
+          //   return true;
+          // } else if (val === '0') {
+          //   return false;
+          // } else {
+          //   return val;
+          // }
+          return val;
         } /*else if (field.type === 'BIT') {
           // let val = field.string();
           console.error(field);
@@ -62,6 +68,8 @@ export default class MySQL {
 
           reject(err);
         } else {
+          this.store = useHistoryStore();
+
           resolve(null);
         }
       });
@@ -73,11 +81,25 @@ export default class MySQL {
     let start = new Date();
     return new Promise(function (resolve, reject) {
       that.conn.query(sql, params, (err: any, data: any, fields: any) => {
-        let gap = start.getMilliseconds() - new Date().getMilliseconds();
+        let gap = Math.abs(start.getMilliseconds() - new Date().getMilliseconds());
         console.log(gap);
         if (err) {
+          that.store.add({
+            sql: sql,
+            date: new Date(),
+            elapsed: gap,
+            flag: false,
+            error: err,
+          });
           reject(err);
         } else {
+          that.store.add({
+            sql: sql,
+            date: new Date(),
+            elapsed: gap,
+            flag: true,
+            rows: data.length,
+          });
           resolve({
             data,
             gap,
@@ -99,6 +121,21 @@ export default class MySQL {
 
   async getTableInfomations(database: string) {
     return await this.query('SELECT * FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = ?', [database]);
+  }
+
+  async getTableFields(database: string, table: string) {
+    return await this.query('SHOW FULL FIELDS FROM `' + database + '`.`' + table + '`', []);
+  }
+
+  async getTableFieldInfomation(database: string, table: string) {
+    return await this.query('SELECT * FROM `information_schema`.`COLUMNS` WHERE `TABLE_SCHEMA` = ? AND TABLE_NAME=?', [
+      database,
+      table,
+    ]);
+  }
+
+  async getTableDDL(database: string, table: string) {
+    return await this.query('SHOW CREATE TABLE `' + database + '`.`' + table + '`', []);
   }
 
   async status() {

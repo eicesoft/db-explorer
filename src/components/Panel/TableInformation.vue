@@ -1,37 +1,32 @@
 <template>
   <div class="container-info">
     <div style="margin: 5px 15px; user-select: auto">字段信息:</div>
-    <a-table
-      :bordered="{ cell: true }"
-      column-resizable
-      style="margin: 5px 15px; user-select: auto"
-      :pagination="false"
-      size="mini"
-      :columns="columns"
-      :data="tableInfos"
-    >
-      <template #Pk="{ record }">
-        <IconStar style="color: cf1322" v-if="record.Key == 'PRI'" />
-        <IconThunderbolt style="color: #ffc53d" v-if="record.Key == 'MUL'" />
-      </template>
-    </a-table>
+
+    <IceTable style="margin: 5px 15px; user-select: auto" :fields="columns" :datas="tableInfos">
+      <template #Pk="{ row }">
+        <IceIcon style="color: #cf1322" v-if="row.Key == 'PRI'" icon="primary" />
+        <IceIcon style="color: #ffc53d" v-if="row.Key == 'MUL'" icon="index"
+      /></template>
+    </IceTable>
+
     <div style="margin: 15px 15px 5px 15px; user-select: auto">Table DDL:</div>
 
     <div class="code">
       <highlightjs language="sql" :autodetect="false" :code="createSQL" />
-      <div class="copy"><IconCopy size="22" @click="copySQL" /></div>
+      <div class="copy">
+        <IceIcon :size="22" icon="copy" @click="copySQL" />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
   import { ref } from 'vue';
-  import { Notification } from '@arco-design/web-vue';
-  import { useClipboard } from '@vueuse/core';
-  import { IconCopy, IconInfoCircleFill, IconStar, IconThunderbolt } from '@arco-design/web-vue/es/icon';
+  import { notify } from '@kyvg/vue3-notification';
   import { format } from 'sql-formatter';
   import Manager from '~/utils/link_manager';
   import { TableFields } from './table';
+  import useClipboard from 'vue-clipboard3';
 
   const props = defineProps({
     serverKey: {
@@ -47,17 +42,16 @@
       default: '',
     },
   });
-
   const manager: Manager = Manager.getInstance();
   const tableInfos = ref(null);
   const createSQL = ref('');
-  const { copy } = useClipboard({ source: createSQL });
+  // const { copy } = useClipboard({ source: createSQL });
 
   const loadTableInfo = async () => {
     const conn = manager.get(props.serverKey);
     // console.log('Load table info ' + pageInfo.page);
 
-    const resp = await conn.query('SHOW FULL FIELDS FROM `' + props.database + '`.`' + props.table + '`', []);
+    const resp = await conn.getTableFields(props.database, props.table);
     console.log(resp);
     tableInfos.value = resp.data;
 
@@ -66,22 +60,28 @@
   };
 
   const columns = ref(TableFields);
+  const { toClipboard } = useClipboard();
 
-  const copySQL = () => {
-    copy(createSQL.value);
-    Notification.info({
+  const copySQL = async () => {
+    await toClipboard(createSQL.value);
+    // Notification.info({
+    //   title: '复制成功',
+    //   content: '',
+    // });
+
+    notify({
+      // title: 'DB Explorer',
       title: '复制成功',
-      content: '',
     });
   };
   loadTableInfo();
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .container-info {
     background-color: #fafafa;
     width: 100%;
-    height: calc(var(--bodyHeight) - 36px - 36px - 32px);
+    height: calc(var(--bodyHeight) - 36px - 32px);
     overflow-y: auto;
     .code {
       margin: 0 15px 15px 15px;

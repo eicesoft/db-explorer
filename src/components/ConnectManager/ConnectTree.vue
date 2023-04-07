@@ -1,14 +1,9 @@
 <script setup lang="ts">
-  import { ref, h } from 'vue';
-  import { getImageRes } from '~/utils/res';
-  import { IconMoreVertical } from '@arco-design/web-vue/es/icon';
-
-  import { Icon } from '@arco-design/web-vue';
-
+  import { ref, h, computed } from 'vue';
   import { SimpleNode, NodeType } from './index';
   import { useTreeStore } from '~/store/modules/tree';
   import { useStatausStore } from '~/store/modules/status';
-
+  import ContextMenu from '@imengyu/vue3-context-menu';
   import Manager from '~/utils/link_manager';
   import { useI18n } from 'vue-i18n';
 
@@ -18,6 +13,10 @@
     height: { type: Number, default: 24 },
   });
 
+  const rootNode = computed(() => {
+    return [treeStore.filters];
+  });
+
   const emits = defineEmits<{
     (e: 'select-table', value: any): void;
     (e: 'select-database', value: any): void;
@@ -25,24 +24,20 @@
     (e: 'menu-select', menu_key: string, value: any): void;
   }>();
 
-  const IconFont = Icon.addFromIconFontCn({
-    src: getImageRes('iconfont/iconfont.js'),
-  });
   // console.log(IconFont);
   const manager: Manager = Manager.getInstance();
   const treeStore = useTreeStore();
   const statusStore = useStatausStore();
-
   treeStore.init();
 
-  const loadMore = async (data: SimpleNode) => {
+  const loadMore = async (data: any) => {
     if (data.type == NodeType.Database) {
       console.warn('Load database');
 
       try {
         const conn = manager.get(data.meta?.Param.serverKey);
         const resp = await conn.getTables(data.title);
-        console.error(resp);
+        // console.error(resp);
         let tabGroup: SimpleNode = {
           id: 'tables_' + data.title + '_groups',
           title: t('message.tree.table'),
@@ -79,6 +74,7 @@
                 serverKey: param.serverKey,
               },
             },
+            children: null,
           });
         }
         data.children = [tabGroup];
@@ -143,33 +139,114 @@
     emits('open-database', node);
   };
 
-  //高亮当前数据库连接
-  // watch(
-  //   () => activeItem.value,
-  //   (new_val, old_val) => {
-  //     console.error(new_val, old_val);
-  //     if (old_val?.type == NodeType.Table) {
-  //       nodeMaps[old_val.meta.NodeId].runtime.isOpen = false;
-  //     }
+  const addDatabase = (node: any) => {};
+  const removeServer = (node: any) => {
+    emits('menu-select', 'remove-server', node);
+  };
 
-  //     if (new_val?.type == NodeType.Table) {
-  //       nodeMaps[new_val.meta.NodeId].runtime.isOpen = true;
-  //     }
-  //   }
-  // );
+  const tableDesign = (node: any) => {
+    emits('menu-select', 'table-design', node);
+  };
+
+  const onContextTableMenu = (node: any, e: any) => {
+    ContextMenu.showContextMenu({
+      theme: 'win10',
+      x: e.x,
+      y: e.y,
+      zIndex: 1000,
+      items: [
+        {
+          label: '设计表结构',
+          onClick: () => {
+            tableDesign(node);
+          },
+        },
+        {
+          label: '重命名',
+          onClick: () => {},
+          divided: true,
+        },
+        {
+          label: '更多操作',
+          onClick: () => {},
+          children: [
+            {
+              label: '截断',
+            },
+            {
+              label: '删除',
+            },
+            {
+              label: '优化表',
+            },
+          ],
+          divided: true,
+        },
+        {
+          label: '导出',
+          onClick: () => {},
+        },
+        {
+          label: '导入',
+          onClick: () => {},
+        },
+      ],
+    });
+  };
+
+  const onContextServerMenu = (node: any, e: any) => {
+    ContextMenu.showContextMenu({
+      theme: 'win10',
+      x: e.x,
+      y: e.y,
+      zIndex: 1000,
+      items: [
+        {
+          label: '添加数据库',
+        },
+        {
+          label: '移除服务器',
+          onClick: () => {
+            removeServer(node);
+          },
+        },
+      ],
+    });
+  };
+
+  const onContextDatabaseMenu = (node: any, e: any) => {
+    ContextMenu.showContextMenu({
+      theme: 'win10',
+      x: e.x,
+      y: e.y,
+      zIndex: 1000,
+      items: [
+        {
+          label: '新建查询',
+        },
+        {
+          label: '添加',
+          children: [
+            {
+              label: '表格',
+            },
+            {
+              label: '视图',
+            },
+            {
+              label: '存储过程',
+            },
+          ],
+        },
+      ],
+    });
+  };
 </script>
 
 <template>
   <div class="tree">
     <div class="search-div">
-      <a-input-search
-        @search="searchTree"
-        @press-enter="searchTree"
-        class="search-text"
-        placeholder="输入进行过滤"
-        size="mini"
-        v-model="searchKey"
-      />
+      <IceInput isClearable @search="searchTree" class="search-text" placeholder="输入进行过滤" v-model="searchKey" />
     </div>
     <a-tree
       @select="selectNode"
@@ -185,110 +262,48 @@
       :virtualListProps="{
         height: height - 32,
         fixedSize: true,
-        buffer: 20,
+        buffer: 15,
       }"
       :show-line="true"
       :load-more="loadMore"
-      :data="[treeStore.filters]"
+      :data="rootNode"
     >
-      <template #extra="nodeData">
-        <!-- <IconPlus
-          v-if="nodeData.type == NodeType.Database"
-          style="position: absolute; right: 8px; font-size: 12px; top: 10px"
-          @click="() => onIconClick(nodeData)"
-        /> -->
-
-        <a-dropdown
-          @select="
-            (key:any) => {
-              menuSelect(key, nodeData);
-            }
-          "
-          v-if="nodeData.type == NodeType.Database"
-        >
-          <IconMoreVertical />
-          <template #content>
-            <a-doption value="new_query">新建查询</a-doption>
-            <a-doption value="new_table">新建表格</a-doption>
-          </template>
-        </a-dropdown>
-      </template>
-
       <template #title="nodeData">
-        <template
-          v-if="
-            (nodeData.type == NodeType.Server || nodeData.type == NodeType.TableGroup) && nodeData.children.length != 0
-          "
-        >
-          {{ nodeData?.title }}({{ nodeData.children.length }})
+        <template v-if="nodeData.type == NodeType.Server">
+          <div @contextmenu="onContextServerMenu(nodeData, $event)"
+            >{{ nodeData?.title }}<span v-show="nodeData.children?.length != 0">({{ nodeData.children?.length }})</span>
+          </div>
         </template>
+
         <template v-else-if="nodeData.type == NodeType.Database">
-          <span @dblclick="openDatabase(nodeData)">{{ nodeData?.title }}</span>
+          <div @contextmenu="onContextDatabaseMenu(nodeData, $event)" @dblclick="openDatabase(nodeData)"
+            >{{ nodeData?.title }}
+          </div>
         </template>
-        <template v-else>{{ nodeData?.title }}</template>
+
+        <template v-else-if="nodeData.type == NodeType.TableGroup">
+          <div
+            >{{ nodeData?.title }}<span v-show="nodeData.children?.length != 0">({{ nodeData.children?.length }})</span>
+          </div>
+        </template>
+
+        <template v-else-if="nodeData.type == NodeType.Table">
+          <div @contextmenu="onContextTableMenu(nodeData, $event)">{{ nodeData.title }}</div>
+        </template>
+
+        <template v-else>
+          {{ nodeData.title }}
+        </template>
       </template>
 
       <template #icon="data">
-        <!-- <img :src="getIconRes(data.node.icon + '.png')" /> -->
-        <icon-font v-if="data.node.icon" :type="'icon-' + data.node.icon" :size="20" />
+        <IceIcon v-if="data.node.icon" activeColor="#515151" :icon="data.node.icon" :size="20" />
       </template>
     </a-tree>
-
-    <!-- <v-contextmenu ref="contextmenu">
-      <template v-if="context_item && context_item?.type == NodeType.Root">
-        <v-contextmenu-item>添加连接</v-contextmenu-item>
-        <v-contextmenu-divider />
-        <v-contextmenu-item>系统设置</v-contextmenu-item>
-      </template>
-
-      <template v-if="context_item && context_item?.type == NodeType.Server">
-        <v-contextmenu-item>添加数据库</v-contextmenu-item>
-        <v-contextmenu-divider />
-        <v-contextmenu-item>删除连接</v-contextmenu-item>
-        <v-contextmenu-item v-if="context_item.runtime?.load">关闭连接</v-contextmenu-item>
-        <v-contextmenu-item v-else>打开连接</v-contextmenu-item>
-      </template>
-
-      <template v-if="context_item && context_item?.type == NodeType.Database">
-        <v-contextmenu-item>新建查询</v-contextmenu-item>
-        <v-contextmenu-submenu title="添加">
-          <v-contextmenu-item>表格</v-contextmenu-item>
-          <v-contextmenu-item>视图</v-contextmenu-item>
-          <v-contextmenu-item>存储过程</v-contextmenu-item>
-        </v-contextmenu-submenu>
-
-        <v-contextmenu-divider />
-
-        <v-contextmenu-item>刷新</v-contextmenu-item>
-        <v-contextmenu-divider />
-        <v-contextmenu-item>导出</v-contextmenu-item>
-        <v-contextmenu-item>导入</v-contextmenu-item>
-      </template>
-
-      <template v-if="context_item && context_item?.type == NodeType.TableGroup">
-        <v-contextmenu-item>添加表格</v-contextmenu-item>
-        <v-contextmenu-item>刷新</v-contextmenu-item>
-      </template>
-
-      <template v-if="context_item && context_item?.type == NodeType.Table">
-        <v-contextmenu-item>打开表格</v-contextmenu-item>
-        <v-contextmenu-item>设计表格</v-contextmenu-item>
-        <v-contextmenu-divider />
-        <v-contextmenu-item>重命名</v-contextmenu-item>
-        <v-contextmenu-submenu title="更多操作">
-          <v-contextmenu-item>截断</v-contextmenu-item>
-          <v-contextmenu-item>删除</v-contextmenu-item>
-          <v-contextmenu-item>优化表</v-contextmenu-item>
-        </v-contextmenu-submenu>
-        <v-contextmenu-divider />
-        <v-contextmenu-item>导出</v-contextmenu-item>
-        <v-contextmenu-item>导入</v-contextmenu-item>
-      </template>
-    </v-contextmenu> -->
   </div>
 </template>
 
-<style lang="scss">
+<style lang="less">
   .arco-tree-node-disabled-selectable {
     .arco-tree-node-title {
       color: var(--color-text-1) !important;
@@ -298,7 +313,7 @@
   }
 </style>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .tree {
     padding: 0px;
     margin: 0px;
@@ -308,6 +323,7 @@
       width: 100%;
       .search-text {
         margin: 4px;
+        height: 24px;
         width: calc(100% - 8px);
       }
     }

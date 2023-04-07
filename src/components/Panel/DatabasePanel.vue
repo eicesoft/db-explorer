@@ -1,18 +1,13 @@
 <template>
   <div class="panel">
-    <a-table
-      :virtual-list-props="{ height: 400 }"
-      column-resizable
-      style="user-select: auto"
-      :pagination="false"
-      size="mini"
-      :columns="columns"
-      :data="rows"
-    >
-      <template #length="{ column, record }">
-        {{ formatLength(record[column['dataIndex']]) }}
-      </template>
-    </a-table>
+    <IceTable :fields="columns" :datas="rows">
+      <template #TABLE_NAME="{ row, value }">
+        <a @click="openTable(value)" href="#">{{ value }}</a></template
+      >
+      <template #DATA_LENGTH="{ row, value }"> {{ formatLength(value) }}</template>
+      <template #INDEX_LENGTH="{ row, value }"> {{ formatLength(value) }}</template>
+    </IceTable>
+    {{ columns }}
   </div>
 </template>
 
@@ -20,20 +15,19 @@
   import { ref, computed, reactive, PropType, onMounted } from 'vue';
   import { SimpleNode } from '~/components/ConnectManager/index';
   import { useI18n } from 'vue-i18n';
-  import { Icon } from '@arco-design/web-vue';
   import Manager from '~/utils/link_manager';
   import { formatLength } from '~/utils/index';
 
-  const props = defineProps({
-    node: {
-      type: Object as PropType<SimpleNode>,
-    },
-  });
+  interface CompProp {
+    node: SimpleNode;
+  }
+
+  const props = defineProps<CompProp>();
 
   const manager: Manager = Manager.getInstance();
   const { t } = useI18n();
 
-  const conn = manager.get(props.node?.meta?.Param.serverKey);
+  const conn = manager.get(props.node.meta?.Param.serverKey);
   const rows = ref([]);
   const columns = computed(() => {
     return [
@@ -91,15 +85,18 @@
     ];
   });
 
+  const openTable = (table: string) => {};
+
   onMounted(async () => {
     const resp = await conn.getTableInfomations(props.node.title);
     rows.value = resp.data;
   });
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .panel {
-    height: calc(var(--bodyHeight) - 36px - 36px);
-    width: var(--bodyWidth);
+    height: calc(var(--bodyHeight) - 36px);
+    width: calc(var(--bodyWidth) - 16px);
+    padding: 8px;
   }
 </style>

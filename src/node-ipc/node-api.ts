@@ -1,9 +1,11 @@
-import { lstat } from 'node:fs/promises';
-import { cwd } from 'node:process';
+// import { lstat } from 'node:fs/promises';
+// import { cwd } from 'node:process';
 import { ipcRenderer } from 'electron';
 import { useTabStore } from '~/store/modules/tab';
 import { Tab, TabType } from '~/components/Tabber/index';
 import { uuid } from '~/utils';
+import { useServerStore } from '~/store/modules/server';
+import { useTreeStore } from '~/store/modules/tree';
 
 ipcRenderer.on('main-process-message', (_event, ...args) => {
   console.log('[Receive Main-process message]:', ...args);
@@ -34,10 +36,10 @@ ipcRenderer.on('load-file', (_event, ...args) => {
   tabStore.add(newTab);
 });
 
-lstat(cwd())
-  .then((stats) => {
-    console.log('[fs.lstat]', stats);
-  })
-  .catch((err) => {
-    console.error(err);
-  });
+// lstat(cwd())
+//   .then((stats) => {
+//     console.log('[fs.lstat]', stats);
+//   })
+//   .catch((err) => {
+//     console.error(err);
+//   });

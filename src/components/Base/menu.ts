@@ -14,6 +14,7 @@ export enum MenuKeys {
 
   /** 帮助 */
   About,
+  Unknonw,
 }
 
 export interface Menu {
