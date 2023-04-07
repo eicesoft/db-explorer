@@ -99,10 +99,10 @@
   });
 
   const horizontalRightPanel = computed(() => {
-    let sideLeft = (left.value + horizontalTriggerPanelWidth.value / gSplitWidth.value) * 100 + '%';
+    console.log(left.value, horizontalTriggerPanelWidth.value, gSplitWidth.value);
     return {
-      left: sideLeft,
-      width: `calc(100% - ${sideLeft})`,
+      left: (left.value + horizontalTriggerPanelWidth.value / gSplitWidth.value) * 100 + '%',
+      width: `var(--bodyWidth)`,
     };
   });
 
@@ -225,6 +225,14 @@
   onMounted(() => {
     initDom();
     bindEvent();
+  });
+
+  const getSideWidth = () => {
+    return leftPanel.value.clientWidth;
+  };
+
+  defineExpose({
+    getSideWidth,
   });
 </script>
 

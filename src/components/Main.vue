@@ -4,7 +4,7 @@
     <Toolbar @trigger="toolbarTrigger" />
 
     <div ref="box" class="container">
-      <IceSplit @on-move-end="sideResize" :value="leftSplit">
+      <IceSplit ref="split" @on-move-end="sideResize" :value="leftSplit">
         <template #left>
           <ConnectTree
             :height="height - 40 - 28 * 2"
@@ -27,41 +27,6 @@
           </div></template
         >
       </IceSplit>
-
-      <!-- <a-split
-        @move-end="resize"
-        :style="{
-          height: cssVars['--bodyHeight'],
-          width: '100%',
-          minWidth: '200px',
-        }"
-        v-model:size="size"
-        min="80px"
-      >
-        <template #first>
-          <ConnectTree
-            :height="height - 40 - 28 * 2"
-            @menu-select="menuSelect"
-            @select-database="selectDatabase"
-            @select-table="selectTable"
-            @open-database="openDatabase"
-          />
-        </template>
-
-        <template #second>
-          <div style="overflow: hidden" v-if="!tabStore.isEmpty">
-            <Tabber @closeOther="closeOther" @closeAll="closeAll" @close="closeTab" @change="changeTab" />
-            <PanelManager></PanelManager>
-          </div>
-
-          <div v-else style="padding-top: calc(var(--bodyHeight) / 3)">
-            <div class="empty"
-              ><div><img style="width: 48px; height: 48px" :src="emptyIcon" /></div
-              ><div>请在左侧选择服务器, 数据库或者表</div></div
-            >
-          </div>
-        </template>
-      </a-split> -->
     </div>
 
     <Statusbar @trigger="toolbarTrigger" />
@@ -72,7 +37,7 @@
     <ProcessList :serverKey="statusStore?.serverName" v-model:visible="visibles.processVisible" />
     <!-- Dialogs end-->
 
-    <notifications :duration="50500" position="bottom right" />
+    <notifications :duration="2000" position="bottom right" />
     <HistoryDrawer v-model:visible="visibles.historyVisible" />
   </div>
 </template>
@@ -92,6 +57,7 @@
   import { uuid } from '~/utils';
   import { ToolCommand } from './layout/tool';
   import { getImageRes } from '~/utils/res';
+  import { nextTick } from 'process';
   let bodyWidth = ref(0);
   let bodyHeight = ref(0);
   let width = ref(0);
@@ -107,9 +73,6 @@
   statusStore.init();
   setupStore.init();
   serverStore.load();
-  // serverStore.addConnect('Dev', '192.168.1.25', 'root', 'HundyG63gF%42sdf', 'charge');
-  // serverStore.addConnect('Dev', '127.0.0.1', 'root', 'root', 'charge');
-  // serverStore.addConnect('Hr', '192.168.1.21', 'root', 'as$s3%hYb3fgv&r2', '');
 
   const cssVars = computed(() => {
     return {
@@ -122,9 +85,8 @@
   });
   const node = ref<SimpleNode | null>(null);
   const leftSplit = ref(0.22);
-  const sideWidth = ref(0);
-
-  // const title = ref(BASE_TITLE);
+  const sideWidth = ref(235);
+  const split = ref(null);
 
   const title = computed(() => {
     let t = packageInfo.productName;
@@ -254,9 +216,12 @@
 
   const resize = () => {
     console.log('resize window');
+
+    sideWidth.value = split.value.getSideWidth() == 0 ? 235 : split.value?.getSideWidth();
+    console.log(sideWidth.value);
     width.value = window.innerWidth;
     height.value = window.innerHeight;
-    bodyWidth.value = width.value - sideWidth.value - 7;
+    bodyWidth.value = width.value - sideWidth.value - 5;
     bodyHeight.value = height.value - 28 * 2 - 36;
     statusStore.setWindow(bodyWidth.value, bodyHeight.value);
   };
@@ -289,10 +254,9 @@
     window.onresize = () => {
       resize();
     };
-    resize();
-    sideWidth.value = bodyWidth.value * leftSplit.value;
-
-    // console.log(virTree);
+    nextTick(() => {
+      resize();
+    });
   });
 
   /** Dialog visible */
@@ -345,30 +309,4 @@
     user-select: none;
     color: rgb(151, 151, 151);
   }
-  //split resize
-  // const mousedown = (e) => {
-  // console.log(arguments);
-  // var startX = e.clientX;
-  // let startWidth = side.value.clientWidth;
-  // document.onmousemove = function (e) {
-  //   var endX = e.clientX;
-  //   var moveLen = startWidth + endX - startX;
-  //   var maxT = box.value?.clientWidth - split.value.offsetWidth; // 容器宽度 - 左边区域的宽度 = 右边区域的宽度
-  //   if (moveLen < 160) moveLen = 160; // 左边区域的最小宽度为32px
-  //   if (moveLen > maxT - 600) moveLen = maxT - 600; //右边区域最小宽度为150px
-  //   side.value.style.width = moveLen + 'px';
-  //   body.value.style.width = box.value.clientWidth - moveLen - 4 + 'px';
-  //   side.value.style.cursor = 'col-resize';
-  //   body.value.style.cursor = 'col-resize';
-  //   sideWidth.value = moveLen;
-  // };
-  // document.onmouseup = function (evt) {
-  //   document.onmousemove = null;
-  //   document.onmouseup = null;
-  //   side.value.style.cursor = 'default';
-  //   body.value.style.cursor = 'default';
-  //   split?.releaseCapture && split?.releaseCapture();
-  //   bodyWidth.value = width.value - side.value?.clientWidth - 14;
-  // };
-  // };
 </style>
