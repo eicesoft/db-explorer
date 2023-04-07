@@ -1,16 +1,5 @@
 <template>
-  <div
-    @keypress="
-      {
-        console.log($event);
-      }
-    "
-    ref="dialogContainer"
-    @click="focusin"
-    class="ice-dialog"
-    :style="cssVars"
-    v-show="visible"
-  >
+  <div ref="dialogContainer" @click="focusin" class="ice-dialog" :style="cssVars" v-show="visible">
     <div class="ice-dialog-title">
       <div ref="dialogDrag" class="ice-dialog-text">
         <slot name="title">{{ title }}</slot>

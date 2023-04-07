@@ -64,6 +64,7 @@
       loading.value = false;
       // fields.value = resp.fields;
     } catch (e: any) {
+      loading.value = false;
       notify({
         title: e.toString(),
         type: 'error',
@@ -195,8 +196,6 @@
   :deep(.hljs) {
     border-radius: 6px;
     border: 1px solid #ececec;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana,
-      sans-serif;
     font-size: 13px;
   }
   .panel {

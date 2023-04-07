@@ -1,7 +1,7 @@
 {
   "name": "db-explorer",
   "productName": "DB Explorer",
-  "version": "1.0.0",
+  "version": "0.9.1",
   "main": "dist-electron/main/index.js",
   "description": "a new MySQL client.",
   "author": "kelezyb <eicesoft@gmail.com>",

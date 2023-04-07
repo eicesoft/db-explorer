@@ -9,18 +9,6 @@
   >
     <template #body>
       <IceInput class="search-text" :placeholder="t('message.base.filter')" v-model="searchKey" />
-
-      <!-- <a-table
-        style="margin-top: 5px; overflow-x: hidden; overflow-x: auto"
-        :virtual-list-props="{ height: 300 }"
-        column-resizable
-        :pagination="false"
-        size="mini"
-        :columns="columns"
-        :data="filter"
-      >
-      </a-table> -->
-
       <IceTable style="margin-top: 10px" :fields="columns" :datas="filter"></IceTable>
     </template>
   </IceDialog>
@@ -31,7 +19,6 @@
   import { useI18n } from 'vue-i18n';
   import Manager from '~/utils/link_manager';
   import { DialogButton } from '~/components/UI/dialog';
-  import IceTable from '../UI/IceTable.vue';
 
   const { t } = useI18n();
 

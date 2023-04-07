@@ -31,8 +31,11 @@
           </div>
 
           <div v-else style="padding-top: calc(var(--bodyHeight) / 3)">
-            <!-- <a-empty description="请在左侧选择服务器, 数据库或者表" /> -->
-            <IceTabs
+            <div class="empty"
+              ><div><img style="width: 48px; height: 48px" :src="emptyIcon" /></div
+              ><div>请在左侧选择服务器, 数据库或者表</div></div
+            >
+            <!-- <IceTabs
               :tabs="[
                 { key: 'a1', title: 'tab1', icon: 'table' },
                 { key: 'a2', title: 'tab2' },
@@ -58,7 +61,7 @@
               <template #a1>sdgsagsas</template>
               <template #a2>123</template>
               <template #a3>456</template>
-            </IceTabs>
+            </IceTabs> -->
           </div>
         </template>
       </a-split>
@@ -72,7 +75,14 @@
     <ProcessList :serverKey="statusStore?.serverName" v-model:visible="visibles.processVisible" />
     <!-- Dialogs end-->
 
-    <notifications :duration="1500" position="bottom right" />
+    <notifications :duration="50500" position="bottom right" />
+
+    <!-- <IceDrawer v-model:visible="visibles.historyVisible" title="SQL 历史">
+      <template #body>
+        <div v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14]"> test {{ item }} </div>
+      </template>
+    </IceDrawer> -->
+    <HistoryDrawer v-model:visible="visibles.historyVisible" />
   </div>
 </template>
 
@@ -90,13 +100,13 @@
   import { SimpleNode } from './ConnectManager';
   import { uuid } from '~/utils';
   import { ToolCommand } from './layout/tool';
-  import IceTabs from './UI/IceTabs.vue';
-
+  import { getImageRes } from '~/utils/res';
   let bodyWidth = ref(0);
   let bodyHeight = ref(0);
   let width = ref(0);
   let height = ref(0);
   const size = ref('248px');
+  const emptyIcon = getImageRes('empty.png');
 
   const serverStore = useServerStore();
   const setupStore = useSetupStore();
@@ -292,9 +302,11 @@
     statusVisible: false,
     connectVisible: false,
     processVisible: false,
+    historyVisible: false,
   });
 
   const toolbarTrigger = (key: ToolCommand) => {
+    console.log('toolbarTrigger', key);
     switch (key) {
       case ToolCommand.Add:
         visibles.connectVisible = true;
@@ -305,26 +317,11 @@
       case ToolCommand.ProcessList:
         visibles.processVisible = true;
         break;
+      case ToolCommand.History:
+        visibles.historyVisible = !visibles.historyVisible;
+        break;
     }
   };
-
-  // const loadData = (node: any, callback: (children: TreeNodeOptions[]) => void) => {
-  //   console.log('loadData', node);
-  //   const result: TreeNodeOptions[] = [];
-  //   for (let i = 0; i < 5; i += 1) {
-  //     const nodeKey = `${node.nodeKey}-${i}`;
-  //     const treeNode: TreeNodeOptions = {
-  //       nodeKey: nodeKey,
-  //       name: nodeKey,
-  //       children: [],
-  //       hasChildren: true,
-  //     };
-  //     result.push(treeNode);
-  //   }
-  //   setTimeout(() => {
-  //     callback(result);
-  //   }, 100);
-  // };
 </script>
 
 <style lang="less" scoped>
@@ -342,6 +339,11 @@
     position: absolute;
     width: var(--windowWidth);
     top: calc(28px);
+  }
+  .empty {
+    text-align: center;
+    font-size: 16px;
+    color: rgb(151, 151, 151);
   }
   //split resize
   // const mousedown = (e) => {

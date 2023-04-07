@@ -6,6 +6,7 @@ export const useStatausStore = defineStore({
   id: 'app-status',
   state: (): StatusInfo => ({
     version: '',
+    productName: '',
     serverName: undefined,
     database: undefined,
     queryCount: 0,
@@ -23,6 +24,7 @@ export const useStatausStore = defineStore({
   actions: {
     init() {
       this.version = packageInfo.version;
+      this.productName = packageInfo.productName;
       this.language = localStorage.getItem('sql-locale') || 'zh';
     },
     setDatabase(database: string | undefined) {

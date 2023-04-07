@@ -4,7 +4,7 @@
 // database: "charge",
 // port: 3306,
 import mysql from 'mysql';
-
+import { IHistoryState, useHistoryStore } from '~/store/modules/history';
 export default class MySQL {
   host: string;
   user: string;
@@ -12,6 +12,8 @@ export default class MySQL {
   database: string;
   port: number;
   conn: mysql.Connection;
+  store?: any;
+
   constructor(host: string, user: string, password: string, database: string, port: number = 3306) {
     this.host = host;
     this.user = user;
@@ -66,6 +68,8 @@ export default class MySQL {
 
           reject(err);
         } else {
+          this.store = useHistoryStore();
+
           resolve(null);
         }
       });
@@ -77,11 +81,25 @@ export default class MySQL {
     let start = new Date();
     return new Promise(function (resolve, reject) {
       that.conn.query(sql, params, (err: any, data: any, fields: any) => {
-        let gap = start.getMilliseconds() - new Date().getMilliseconds();
+        let gap = Math.abs(start.getMilliseconds() - new Date().getMilliseconds());
         console.log(gap);
         if (err) {
+          that.store.add({
+            sql: sql,
+            date: new Date(),
+            elapsed: gap,
+            flag: false,
+            error: err,
+          });
           reject(err);
         } else {
+          that.store.add({
+            sql: sql,
+            date: new Date(),
+            elapsed: gap,
+            flag: true,
+            rows: data.length,
+          });
           resolve({
             data,
             gap,

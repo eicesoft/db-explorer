@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed } from 'vue';
+  import { computed } from 'vue';
   import '~/assets/iconfont/iconfont.js';
 
   const props = defineProps({
@@ -30,8 +30,6 @@
     return {
       width: props.size + 'px',
       height: props.size + 'px',
-      '--fillColor': props.color,
-      '--hoverColor': props.hoverColor,
     };
   });
 </script>

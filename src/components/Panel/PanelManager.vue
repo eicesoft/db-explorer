@@ -1,20 +1,7 @@
 <template>
   <div>
     <template v-for="(tab, index) in tabStore.tabs">
-      <!-- <template v-if="tab.type == TabType.Table">
-        <TablePanel v-show="tabStore.activeTab?.id == tab.id" :node="tab.meta?.node" />
-      </template>
-
-      <template v-else-if="tab.type == TabType.Database">
-        <DatabasePanel v-show="tabStore.activeTab?.id == tab.id" :node="tab.meta?.node" />
-      </template>
-
-      <template v-else-if="tab.type == TabType.TableDesign">
-        <TableDesignPanel v-show="tabStore.activeTab?.id == tab.id" :node="tab.meta?.node" />
-      </template> -->
-      <Transition name="fade">
-        <component v-show="tabStore.activeTab?.id == tab.id" :is="activeComponent(tab)" :node="tab.meta?.node" />
-      </Transition>
+      <component v-show="tabStore.activeTab?.id == tab.id" :is="activeComponent(tab)" :node="tab.meta?.node" />
     </template>
 
     <!--只有一个编辑器实例-->

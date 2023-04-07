@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "18320823",
+      "name": "空数据",
+      "font_class": "empty",
+      "unicode": "e6ad",
+      "unicode_decimal": 59053
+    },
+    {
+      "icon_id": "15726868",
+      "name": "清理clear",
+      "font_class": "clear",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
       "icon_id": "2690446",
       "name": "设计",
       "font_class": "design",

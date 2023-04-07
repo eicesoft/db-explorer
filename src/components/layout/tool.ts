@@ -3,4 +3,5 @@ export enum ToolCommand {
   UserManager,
   ServerInfomation,
   ProcessList,
+  History,
 }

@@ -1,14 +1,16 @@
 <template>
   <div class="statusbar">
     <div class="left-bar">
-      <div class="info"> MySQL Explorer {{ statusStore.version }}</div>
+      <div class="info"> {{ statusStore.productName }} {{ statusStore.version }}</div>
       <div class="info" v-if="statusStore.serverName">
         {{ t('message.statusbar.server') }}: {{ statusStore.serverName }}</div
       >
       <div class="info" v-if="statusStore.database">
         {{ t('message.statusbar.database') }}: {{ statusStore.database }}</div
       >
-      <div class="info">{{ t('message.statusbar.history') }}: {{ statusStore.queryCount }}</div>
+      <div @click.stop="showHistory" class="info pointer"
+        >{{ t('message.statusbar.history') }}: {{ historyStore.historys.length }}</div
+      >
     </div>
 
     <div class="right-bar">
@@ -29,17 +31,17 @@
   import { useI18n } from 'vue-i18n';
   import { ToolCommand } from '~/components/layout/tool';
   import { useStatausStore } from '~/store/modules/status';
+  import { useHistoryStore } from '~/store/modules/history';
+
   import ContextMenu from '@imengyu/vue3-context-menu';
 
-  // const props = defineProps({
-  //   status: Object as PropType<StatusInfo>,
-  // });
   const emit = defineEmits<{
     (e: 'trigger', key: ToolCommand): void;
   }>();
 
   const { t, locale: i18nLanguage } = useI18n();
   const statusStore = useStatausStore();
+  const historyStore = useHistoryStore();
 
   const selectLang = (val: any) => {
     statusStore.setLang(val);
@@ -69,8 +71,13 @@
       ],
     });
   };
+
   const showStatus = async () => {
     emit('trigger', ToolCommand.ServerInfomation);
+  };
+
+  const showHistory = () => {
+    emit('trigger', ToolCommand.History);
   };
 </script>
 
