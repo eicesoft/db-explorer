@@ -138,14 +138,36 @@ export default class MySQL {
     return await this.query('SHOW CREATE TABLE `' + database + '`.`' + table + '`', []);
   }
 
+  async getCollations() {
+    return await this.query('SELECT * FROM `information_schema`.`COLLATIONS` ', []);
+  }
+
   async status() {
     let resp = await this.query('SHOW STATUS', []);
 
     return resp;
   }
 
+  async showVariables() {
+    let resp = await this.query('SHOW VARIABLES', []);
+    let data = resp.data;
+    let result = {};
+    for (let val of data) {
+      result[val.Variable_name] = val.Value;
+    }
+    console.log(result);
+
+    return result;
+  }
+
   async processList() {
     let resp = await this.query('SHOW PROCESSLIST;', []);
+
+    return resp;
+  }
+
+  async createDatabase(database: string, collation: string) {
+    let resp = await this.query(`CREATE DATABASE ${database} DEFAULT COLLATE ${collation}`, []);
 
     return resp;
   }

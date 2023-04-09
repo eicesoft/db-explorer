@@ -35,6 +35,7 @@
     <ConnectDialog v-model:visible="visibles.connectVisible" />
     <ServerStatus :serverKey="statusStore?.serverName" v-model:visible="visibles.statusVisible" />
     <ProcessList :serverKey="statusStore?.serverName" v-model:visible="visibles.processVisible" />
+    <AddDatabase v-model:visible="visibles.addDialogVisible" />
     <!-- Dialogs end-->
 
     <notifications :duration="2000" position="bottom right" />
@@ -191,9 +192,9 @@
         tabStore.add(newTab);
         break;
       case 'remove-server':
-        // console.log(node);
-        treeStore.remove(node.title);
-        serverStore.removeConnect(node.title);
+        console.log(node);
+        treeStore.remove(node.serverKey);
+        serverStore.removeConnect(node.serverKey);
         break;
       case 'table-design':
         console.log(node);
@@ -207,6 +208,10 @@
         };
         tabStore.active(newTab);
         tabStore.add(newTab);
+        break;
+      case 'add-database':
+        statusStore.setServer(node.serverKey);
+        visibles.addDialogVisible = true;
         break;
     }
   };
@@ -244,6 +249,7 @@
     connectVisible: false,
     processVisible: false,
     historyVisible: false,
+    addDialogVisible: false,
   });
 
   const toolbarTrigger = (key: ToolCommand) => {

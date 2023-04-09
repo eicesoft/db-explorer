@@ -15,14 +15,15 @@
   });
 
   const rootNode = computed(() => {
-    return [treeStore.filters];
+    return [treeStore.root];
   });
 
   const toMetaNode = (data: any, mode: number): MetaNode => {
+    // console.log(data);
     if (mode == 1) {
       return {
         id: data.id,
-        serverKey: data.meta.Param.serverKey,
+        serverKey: data.title,
       };
     } else if (mode == 2) {
       return {
@@ -51,7 +52,6 @@
           }
         },
         onContextmenu: (evt: any) => {
-          console.log(node, evt);
           let metaNode;
 
           if (node.type == NodeType.Server) {
@@ -132,6 +132,7 @@
             type: NodeType.Table,
             icon: 'table',
             isLeaf: true,
+            expand: false,
             selectable: true,
             meta: {
               NodeId: data.id,
@@ -186,7 +187,6 @@
   };
 
   const selectNode = async (data: any) => {
-    console.error(data);
     if (data.type == NodeType.Table) {
       let metaNode = toMetaNode(data, 3);
       emits('select-table', metaNode);
@@ -210,7 +210,9 @@
     emits('open-database', node);
   };
 
-  const addDatabase = (node: any) => {};
+  const addDatabase = (node: any) => {
+    emits('menu-select', 'add-database', node);
+  };
   const removeServer = (node: any) => {
     emits('menu-select', 'remove-server', node);
   };
@@ -275,6 +277,9 @@
       items: [
         {
           label: '添加数据库',
+          onClick: () => {
+            addDatabase(node);
+          },
         },
         {
           label: '移除服务器',
