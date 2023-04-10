@@ -4,6 +4,7 @@ export enum NodeType {
   Database,
   TableGroup,
   Table,
+  EmptyTable,
   ViewGroup,
   View,
 }

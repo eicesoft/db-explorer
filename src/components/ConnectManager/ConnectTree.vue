@@ -123,17 +123,39 @@
           children: [],
         };
         const param = data.meta?.Param;
-        for (let row of resp.data) {
-          const tableName = row['Tables_in_' + data.title];
+        console.error(resp.data);
+        if (resp.data.length > 0) {
+          for (let row of resp.data) {
+            const tableName = row['Tables_in_' + data.title];
+            tabGroup.children?.push({
+              id: 'table_' + data.title + '_' + tableName,
+              title: tableName,
+              type: NodeType.Table,
+              icon: 'table',
+              isLeaf: true,
+              expand: false,
+              selectable: true,
+              meta: {
+                NodeId: data.id,
+                DatabaseName: data.title,
+                Param: {
+                  serverId: param.serverId,
+                  serverKey: param.serverKey,
+                },
+              },
+              children: [],
+            });
+          }
+        } else {
+          tabGroup.expand = false;
           tabGroup.children?.push({
-            id: 'table_' + data.title + '_' + tableName,
-            title: tableName,
-            switcherIcon: () => h('span', {}),
-            type: NodeType.Table,
-            icon: 'table',
+            id: 'table_empty' + data.title,
+            title: '暂无',
+            type: NodeType.EmptyTable,
+            icon: 'empty',
             isLeaf: true,
             expand: false,
-            selectable: true,
+            selectable: false,
             meta: {
               NodeId: data.id,
               DatabaseName: data.title,
@@ -142,8 +164,8 @@
                 serverKey: param.serverKey,
               },
             },
-            children: [],
           });
+          // tabGroup.isLeaf = true;
         }
         // data.children = [tabGroup];
         resolve([tabGroup]);
