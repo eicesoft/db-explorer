@@ -10,11 +10,6 @@ export enum NodeType {
 
 type Id = string | number;
 
-export interface NodeRuntime {
-  load: boolean;
-  isOpen?: boolean;
-}
-
 export interface Meta {
   NodeId?: Id;
   DatabaseName?: string;
@@ -27,9 +22,16 @@ export interface SimpleNode {
   icon: string;
   type: NodeType;
   selectable: boolean;
+  expand: boolean;
   isLeaf: boolean;
   switcherIcon?: Function;
   children?: Array<SimpleNode>;
-  runtime?: NodeRuntime;
   meta?: Meta;
+}
+
+export interface MetaNode {
+  id: string;
+  tableName?: string;
+  database?: string;
+  serverKey: string;
 }

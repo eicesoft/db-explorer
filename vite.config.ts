@@ -7,7 +7,6 @@ import pkg from './package.json';
 import { resolve } from 'path';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
-import { ArcoResolver } from 'unplugin-vue-components/resolvers';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
@@ -31,14 +30,10 @@ export default defineConfig(({ command }) => {
     plugins: [
       vue(),
       AutoImport({
-        resolvers: [ArcoResolver()],
+        resolvers: [],
       }),
       Components({
-        resolvers: [
-          ArcoResolver({
-            sideEffect: true,
-          }),
-        ],
+        resolvers: [],
       }),
       electron([
         {

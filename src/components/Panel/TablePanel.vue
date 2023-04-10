@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { SimpleNode } from '~/components/ConnectManager/index';
+  import { SimpleNode, MetaNode } from '~/components/ConnectManager/index';
   import { ref, computed, reactive, PropType } from 'vue';
   import Manager from '~/utils/link_manager';
   import { useI18n } from 'vue-i18n';
@@ -9,7 +9,7 @@
 
   const props = defineProps({
     node: {
-      type: Object as PropType<SimpleNode>,
+      type: Object as PropType<MetaNode>,
     },
   });
 
@@ -30,7 +30,7 @@
   const loadPage = async () => {
     loading.value = true;
     let start = (pageInfo.page - 1) * pageInfo.page_size;
-    const conn = manager.get(props.node?.meta?.Param.serverKey);
+    const conn = manager.get(props.node?.serverKey);
     console.log('Load Page ' + pageInfo.page);
 
     let where = '';
@@ -41,9 +41,9 @@
     try {
       const resp = await conn.query(
         'SELECT * FROM ' +
-          props.node?.meta?.DatabaseName +
+          props.node?.database +
           '.' +
-          props.node?.title +
+          props.node?.tableName +
           where +
           ' LIMIT ' +
           start +
@@ -54,7 +54,7 @@
       console.log(resp);
       rows.value = resp.data;
 
-      const fieldsResp = await conn.getTableFields(props.node?.meta?.DatabaseName, props.node?.title);
+      const fieldsResp = await conn.getTableFields(props.node?.database ?? '', props.node?.tableName ?? '');
       console.log(fieldsResp);
       fields.value = fieldsResp.data.map((field: any) => {
         return formatField(field);
@@ -155,11 +155,7 @@
           :datas="rowData"
       /></template>
       <template #info>
-        <TableInformation
-          :server-key="node?.meta?.Param.serverKey"
-          :database="node?.meta?.DatabaseName"
-          :table="node?.title"
-        />
+        <TableInformation :server-key="node?.serverKey" :database="node?.database" :table="node?.tableName" />
       </template>
     </IceTabs>
 
@@ -174,14 +170,6 @@
     </v-contextmenu> -->
   </div>
 </template>
-
-<style lang="less">
-  .panel {
-    .arco-tabs-content {
-      padding-top: 0px !important;
-    }
-  }
-</style>
 
 <style lang="less" scoped>
   :deep(.hljs) {

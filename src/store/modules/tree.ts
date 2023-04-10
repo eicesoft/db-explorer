@@ -58,6 +58,7 @@ export const useTreeStore = defineStore({
         icon: 'home',
         type: NodeType.Root,
         selectable: false,
+        expand: true,
         isLeaf: false,
         children: [],
       };
@@ -73,9 +74,7 @@ export const useTreeStore = defineStore({
           type: NodeType.Server,
           selectable: true,
           isLeaf: false,
-          runtime: {
-            load: false,
-          },
+          expand: false,
           meta: {
             NodeId: id,
             Param: connect,
@@ -95,9 +94,7 @@ export const useTreeStore = defineStore({
         type: NodeType.Server,
         selectable: true,
         isLeaf: false,
-        runtime: {
-          load: false,
-        },
+        expand: false,
         meta: {
           NodeId: id,
           Param: connect,
@@ -106,7 +103,7 @@ export const useTreeStore = defineStore({
       });
     },
     remove(key: string) {
-      for (let i in this.root.children) {
+      for (let i in this.root?.children) {
         let children = this.root?.children[i];
         if (children.title == key) {
           this.root.children.splice(i, 1);

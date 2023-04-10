@@ -11,7 +11,7 @@
         {{ node }}
       </template>
       <template #index>
-        {{ tableInfos }}
+        <!-- {{ tableInfos }} -->
       </template>
       <template #option>
         {{ 'test' }}
@@ -28,28 +28,28 @@
 
   const props = defineProps({
     node: {
-      type: Object as PropType<SimpleNode>,
+      type: Object,
     },
   });
 
-  const manager: Manager = Manager.getInstance();
-  const tableInfos = ref(null);
-  const createSQL = ref('');
+  // const manager: Manager = Manager.getInstance();
+  // const tableInfos = ref(null);
+  // const createSQL = ref('');
 
-  const loadTableInfo = async () => {
-    const conn = manager.get(props.node?.meta?.Param.serverKey);
-    // console.log('Load table info ' + pageInfo.page);
-    let database = props.node?.meta?.DatabaseName ?? '';
-    let table = props.node?.title ?? '';
-    const resp = await conn.getTableFieldInfomation(database, table);
-    // console.log(resp);
-    tableInfos.value = resp.data;
+  // const loadTableInfo = async () => {
+  //   const conn = manager.get(props.node?.meta?.Param.serverKey);
+  //   // console.log('Load table info ' + pageInfo.page);
+  //   let database = props.node?.meta?.DatabaseName ?? '';
+  //   let table = props.node?.title ?? '';
+  //   const resp = await conn.getTableFieldInfomation(database, table);
+  //   // console.log(resp);
+  //   tableInfos.value = resp.data;
 
-    const tableResp = await conn.getTableDDL(database, table);
-    createSQL.value = format(tableResp.data[0]['Create Table']);
-  };
+  //   const tableResp = await conn.getTableDDL(database, table);
+  //   createSQL.value = format(tableResp.data[0]['Create Table']);
+  // };
 
-  loadTableInfo();
+  // loadTableInfo();
 </script>
 
 <style lang="less" scoped></style>

@@ -267,6 +267,9 @@
           background-color: #e9e9e9;
           &:hover {
             background-color: #c9c9c9;
+            .trigger-bar {
+              background-color: #fcfcfc;
+            }
           }
           .trigger-content {
             position: absolute;
@@ -278,6 +281,9 @@
               display: block;
               background: rgba(23, 35, 61, 0.25);
               margin-top: 3px;
+              &:hover {
+                background-color: #fcfcfc;
+              }
             }
           }
         }

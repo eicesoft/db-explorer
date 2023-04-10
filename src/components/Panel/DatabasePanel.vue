@@ -13,13 +13,13 @@
 
 <script lang="ts" setup>
   import { ref, computed, reactive, PropType, onMounted } from 'vue';
-  import { SimpleNode } from '~/components/ConnectManager/index';
+  import { MetaNode } from '~/components/ConnectManager/index';
   import { useI18n } from 'vue-i18n';
   import Manager from '~/utils/link_manager';
   import { formatLength } from '~/utils/index';
 
   interface CompProp {
-    node: SimpleNode;
+    node: MetaNode;
   }
 
   const props = defineProps<CompProp>();
@@ -27,7 +27,7 @@
   const manager: Manager = Manager.getInstance();
   const { t } = useI18n();
 
-  const conn = manager.get(props.node.meta?.Param.serverKey);
+  const conn = manager.get(props.node.serverKey);
   const rows = ref([]);
   const columns = computed(() => {
     return [
@@ -88,7 +88,7 @@
   const openTable = (table: string) => {};
 
   onMounted(async () => {
-    const resp = await conn.getTableInfomations(props.node.title);
+    const resp = await conn.getTableInfomations(props.node.database ?? '');
     rows.value = resp.data;
   });
 </script>

@@ -121,14 +121,6 @@ pre {
   cursor: pointer;
 }
 
-.arco-tabs-tab-active .iconfont {
-  color: #2d90e7;
-}
-
-.arco-modal-title {
-  user-select: none;
-}
-
 .base-model {
   border: 1px solid #ececec;
 }
@@ -202,4 +194,27 @@ path {
 
 .vue-notification-group {
   z-index: 20000 !important;
+}
+
+.sub-menu {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  background-color: #fff;
+  top: 10px;
+  left: 20px;
+  min-width: 100px;
+}
+
+.from-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin: 12px 0;
+  .label {
+    width: 35%;
+  }
+  .value {
+    width: 65%;
+  }
 }

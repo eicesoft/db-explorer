@@ -1,10 +1,16 @@
 <template>
   <div class="menu">
-    <div @click="onShowMenu($event, menu.children)" v-for="(menu, index) in menus" class="menu-item">{{
-      menu.title
-    }}</div>
-  </div>
-</template>
+    <!--*@click="onShowMenu($event, menu.children)" -->
+    <div v-for="(menu, index) in menus" class="menu-item"
+      >{{ menu.title }}
+      <!-- <Teleport to="body">
+        <div class="sub-menu">
+          <div v-for="(child, index) in menu.children"> {{ child.title }}</div>
+        </div>
+      </Teleport> -->
+    </div>
+  </div> </template
+>nmmm
 
 <script lang="ts" setup>
   import { PropType } from 'vue';

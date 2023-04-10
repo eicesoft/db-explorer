@@ -19,8 +19,6 @@ app.use(ContextMenu);
 
 // app.directive('tooltip', tooltip);
 
-// document.body.setAttribute('arco-theme', 'dark');
-
 app.mount('#app').$nextTick(() => {
   postMessage({ payload: 'removeLoading' }, '*');
 });

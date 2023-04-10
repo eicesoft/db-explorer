@@ -9,7 +9,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    ATree: typeof import('@arco-design/web-vue')['Tree']
+    AddDatabase: typeof import('./src/components/Dialog/AddDatabase.vue')['default']
     Captionbar: typeof import('./src/components/layout/Captionbar.vue')['default']
     CodeEditor: typeof import('./src/components/CodeEditor/CodeEditor.vue')['default']
     ConnectDialog: typeof import('./src/components/Dialog/ConnectDialog.vue')['default']
@@ -25,6 +25,7 @@ declare module '@vue/runtime-core' {
     IceIconButton: typeof import('./src/components/UI/IceIconButton.vue')['default']
     IceInput: typeof import('./src/components/UI/IceInput.vue')['default']
     IceLoading: typeof import('./src/components/UI/IceLoading.vue')['default']
+    IceSelect: typeof import('./src/components/UI/IceSelect.vue')['default']
     IceSplit: typeof import('./src/components/UI/IceSplit.vue')['default']
     IceTable: typeof import('./src/components/UI/IceTable.vue')['default']
     IceTabs: typeof import('./src/components/UI/IceTabs.vue')['default']
