@@ -300,6 +300,9 @@
       items: [
         {
           label: '新建查询',
+          onClick: () => {
+            emits('menu-select', 'new_query', node);
+          },
         },
         {
           label: '添加',
