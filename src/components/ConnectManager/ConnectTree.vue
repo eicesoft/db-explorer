@@ -14,6 +14,13 @@
     height: { type: Number, default: 24 },
   });
 
+  const emits = defineEmits<{
+    (e: 'select-table', value: any): void;
+    (e: 'select-database', value: any): void;
+    (e: 'open-database', value: any): void;
+    (e: 'menu-select', menu_key: string, value: any): void;
+  }>();
+
   const rootNode = computed(() => {
     return [treeStore.root];
   });
@@ -44,6 +51,7 @@
     return h(
       'div',
       {
+        title: node.title,
         class: 'node-title',
         onDblclick: (evt: any) => {
           if (node.type == NodeType.Database) {
@@ -83,14 +91,8 @@
     );
   };
 
-  const emits = defineEmits<{
-    (e: 'select-table', value: any): void;
-    (e: 'select-database', value: any): void;
-    (e: 'open-database', value: any): void;
-    (e: 'menu-select', menu_key: string, value: any): void;
-  }>();
-
   // console.log(IconFont);
+  const tree = ref();
   const manager: Manager = Manager.getInstance();
   const treeStore = useTreeStore();
   const statusStore = useStatausStore();
@@ -160,16 +162,16 @@
         // data.title += '(' + resp.data.length + ')';
         let children = [];
         for (let row of resp.data) {
+          let id = 'db_' + data.title + '_' + row.SCHEMA_NAME;
           children.push({
-            id: 'db_' + row.SCHEMA_NAME,
+            id: id,
             icon: 'database',
             title: row.SCHEMA_NAME,
             type: NodeType.Database,
-            runtime: { load: false },
             isLeaf: false,
             selectable: true,
             meta: {
-              NodeId: 'db_' + row.SCHEMA_NAME,
+              NodeId: id,
               Param: {
                 serverId: data.id,
                 serverKey: data.title,
@@ -210,9 +212,6 @@
     emits('open-database', node);
   };
 
-  const addDatabase = (node: any) => {
-    emits('menu-select', 'add-database', node);
-  };
   const removeServer = (node: any) => {
     emits('menu-select', 'remove-server', node);
   };
@@ -278,7 +277,7 @@
         {
           label: '添加数据库',
           onClick: () => {
-            addDatabase(node);
+            emits('menu-select', 'add-database', node);
           },
         },
         {
@@ -321,14 +320,27 @@
       ],
     });
   };
+
+  const append = (node: TreeNode, key: string) => {
+    tree.value.append(node, key);
+  };
+
+  const remove = (key: string) => {
+    tree.value.remove(key);
+  };
+
+  defineExpose({
+    append,
+  });
 </script>
 
 <template>
   <div class="tree" style="height: var(--bodyHeight)">
-    <div class="search-div">
+    <!-- <div class="search-div">
       <IceInput isClearable @search="searchTree" class="search-text" placeholder="输入进行过滤" v-model="searchKey" />
-    </div>
-    <Vtree
+    </div> -->
+    <VTreeSearch
+      :showCheckedButton="false"
       style="height: calc(100% - 36px)"
       :unselectOnClick="false"
       :render="renderNode"
@@ -338,7 +350,7 @@
       ref="tree"
       :data="rootNode"
       @select="selectNode"
-    ></Vtree>
+    ></VTreeSearch>
   </div>
 </template>
 

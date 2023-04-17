@@ -7,6 +7,7 @@
       <IceSplit ref="split" @on-move-end="sideResize" :value="leftSplit">
         <template #left>
           <ConnectTree
+            ref="connectTree"
             :height="height - 40 - 28 * 2"
             @menu-select="menuSelect"
             @select-database="selectDatabase"
@@ -51,6 +52,7 @@
   import { useTreeStore } from '~/store/modules/tree';
   import { useTabStore } from '~/store/modules/tab';
   import { useStatausStore } from '~/store/modules/status';
+  import { NodeType } from '~/components/ConnectManager/index';
 
   import packageInfo from '~/../package.json';
   import { Tab, TabType } from './Tabber';
@@ -90,6 +92,7 @@
   const leftSplit = ref(0.22);
   const sideWidth = ref(235);
   const split = ref();
+  const connectTree = ref();
 
   const title = computed(() => {
     let t = packageInfo.productName;
@@ -195,6 +198,7 @@
         console.log(node);
         treeStore.remove(node.serverKey);
         serverStore.removeConnect(node.serverKey);
+        connectTree.value.remove(node.id);
         break;
       case 'table-design':
         console.log(node);
@@ -210,8 +214,30 @@
         tabStore.add(newTab);
         break;
       case 'add-database':
+        // let id = 'db_' + node.serverKey + '_' + 'tes';
+
+        // connectTree.value.append(
+        //   {
+        //     id: id,
+        //     icon: 'database',
+        //     title: 'test2',
+        //     type: NodeType.Database,
+        //     isLeaf: false,
+        //     selectable: true,
+        //     meta: {
+        //       NodeId: id,
+        //       Param: {
+        //         serverId: node.id,
+        //         serverKey: node.serverKey,
+        //       },
+        //     },
+        //     children: [],
+        //   },
+        //   node.id
+        // );
         statusStore.setServer(node.serverKey);
         visibles.addDialogVisible = true;
+
         break;
     }
   };
