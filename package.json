@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "unplugin-vue-components": "0.24.1",
-    "unplugin-auto-import": "0.15.1",
+    "unplugin-auto-import": "0.15.3",
     "@types/mysql": "^2.15.21",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/compiler-sfc": "^3.2.31",
