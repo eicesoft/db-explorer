@@ -32,7 +32,7 @@
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/compiler-sfc": "^3.2.31",
     "@vue/devtools": "beta",
-    "electron": "^23.1.1",
+    "electron": "^24.1.3",
     "electron-builder": "^23.6.0",
     "less": "^4.1.3",
     "typescript": "^4.9.5",
